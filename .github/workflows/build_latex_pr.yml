@@ -1,0 +1,172 @@
+name: Build LaTeX document on Pull Request
+
+on:
+  pull_request:
+    branches:
+      - '**'
+
+env:
+  REPO_URL: https://github.com/${{ github.repository_owner }}/${{ github.event.repository.name }}
+
+jobs:
+  build_latex:
+    runs-on: ubuntu-latest
+    env:
+      LATEX_CMDS: input|include|includegraphics|bibliography|addbibresource|lstinputlisting|verbatiminput|includepdf|subfile
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          path: new
+
+      - name: Get commit hash and branch name
+        id: commit_info
+        run: |
+          cd new
+          BRANCH=$(git rev-parse --abbrev-ref HEAD)
+          BRANCH=$(echo "${BRANCH}" | sed 's/[^a-zA-Z0-9\-]/_/g')
+          echo "BRANCH=${BRANCH}" >> $GITHUB_ENV
+          echo "HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      - name: Compile LaTeX documents
+        uses: xu-cheng/latex-action@v3
+        with:
+          texlive_version: 2023
+          working_directory: new/latex_project
+          root_file: |
+            *.tex
+
+      - name: Upload PDF files
+        uses: actions/upload-artifact@v4
+        with:
+          name: LaTeX_PDF-${{ env.HASH }}
+          path: new/latex_project/*.pdf
+
+      - name: Checkout base branch
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.base_ref }}
+          path: old
+
+      - name: Install latexdiff
+        run: sudo apt-get install -y latexdiff --no-install-recommends
+
+      - name: Download latexpand script
+        run: |
+          wget -O latexpand https://mirrors.ctan.org/support/latexpand/latexpand
+          chmod +x latexpand
+
+      - name: Flatten old LaTeX main files inside old working directory and copy out 
+        run: |
+          mkdir -p old_flat
+          pushd old/latex_project
+          for file in *.tex; do
+            [ -f "$file" ] || continue
+            ../../latexpand "$file" > "../../old_flat/$file" || echo "% Failed to flatten $file" > "../../old_flat/$file"
+          done
+          popd
+          for file in old_flat/*.tex; do
+            sed -i -E "s@(\\\\(${LATEX_CMDS})(\[[^]]*\])?\{)([^}]+)@\1old/latex_project/\4@g" "$file"
+          done
+
+      - name: Flatten new LaTeX main files inside new working directory and copy out
+        run: |
+          mkdir -p new_flat
+          pushd new/latex_project
+          for file in *.tex; do
+            [ -f "$file" ] || continue
+            ../../latexpand "$file" > "../../new_flat/$file"
+          done
+          popd
+          for file in new_flat/*.tex; do
+            sed -i -E "s@(\\\\(${LATEX_CMDS})(\[[^]]*\])?\{)([^}]+)@\1new/latex_project/\4@g" "$file"
+          done
+
+      - name: Run latexdiff on flattened files
+        run: |
+          for file in new_flat/*.tex; do
+            filename=$(basename "$file")
+            if [ -f "old_flat/$filename" ]; then
+              latexdiff -t UNDERLINE --verbose --no-links --allow-spaces --graphics-markup=both --disable-citation-markup "old_flat/$filename" "$file" > "${filename%.tex}_diff.tex"
+            else
+              echo "\\documentclass{article}\\begin{document}\\end{document}" > empty.tex
+              latexdiff -t UNDERLINE --verbose --no-links --allow-spaces --graphics-markup=0 --disable-citation-markup empty.tex "$file" > "${filename%.tex}_diff.tex"
+            fi
+          done
+
+          echo "Diff files created:"
+          ls -l *.tex
+
+      - name: Copy all .sty files to working directory
+        run: |
+          # Only the .sty files from the new project are used
+          # some posters like Gemini have their own .sty files
+          # they rarely change, so practically this is not a problem
+          # Copy all .sty files from old project first
+          cp old/latex_project/*.sty . || true
+
+          # Then copy all .sty files from new project, overwriting old ones if present
+          cp new/latex_project/*.sty . || true
+
+      - name: Upload entire diff project as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: LaTeX_Diff_Project-${{ env.HASH }}
+          path: |
+            old/latex_project/**
+            new/latex_project/**
+            old_flat/
+            new_flat/
+            *.tex
+            *.sty
+
+      - name: Compile LaTeX difference documents
+        continue-on-error: true
+        uses: xu-cheng/latex-action@v3
+        with:
+          texlive_version: 2023
+          latexmk_use_lualatex: true
+          continue_on_error: true
+          args: -f -pdf -interaction=nonstopmode
+          root_file: |
+            *.tex
+
+      - name: Upload PDF difference documents
+        uses: actions/upload-artifact@v4
+        with:
+          name: LaTeX_PDF_Difference-${{ env.HASH }}
+          path: "*.pdf"
+
+      - name: Find comment
+        uses: peter-evans/find-comment@v1
+        id: fc
+        with:
+          issue-number: ${{ github.event.number }}
+          comment-author: 'github-actions[bot]'
+        if: always()
+
+      - name: Post comment (success)
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          issue-number: ${{ github.event.number }}
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          edit-mode: replace
+          body: |
+            Hi, @${{ github.event.sender.login }}! :wave: <br>
+            The LateX build (${{ env.HASH }}) has **succeeded**. [**Click here**](${{ env.LOG_URL }}) to download your results.
+        env:
+          LOG_URL: ${{ env.REPO_URL }}/actions/runs/${{ github.run_id }}?check_suite_focus=true
+
+      - name: Post comment (failure)
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          issue-number: ${{ github.event.number }}
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          edit-mode: replace
+          body: |
+            Sorry, @${{ github.event.sender.login }}! :disappointed: <br>
+            The LateX build (${{ env.HASH }}) has **failed**. [**Click here**](${{ env.LOG_URL }}) to see the build log.
+        env:
+          LOG_URL: ${{ env.REPO_URL }}/actions/runs/${{ github.run_id }}?check_suite_focus=true
+        if: failure()

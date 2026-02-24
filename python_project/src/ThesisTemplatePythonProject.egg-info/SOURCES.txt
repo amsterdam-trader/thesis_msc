@@ -1,0 +1,5 @@
+pyproject.toml
+src/ThesisTemplatePythonProject.egg-info/PKG-INFO
+src/ThesisTemplatePythonProject.egg-info/SOURCES.txt
+src/ThesisTemplatePythonProject.egg-info/dependency_links.txt
+src/ThesisTemplatePythonProject.egg-info/top_level.txt

@@ -1,0 +1,10 @@
+Data sources that we can use are the KNMI open data portal. We have 67 near real-time observations, and corresponding historical observations. If time permits, these locations can be used as a space dimension in the model. The data is via an API easily queriable via: "https://www.knmi.nl/nederland-nu/klimatologie/daggegevens". We are interested in the following variables: "TG", "TN", "TX", "T10N", "SQ", "DR", "RH", "RHX", "PG", "PX", "PGX", "UG", "UX", "UN", "EV24". We can also use the historical data to get a longer time series for the model.
+Table with variables:
+\begin{table}{lll}
+    "TG" & "TN" & "TX" \\
+    "T10N" & "SQ" & "DR" \\ "meaning: TG: mean daily temperature, TN: minimum daily temperature, TX: maximum daily temperature, T10N: 10cm soil temperature, SQ: sunshine duration, DR: precipitation duration,
+    "RH" & "RHX" & "PG" \\
+    "PX" & "PGX" & "UG" \\
+    "UX" & "UN" & "EV24" \\
+
+\end{table}

@@ -1,0 +1,25 @@
+{
+	"name": "Python-LaTeX devcontainer",
+	"image": "florisdejong/thesis_template:python",
+	"remoteUser": "root",
+	"customizations": {
+        "vscode": {
+            "extensions": [
+				"ms-toolsai.jupyter",
+				"ms-toolsai.jupyter-renderers",
+				"ms-python.python",
+				"ms-python.vscode-pylance",
+				"vsls-contrib.codetour",
+				"James-Yu.latex-workshop",
+				"ms-python.python",
+				"ms-toolsai.jupyter",
+				"znck.grammarly",
+				"OrangeX4.latex-sympy-calculator",
+				"github.copilot"
+			]
+		}
+	},
+
+	// Install python packages on attach
+	"postAttachCommand": "pip3 install --user -e ./python_project --break-system-packages; pip3 install ipykernel --break-system-packages; pip3 install -r requirements.txt --break-system-packages;"
+}

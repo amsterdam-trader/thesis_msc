@@ -1,0 +1,233 @@
+{
+    // Formatters and language settings
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.formatOnSave": true,
+    },
+    "notebook.formatOnSave.enabled": true,
+    "notebook.formatOnCellExecution": true,
+    "[latex]": {
+        "editor.defaultFormatter": "James-Yu.latex-workshop",
+        "editor.formatOnSave": true,
+        "editor.wordWrap": "on"
+    },
+    "latex-workshop.formatting.latex": "latexindent",
+    "[bibtex]": {
+        "editor.defaultFormatter": "James-Yu.latex-workshop",
+        "editor.formatOnSave": true,
+        "editor.wordWrap": "on"
+    },
+    "[r]": {
+        "editor.defaultFormatter": "REditorSupport.r",
+        "editor.formatOnSave": true,
+    },
+    "[rmd]": {
+        "editor.defaultFormatter": "REditorSupport.r",
+        "editor.formatOnSave": true,
+    },
+
+    // Sympy server settings (work in progress)
+    "latex-sympy-calculator.linux": "${workspaceFolder}/venv/bin/python",
+    "latex-sympy-calculator.windows": "${workspaceFolder}\\venv\\Scripts\\python",
+    "latex-sympy-calculator.mac": "${workspaceFolder}/venv/bin/python",
+
+    "ltex.language": "en-GB",
+    "ltex.additionalRules.motherTongue": "nl",
+    "ltex.diagnosticSeverity": "information",
+
+    // Hack allow script execution on Windows
+    "terminal.integrated.defaultProfile.windows": "PowerShell",
+    "terminal.integrated.profiles.windows": {
+        "PowerShell": {
+            "source": "PowerShell",
+            "args": [
+                "-ExecutionPolicy",
+                "Bypass"
+            ]
+        }
+    },
+
+    // Python Unittests
+    "python.testing.pytestArgs": [
+        "python_project"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
+    // Uncomment for LuaLatex
+    "latex-workshop.latex.tools": [
+    {
+        "name": "lualatex",
+        "command": "latexmk",
+        "args": [
+        "-lualatex",
+        "-synctex=1",
+        "-interaction=nonstopmode",
+        "-file-line-error",
+        "-shell-escape",
+        "-outdir=%OUTDIR%",
+        "%DOC%"
+        ],
+
+    }
+    ],
+    "latex-workshop.latex.recipes": [
+    {
+        "name": "lualatex",
+        "tools": ["lualatex"]
+    }
+    ],
+    "latex-workshop.latex.recipe.default": "lualatex",
+
+    // Hide files from view
+    "files.exclude": {
+        // hide test cache
+        "**/.pytest_cache/**": true,
+
+        // hide package egg-info file
+        "**/*.egg-info/**": true,
+
+        // hide latex compile files
+        "latex_project/**/*.aux": true,
+        "latex_project/**/*.*-SAVE-ERROR": true,
+        "latex_project/**/*.lof": true,
+        "latex_project/**/*.lot": true,
+        "latex_project/**/*.fls": true,
+        "latex_project/**/*.out": true,
+        "latex_project/**/*.toc": true,
+        "latex_project/**/*.fmt": true,
+        "latex_project/**/*.fot": true,
+        "latex_project/**/*.cb": true,
+        "latex_project/**/*.cb2": true,
+        "latex_project/**/.*.lb": true,
+        "latex_project/**/*.dvi": true,
+        "latex_project/**/*.xdv": true,
+        "latex_project/**/*-converted-to.*": true,
+        "latex_project/**/*.bbl": true,
+        "latex_project/**/*.bcf": true,
+        "latex_project/**/*.blg": true,
+        "latex_project/**/*-blx.aux": true,
+        "latex_project/**/*-blx.bib": true,
+        "latex_project/**/*.run.xml": true,
+        "latex_project/**/*.fdb_latexmk": true,
+        "latex_project/**/*.synctex": true,
+        "latex_project/**/*.synctex(busy)": true,
+        "latex_project/**/*.synctex.gz": true,
+        "latex_project/**/*.synctex.gz(busy)": true,
+        "latex_project/**/*.pdfsync": true,
+        "latex_project/**/latex.out/": true,
+        "latex_project/**/*.alg": true,
+        "latex_project/**/acs-*.bib": true,
+        "latex_project/**/*.thm": true,
+        "latex_project/**/*.nav": true,
+        "latex_project/**/*.pre": true,
+        "latex_project/**/*.snm": true,
+        "latex_project/**/*.vrb": true,
+        "latex_project/**/*.soc": true,
+        "latex_project/**/*.cut": true,
+        "latex_project/**/*.cpt": true,
+        "latex_project/**/*.spl": true,
+        "latex_project/**/*.ent": true,
+        "latex_project/**/*.lox": true,
+        "latex_project/**/*.mf": true,
+        "latex_project/**/*.mp": true,
+        "latex_project/**/*.t[1-9]": true,
+        "latex_project/**/*.t[1-9][0-9]": true,
+        "latex_project/**/*.tfm": true,
+        "latex_project/**/*.end": true,
+        "latex_project/**/*.?end": true,
+        "latex_project/**/*.[1-9]": true,
+        "latex_project/**/*.[1-9][0-9]": true,
+        "latex_project/**/*.[1-9][0-9][0-9]": true,
+        "latex_project/**/*.[1-9]R": true,
+        "latex_project/**/*.[1-9][0-9]R": true,
+        "latex_project/**/*.[1-9][0-9][0-9]R": true,
+        "latex_project/**/*.eledsec[1-9]": true,
+        "latex_project/**/*.eledsec[1-9]R": true,
+        "latex_project/**/*.eledsec[1-9][0-9]": true,
+        "latex_project/**/*.eledsec[1-9][0-9]R": true,
+        "latex_project/**/*.eledsec[1-9][0-9][0-9]": true,
+        "latex_project/**/*.eledsec[1-9][0-9][0-9]R": true,
+        "latex_project/**/*.acn": true,
+        "latex_project/**/*.acr": true,
+        "latex_project/**/*.glg": true,
+        "latex_project/**/*.glo": true,
+        "latex_project/**/*.gls": true,
+        "latex_project/**/*.glsdefs": true,
+        "latex_project/**/*.lzo": true,
+        "latex_project/**/*.lzs": true,
+        "latex_project/**/*.slg": true,
+        "latex_project/**/*.slo": true,
+        "latex_project/**/*.sls": true,
+        "latex_project/**/*.ist": true,
+        "latex_project/**/*.gnuplot": true,
+        "latex_project/**/*.table": true,
+        "latex_project/**/*-gnuplottex-*": true,
+        "latex_project/**/*.gaux": true,
+        "latex_project/**/*.glog": true,
+        "latex_project/**/*.gtex": true,
+        "latex_project/**/*.4ct": true,
+        "latex_project/**/*.4tc": true,
+        "latex_project/**/*.idv": true,
+        "latex_project/**/*.lg": true,
+        "latex_project/**/*.trc": true,
+        "latex_project/**/*.xref": true,
+        "latex_project/**/*.brf": true,
+        "latex_project/**/*-concordance.tex": true,
+        "latex_project/**/*-tikzDictionary": true,
+        "latex_project/**/*.lol": true,
+        "latex_project/**/*.ltjruby": true,
+        "latex_project/**/*.idx": true,
+        "latex_project/**/*.ilg": true,
+        "latex_project/**/*.ind": true,
+        "latex_project/**/*.maf": true,
+        "latex_project/**/*.mlf": true,
+        "latex_project/**/*.mlt": true,
+        "latex_project/**/*.mtc[0-9]*": true,
+        "latex_project/**/*.slf[0-9]*": true,
+        "latex_project/**/*.slt[0-9]*": true,
+        "latex_project/**/*.stc[0-9]*": true,
+        "latex_project/**/*_minted*": true,
+        "latex_project/**/*.pyg": true,
+        "latex_project/**/*.mw": true,
+        "latex_project/**/*.newpax": true,
+        "latex_project/**/*.nlg": true,
+        "latex_project/**/*.nlo": true,
+        "latex_project/**/*.nls": true,
+        "latex_project/**/*.pax": true,
+        "latex_project/**/*.pdfpc": true,
+        "latex_project/**/*.sagetex.sage": true,
+        "latex_project/**/*.sagetex.py": true,
+        "latex_project/**/*.sagetex.scmd": true,
+        "latex_project/**/*.wrt": true,
+        "latex_project/**/svg-inkscape/": true,
+        "latex_project/**/*.sout": true,
+        "latex_project/**/*.sympy": true,
+        "latex_project/**/sympy-plots-for-*.tex/": true,
+        "latex_project/**/*.upa": true,
+        "latex_project/**/*.upb": true,
+        "latex_project/**/*.pytxcode": true,
+        "latex_project/**/pythontex-files-*/": true,
+        "latex_project/**/*.listing": true,
+        "latex_project/**/*.loe": true,
+        "latex_project/**/*.dpth": true,
+        "latex_project/**/*.md5": true,
+        "latex_project/**/*.auxlock": true,
+        "latex_project/**/*.ptc": true,
+        "latex_project/**/*.ttt": true,
+        "latex_project/**/*.fff": true,
+        "latex_project/**/TSWLatexianTemp*": true,
+        "latex_project/**/*.bak": true,
+        "latex_project/**/*.sav": true,
+        "latex_project/**/*.texpadtmp": true,
+        "latex_project/**/*.lyx~": true,
+        "latex_project/**/*.backup": true,
+        "latex_project/**/.*.swp": true,
+        "latex_project/**/*~[0-9]*": true,
+        "latex_project/**/*.tps": true,
+        "latex_project/**/.*/*.swp": true,
+        "latex_project/**/*-*-tags.tex": true,
+        "latex_project/**/*.sta": true,
+        "latex_project/**/*.lpz": true,
+        "latex_project/**/*.xwm": true
+    }
+}

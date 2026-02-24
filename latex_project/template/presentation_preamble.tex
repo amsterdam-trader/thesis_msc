@@ -1,0 +1,41 @@
+\usepackage[utf8]{inputenc}
+\usepackage{tikz}
+\usepackage{bbold}
+\usepackage{booktabs}
+
+\usepackage{amsmath,amsfonts,amssymb}
+
+%%%%%%%%%%%%algorithms %%%%%%%%%%%%%%%%%%%
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+
+\usetheme[nofooterlogo, showmaxslides]{pureminimalistic}
+
+\definecolor{textcolor}{RGB}{0, 0, 120}
+\definecolor{title}{RGB}{0, 0, 0}
+\definecolor{footercolor}{RGB}{133, 133, 133}
+\definecolor{bg}{RGB}{255, 255, 255}
+\renewcommand{\beamertextcolor}{textcolor}
+\renewcommand{\beamerbgcolor}{bg}
+\renewcommand{\beamerfootertextcolor}{footercolor}
+\renewcommand{\beamertitlecolor}{title}
+
+% remove logo's
+\renewcommand{\logotitle}{\includegraphics%
+    [width=.5\linewidth]{template/LogoSBE.png}}
+\renewcommand{\logoheader}{}
+\renewcommand{\logofooter}{}
+
+
+\renewcommand{\pageword}{Slide}
+
+%\renewcommand{\logoheader}{\vspace{1.5em}}
+\usepackage[backend=biber, doi=false, maxbibnames=2, maxcitenames=2,%
+    style=numeric, sorting=none, url=false, eprint=false]{biblatex}
+
+\AtBeginBibliography{\small}
+
+% This makes it possible to add backup slides, without counting them
+\usepackage{appendixnumberbeamer}
+\renewcommand{\appendixname}{\texorpdfstring{\translate{appendix}}{appendix}}

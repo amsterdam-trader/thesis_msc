@@ -1,0 +1,16 @@
+# Install local project as a package
+-e ./python_project
+
+# Used for LaTeX Sympy solver
+latex2sympy2
+Flask
+
+numpy
+pandas
+matplotlib
+pytest
+scipy
+geopandas 
+contextily
+shapely
+pyproj

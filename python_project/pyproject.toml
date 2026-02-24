@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ThesisTemplatePythonProject"
+version = "0.0.1"
+description = "An example Python project for a thesis template"
+license = {file = "LICENSE"}
+readme = {file = "README.txt", content-type = "text/markdown"}
+dependencies = [
+    # Add your dependencies here, e.g., "pandas", "numpy", they will be installed automatically by pip
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+namespaces = true  # Enable namespace packages (no __init__.py files required)
+
+[tool.black]
+line-length = 119
+target-version = ["py311"]
+
+[tool.pylint]
+max-line-length = 119
+output-format = "colorized"
+
+[tool.pylint."MESSAGES CONTROL"]
+disable = [
+    "fixme",
+]

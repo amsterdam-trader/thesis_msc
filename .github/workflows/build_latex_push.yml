@@ -1,0 +1,39 @@
+name: Build LaTeX document
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+    - 'main'
+
+jobs:
+  build_latex:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Get commit hash and branch name
+        id: commit_info
+        run: |
+          BRANCH=$(git rev-parse --abbrev-ref HEAD)
+          # Replace invalid characters in branch name using regex
+          BRANCH=$(echo "${BRANCH}" | sed 's/[^a-zA-Z0-9\-]/_/g')
+          echo "BRANCH=${BRANCH}" >> $GITHUB_ENV
+          echo "HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      - name: Compile LaTeX documents
+        uses: xu-cheng/latex-action@v3
+        with:
+          # Change TeX Live version as needed
+          texlive_version: 2023
+          latexmk_use_lualatex: true
+          working_directory: latex_project
+          root_file: |
+            *main.tex
+
+      - name: Upload PDF files
+        uses: actions/upload-artifact@v4
+        with:
+          name: LaTeX_PDF-${{ env.HASH }}
+          path: latex_project/*main.pdf

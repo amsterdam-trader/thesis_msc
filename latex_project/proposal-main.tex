@@ -1,0 +1,120 @@
+\documentclass[a4paper,11pt]{article}
+
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage{float}
+\usepackage{enumerate}
+\usepackage{enumitem}
+\usepackage{boxedminipage}
+\usepackage{url}
+\usepackage{booktabs}
+%\usepackage[dutch]{babel} % when you write in dutch
+
+\usepackage{dcolumn}
+\usepackage{multirow}
+\newcolumntype{d}[1]{D{.}{.}{#1}}
+
+%%%%%%%%%%%% layout %%%%%%%%%%%%%%%%%%
+\usepackage[margin=3cm]{geometry}
+% you might enhance readability by increasing the distances between lines:
+%\renewcommand{\baselinestretch}{1.1}
+
+%%%%%%%%%%% mathematics %%%%%%%%%%%%%%%%%%
+\usepackage{amsmath,amsfonts,amssymb}
+
+%%%%%%%%%%%%% theorems %%%%%%%%%%%%%%%%
+% adapt when you write Dutch
+
+\usepackage{amsthm}
+
+%%%%%%%%%%%%% shared preamble %%%%%%%%%%%%%%%%
+\input{template/shared_preamble.tex}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{assumption}{Assumption}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{example}{Example}
+\newtheorem{remark}{Remark}
+\newtheorem{notation}{Notation}
+
+%%%%%%%%%%%%algorithms %%%%%%%%%%%%%%%%%%%
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+%%%%%%%%% bibliography style %%%%%%%%%%%%%
+%\usepackage{natbib} % in case of classic bibtex
+\usepackage[natbib,style=authoryear,maxcitenames=2,
+           maxbibnames=99,hyperref,backend=biber,hyperref=false]{biblatex}
+\addbibresource{bib/EORthesis.bib}
+
+%%%%%%%%%%%%%%%% start document %%%%%%%%%%%
+\begin{document}
+
+% FRONT PAGE
+% --------------------------------------------------
+% Research Proposal title, course name, academic year, group members, student numbers, emails
+
+\noindent
+\rule{\textwidth}{0.8pt}
+\begin{center}
+    {\huge\bf
+        \noindent
+        Joint probability model for wind-related compound hazards in the Netherlands
+    }
+\end{center}
+
+\vspace*{-8pt}
+\noindent
+\rule{\textwidth}{0.8pt}
+
+\begin{center}
+    {
+        \vspace*{0.5cm}
+        Group 14
+
+        \begin{tabular}{ll}
+            Supervisor I:  & dr. Yicong Lin                                          \\
+            Supervisor II: & dr. Wiebke Jaeger (Institute for Environmental Studies) \\
+        \end{tabular}
+
+        \begin{tabular}{lll}
+            Name         & Student Number & Email                      \\
+            F.S. de Jong & 2857580        & f.s.de.jong2@student.vu.nl \\
+        \end{tabular}
+
+        \vspace*{0.5cm}
+    }
+\end{center}
+
+
+
+% --------------------------------------------------
+% MAIN CONTENTS
+% --------------------------------------------------
+
+% Motivation
+\input{proposal/motivation}
+
+% Research Question
+\input{proposal/research_question}
+
+% Contribution
+
+% Methodology
+\input{proposal/methods.tex}
+
+\printbibliography
+% or in case of classic bibtex:
+%\bibliographystyle{chicago}
+%\bibliography{bib/EORthesis.bib}
+
+\end{document}
