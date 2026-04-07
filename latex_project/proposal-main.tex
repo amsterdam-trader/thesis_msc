@@ -1,26 +1,28 @@
-\documentclass[a4paper,11pt]{article}
-
-\usepackage{times}
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=1.65cm]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
-\usepackage{graphicx}
-\usepackage{epstopdf}
-\usepackage{float}
-\usepackage{enumerate}
+\usepackage{lmodern}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb,bm}
 \usepackage{enumitem}
-\usepackage{boxedminipage}
-\usepackage{url}
+\usepackage{titlesec}
+\usepackage{hyperref}
 \usepackage{booktabs}
-%\usepackage[dutch]{babel} % when you write in dutch
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+\setlength{\parskip}{0.42em}
+\setlength{\parindent}{0pt}
+\setlist[itemize]{leftmargin=1.35em,itemsep=0.18em,topsep=0.2em}
+\setlist[enumerate]{leftmargin=1.45em,itemsep=0.18em,topsep=0.2em}
+\definecolor{accent}{HTML}{1F4E79}
+\titleformat{\section}{\normalsize\bfseries\color{accent}}{}{0em}{}
+\titleformat{\subsection}{\normalsize\bfseries\color{accent}}{}{0em}{}
+\hypersetup{colorlinks=true,urlcolor=accent,linkcolor=accent}
+\linespread{1.02}
+\pagestyle{empty}
 
-\usepackage{dcolumn}
-\usepackage{multirow}
-\newcolumntype{d}[1]{D{.}{.}{#1}}
-
-%%%%%%%%%%%% layout %%%%%%%%%%%%%%%%%%
-\usepackage[margin=3cm]{geometry}
-% you might enhance readability by increasing the distances between lines:
-%\renewcommand{\baselinestretch}{1.1}
 
 %%%%%%%%%%% mathematics %%%%%%%%%%%%%%%%%%
 \usepackage{amsmath,amsfonts,amssymb}
@@ -53,7 +55,7 @@
 %%%%%%%%% bibliography style %%%%%%%%%%%%%
 %\usepackage{natbib} % in case of classic bibtex
 \usepackage[natbib,style=authoryear,maxcitenames=2,
-           maxbibnames=99,hyperref,backend=biber,hyperref=false]{biblatex}
+    maxbibnames=99,hyperref,backend=biber,hyperref=false]{biblatex}
 \addbibresource{bib/EORthesis.bib}
 
 %%%%%%%%%%%%%%%% start document %%%%%%%%%%%
@@ -68,7 +70,7 @@
 \begin{center}
     {\huge\bf
         \noindent
-        Joint probability model for wind-related compound hazards in the Netherlands
+        Functional and Dependence Modelling of Extreme Wind Events in the Netherlands
     }
 \end{center}
 
@@ -79,42 +81,83 @@
 \begin{center}
     {
         \vspace*{0.5cm}
-        Group 14
 
         \begin{tabular}{ll}
-            Supervisor I:  & dr. Yicong Lin                                          \\
-            Supervisor II: & dr. Wiebke Jaeger (Institute for Environmental Studies) \\
+            \toprule
+            \textbf{Supervisor I:}  & dr. Yicong Lin                                          \\
+            \textbf{Supervisor II:} & dr. Wiebke Jaeger (Institute for Environmental Studies) \\
+            \bottomrule
         \end{tabular}
 
+        \vspace*{0.5cm}
+
         \begin{tabular}{lll}
-            Name         & Student Number & Email                      \\
-            F.S. de Jong & 2857580        & f.s.de.jong2@student.vu.nl \\
+            \toprule
+            \textbf{Name} & \textbf{Student Number} & \textbf{Email}             \\
+            \midrule
+            F.S. de Jong  & 2857580                 & f.s.de.jong2@student.vu.nl \\
+            \bottomrule
         \end{tabular}
 
         \vspace*{0.5cm}
     }
 \end{center}
 
-
-
-% --------------------------------------------------
 % MAIN CONTENTS
 % --------------------------------------------------
+This thesis develops a statistical framework for modelling extreme wind events in high-frequency meteorological data, with an empirical application to the Netherlands. The motivation is that severe wind risk is temporal and spatial: hazardous events are not fully characterized by a single scalar measure, but by the joint behaviour of wind-related characteristics over time and by their co-occurrence across locations. The main objective is therefore to combine three components in a coherent framework: (i) functional representation of high-frequency wind trajectories, (ii) extreme-value modelling of severe-event summaries, and (iii) dependence modelling over the KNMI station network.
 
-% Motivation
-\input{proposal/motivation}
+The main research question is:
+\begin{quote}
+    \emph{How can 10-minute KNMI wind observations be represented as functional objects and combined with extreme-value and dependence models to quantify joint wind hazard risk over the Dutch station network?}
+\end{quote}
 
-% Research Question
-\input{proposal/research_question}
+More specifically, the thesis studies how high-frequency wind observations can be transformed into functional objects, how extreme events can be defined and summarized in a statistically meaningful way, and how the joint distribution of severe-event characteristics can be modelled across locations. Compound wind hazard is interpreted here through the joint behaviour of multiple wind-related event characteristics, such as peak wind speed, gust intensity, event duration, and integrated exceedance measures, together with their spatial dependence across stations.
 
-% Contribution
+The intended contribution is primarily methodological and empirical. Methodologically, the thesis develops and evaluates a structured framework linking functional data analysis, extreme-value theory, and dependence modelling in a high-dimensional setting. Empirically, it applies this framework to KNMI observations and studies whether it can deliver a useful joint probability model for severe wind events in the Netherlands. The contribution is not to propose a new estimator in isolation, but to specify, implement, and assess a full modelling pipeline in which each stage is statistically motivated and evaluated in a controlled simulation design.
 
-% Methodology
-\input{proposal/methods.tex}
+\section*{Empirical data}
+The empirical analysis will use the KNMI open dataset \emph{Near real-time 10-minute automated in-situ ground-based meteorological surface observations in the Netherlands}.\footnote{KNMI technical documentation: \url{https://english.knmidata.nl/open-data/10-minute-in-situ-meteorological-observations}.} The dataset contains 10-minute observations from automatic weather stations located on land, offshore platforms, wind poles, and airports. The historical archive starts on 2012-01-01 and is near real-time rather than climatologically validated, with missing observations potentially updated for up to seven days. I therefore consider the period 2012-01-01 to 2026-01-01 as the main sample window.
 
-\printbibliography
-% or in case of classic bibtex:
-%\bibliographystyle{chicago}
-%\bibliography{bib/EORthesis.bib}
+The empirical analysis will use the Dutch network of 67 KNMI station locations. The dataset contains files with 10 minute observations for more than 90 weather variables such as clouds, solar radiation, precipitation, temperatures, humidity. Also, wind-related variables including wind components, gust-related measures, and wind direction, making it suitable for modelling severe wind events as multivariate hazard objects rather than isolated scalar extremes. After an initial data review and literature study, the thesis will define severe wind events and construct event-level summaries that are both meteorologically meaningful and statistically tractable. Candidate summaries include peak wind speed, peak gust intensity, event duration, cumulative exceedance above a threshold, and related storm-severity indices.
 
+The functional representation will be based on 10-minute intraday or event-level wind trajectories. These curves will be smoothed and represented using basis expansions or related functional methods, after which functional principal component analysis (FPCA) may be used for dimension reduction. The purpose of this step is to preserve the temporal structure of wind evolution within events and to obtain low-dimensional summaries that can be linked to extreme-value and dependence models.
+
+\section*{Methodological framework}
+The thesis is organized around three linked modelling components.
+
+First, high-frequency wind observations are represented as functional objects. Let $X_{i,d}(u)$ denote the wind curve observed at station $i$ on day or event $d$, where $u$ indexes intraday or within-event time. A generic representation is
+\[
+    X_{i,d}(u) = \mu_i(u) + \sum_{k=1}^{K} \xi_{i,d,k}\varphi_k(u) + \varepsilon_{i,d}(u),
+\]
+where $\mu_i(u)$ is a station-specific mean function, $\{\varphi_k\}_{k=1}^{K}$ is a basis or empirical eigenfunction system, $\xi_{i,d,k}$ are scores, and $\varepsilon_{i,d}(u)$ is a residual term. This provides a flexible representation of the shape, persistence, and intensity profile of wind trajectories.
+
+Second, extreme-value methods are used to model severe-event summaries extracted from the functional data. Depending on the final event definition, I will consider peaks-over-threshold methods for marginal tail modelling. This stage will involve threshold selection, stability diagnostics, and estimation of quantities such as return levels and return periods. The aim is to obtain statistically defensible marginal tail models for the event summaries of interest.
+
+Third, the cross-station dependence structure will be modelled using a copula-based framework, with vine copulas as a leading candidate because they allow flexible modelling of nonlinear, asymmetric, and tail-sensitive dependence. The main question is not only whether extreme events occur at a single location, but how severe-event characteristics co-move across the station network. If time permits, I will explore whether a dynamic extension, for example through score-driven dependence dynamics, improves the modelling of time-varying extremal dependence.
+
+\section*{Simulation study}
+A simulation study is included to assess the reliability of the proposed methodology before the empirical application. Since the thesis is methodological in nature, the purpose of the simulation is not only to generate synthetic extreme events, but also to evaluate whether the full pipeline, from functional preprocessing to extreme-value and dependence modelling, can recover tail and dependence features under controlled data-generating processes.
+
+The simulation design has two layers. In the first layer, synthetic wind curves are generated with known tail behaviour and known cross-station dependence. This allows assessment of whether the functional representation preserves the features of the data that are relevant for extreme-event analysis, and whether the subsequent EVT and dependence stages recover quantities such as return levels, joint exceedance probabilities, and dependence measures. In the second layer, after fitting the final model to the KNMI data, synthetic samples are generated from the fitted joint model in order to simulate realistic but potentially unobserved extreme wind scenarios. This makes it possible to study rare-event quantities that are difficult to estimate directly from the historical sample, such as long-horizon return levels and spatially clustered extreme wind episodes.
+
+Together, these two simulation layers provide both methodological validation and practically relevant risk quantification.
+
+\section*{Feasibility and scope}
+The baseline version of the thesis consists of: (i) functional representation of 10-minute wind curves, (ii) EVT for event-level wind hazard summaries, and (iii) a structured dependence model over the KNMI station network. This already provides a complete and methodologically substantial framework.
+
+To keep the project feasible, the emphasis will remain on this baseline specification. A dynamic extension will only be considered if the baseline model is operational and the dependence analysis over the full station network is stable. Similarly, although the framework could in principle be extended to include additional non-wind variables, the core thesis will focus on wind-related characteristics already available in the dataset.
+
+\section*{Preliminary timeline}
+\begin{itemize}
+    \item \textbf{Weeks 1--2:} literature review, raw data review, and event definition.
+    \item \textbf{Weeks 3--4:} functional preprocessing, smoothing choices, FPCA, and exploratory analysis.
+    \item \textbf{Weeks 5--6:} marginal extreme-value modelling and threshold selection.
+    \item \textbf{Weeks 7--8:} dependence specification, estimation, inference.
+    \item \textbf{Weeks 9--10:} simulation study and evaluation of tail and dependence recovery, inference.
+    \item \textbf{Weeks 11--12:} writing, revision, and implementation of feedback.
+\end{itemize}
+
+\vspace{0.2em}
+{\small \textbf{References:} Claassen et al. (2025); Friedrich and Lin (2024); Ramsay and Silverman (2005); Yeon et al. (2023).}
 \end{document}

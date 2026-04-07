@@ -1,0 +1,21 @@
+
+\section*{Proposed Methodology}
+\textbf{1. Event extraction.} Rather than treating every day as one functional observation, I will first identify windstorm events using a threshold-based and declustered event definition. This allows the functional object to correspond directly to the phenomenon of interest.
+
+\textbf{2. Functional representation.} For each event, the 10-minute wind trajectory will be represented as a curve over the event window, smoothed using basis functions such as B-splines or Fourier bases. Functional principal component analysis (FPCA) will then be used to extract dominant modes of storm shape variation.
+
+\textbf{3. Extreme value modelling.} EVT will be applied to interpretable event summaries such as peak wind speed, event duration, and integrated exceedance (a measure of cumulative storm severity). Peaks-over-threshold will be the leading approach, with block maxima used as a benchmark if useful.
+
+\textbf{4. Dependence modelling.} Copula-based models will be used to capture dependence between event characteristics, and possibly across a small number of stations. A static copula specification will serve as the baseline model. If time permits, I will explore whether time-varying or score-driven dependence improves fit or predictive performance.
+
+\section*{Simulation Study and Empirical Strategy}
+A simulation study will be conducted before the final empirical analysis. The purpose is to control the data-generating process, evaluate finite-sample inference, and test whether the proposed framework can recover tail and dependence parameters.
+
+The simulation study will proceed in two stages:
+\begin{itemize}
+    \item \textbf{Stage 1:} simulate event-level severity measures with known marginal tails and a known copula, to validate EVT and dependence estimation;
+    \item \textbf{Stage 2:} simulate storm-event curves using a basis-expansion or FPCA-style construction, then map them to event summaries and test the full pipeline.
+\end{itemize}
+
+The validated framework will then be applied to the KNMI data to estimate joint exceedance probabilities, return levels, and realistic extreme-event scenarios for selected Dutch locations.
+
