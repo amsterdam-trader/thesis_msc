@@ -3,3 +3,10 @@ src/ThesisTemplatePythonProject.egg-info/PKG-INFO
 src/ThesisTemplatePythonProject.egg-info/SOURCES.txt
 src/ThesisTemplatePythonProject.egg-info/dependency_links.txt
 src/ThesisTemplatePythonProject.egg-info/top_level.txt
+src/evt/__init__.py
+src/evt/data_loader.py
+src/evt/fitting.py
+src/evt/plotting.py
+src/knmi_download/api_connection.py
+src/knmi_download/download_full_dataset.py
+src/knmi_download/download_single_file.py

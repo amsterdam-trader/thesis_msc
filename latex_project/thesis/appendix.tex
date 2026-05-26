@@ -1,0 +1,123 @@
+\appendix
+
+\section*{List of KNMI Stations}\label{app:knmi-stations}
+
+\noindent
+\input{template/knmi_station_numbering.tex}
+
+\newpage
+
+\section*{List of KNMI Variables}\label{app:knmi-vars}
+
+\vspace{0.3em}
+\setlength{\LTleft}{0pt}
+\setlength{\LTright}{0pt}
+\footnotesize
+\begin{longtable}{p{0.10\textwidth}p{0.70\textwidth}p{0.15\textwidth}}
+    \caption{KNMI 10-minute variables, descriptions, and units.}\label{tab:knmi-vars}                                          \\
+    \toprule
+    Variable        & Description                                                                    & Unit                    \\
+    \midrule
+    \endfirsthead
+    \toprule
+    Variable        & Description                                                                    & Unit                    \\
+    \midrule
+    \endhead
+    \midrule
+    \multicolumn{3}{r}{Continued on next page}                                                                                 \\
+    \endfoot
+    \bottomrule
+    \endlastfoot
+    \texttt{D1H}    & Past hour rainfall duration                                                    & min                     \\
+    \texttt{dd}     & Past 10-minute mean wind direction at sensor height                            & degree                  \\
+    \texttt{dn}     & Past 10-minute minimum wind direction at sensor height                         & degree                  \\
+    \texttt{dr}     & Past 10-minute duration of precipitation measured by rain gauge                & s                       \\
+    \texttt{dsd}    & Past 10-minute standard deviation of wind direction at sensor height           & degree                  \\
+    \texttt{dx}     & Past 10-minute maximum wind direction at sensor height                         & degree                  \\
+    \texttt{ff}     & Past 10-minute mean wind speed, representative for 10 meter                    & m/s                     \\
+    \texttt{ffs}    & Past 10-minute mean wind speed at sensor height                                & m/s                     \\
+    \texttt{fsd}    & Past 10-minute standard deviation of wind speed at sensor height               & m/s                     \\
+    \texttt{fx}     & Past 10-minute maximum wind gust, representative for 10 meter                  & m/s                     \\
+    \texttt{fxs}    & Past 10-minute maximum wind gust at sensor height                              & m/s                     \\
+    \texttt{gff}    & Past 10-minute maximum wind gust, representative for 10 meter                  & m/s                     \\
+    \texttt{gffs}   & Past 10-minute maximum wind gust at sensor height                              & m/s                     \\
+    \texttt{h}      & Past 30-minute cloud base altitude                                             & ft                      \\
+    \texttt{h1}     & Past 30-minute first-layer cloud base altitude                                 & ft                      \\
+    \texttt{h2}     & Past 30-minute second-layer cloud base altitude                                & ft                      \\
+    \texttt{h3}     & Past 30-minute third-layer cloud base altitude                                 & ft                      \\
+    \texttt{hc}     & Past 30-minute cloud base ceilometer                                           & ft                      \\
+    \texttt{hc1}    & Past 30-minute first-layer cloud base ceilometer                               & ft                      \\
+    \texttt{hc2}    & Past 30-minute second-layer cloud base ceilometer                              & ft                      \\
+    \texttt{hc3}    & Past 30-minute third-layer cloud base ceilometer                               & ft                      \\
+    \texttt{n}      & Past 30-minute total cloud cover                                               & okta                    \\
+    \texttt{n1}     & Past 30-minute first-layer cloud amount                                        & okta                    \\
+    \texttt{n2}     & Past 30-minute second-layer cloud amount                                       & okta                    \\
+    \texttt{n3}     & Past 30-minute third-layer cloud amount                                        & okta                    \\
+    \texttt{nc}     & Past 30-minute total cloud cover ceilometer                                    & okta                    \\
+    \texttt{nc1}    & Past 30-minute first-layer cloud amount ceilometer                             & okta                    \\
+    \texttt{nc2}    & Past 30-minute second-layer cloud amount ceilometer                            & okta                    \\
+    \texttt{nc3}    & Past 30-minute third-layer cloud amount ceilometer                             & okta                    \\
+    \texttt{nhc}    & Past 30-minute low and middle cloud amount ceilometer                          & okta                    \\
+    \texttt{p0}     & Past minute mean air pressure at station level                                 & hPa                     \\
+    \texttt{pg}     & Past 10-minute mean precipitation intensity measured by present weather sensor & mm/h                    \\
+    \texttt{pp}     & Past minute mean air pressure at mean sea level                                & hPa                     \\
+    \texttt{pr}     & Past 10-minute duration of precipitation measured by present weather sensor    & s                       \\
+    \texttt{ps}     & Past 10-minute mean air pressure at sensor level                               & hPa                     \\
+    \texttt{pwc}    & Past 10-minute corrected maximum precipitation type code                       & code                    \\
+    \texttt{Q1H}    & Past hour sum of global solar radiation                                        & J/cm\textsuperscript{2} \\
+    \texttt{Q24H}   & Past 24-hour sum of global solar radiation                                     & J/cm\textsuperscript{2} \\
+    \texttt{qg}     & Past 10-minute mean global solar radiation                                     & W/m\textsuperscript{2}  \\
+    \texttt{qgn}    & Past 10-minute minimum global solar radiation                                  & W/m\textsuperscript{2}  \\
+    \texttt{qgx}    & Past 10-minute maximum global solar radiation                                  & W/m\textsuperscript{2}  \\
+    \texttt{qnh}    & Past minute mean QNH                                                           & hPa                     \\
+    \texttt{R12H}   & Past 12-hour rainfall                                                          & mm                      \\
+    \texttt{R1H}    & Past hour rainfall                                                             & mm                      \\
+    \texttt{R24H}   & Past 24-hour rainfall                                                          & mm                      \\
+    \texttt{R6H}    & Past 6-hour rainfall                                                           & mm                      \\
+    \texttt{rg}     & Past 10-minute mean precipitation intensity measured by rain gauge             & mm/h                    \\
+    \texttt{rh}     & Past minute mean relative humidity at 1.50 m                                   & \%                      \\
+    \texttt{rh10}   & 10-minute mean relative humidity                                               & \%                      \\
+    \texttt{Sav1H}  & Past hour mean wind speed                                                      & m/s                     \\
+    \texttt{Sax1H}  & Past hour maximum wind speed                                                   & m/s                     \\
+    \texttt{Sax3H}  & Past 3-hour maximum wind speed                                                 & m/s                     \\
+    \texttt{Sax6H}  & Past 6-hour maximum wind speed                                                 & m/s                     \\
+    \texttt{sq}     & Past 10-minute squall indicator                                                & indicator               \\
+    \texttt{ss}     & Past 10-minute duration of sunshine                                            & min                     \\
+    \texttt{Sx1H}   & Past hour maximum wind gust                                                    & m/s                     \\
+    \texttt{Sx3H}   & Past 3-hour maximum wind gust                                                  & m/s                     \\
+    \texttt{Sx6H}   & Past 6-hour maximum wind gust                                                  & m/s                     \\
+    \texttt{t10}    & 10-minute mean air temperature                                                 & $^\circ$C               \\
+    \texttt{ta}     & Past minute mean air temperature at 1.50 m                                     & $^\circ$C               \\
+    \texttt{tb}     & Past 10-minute mean wet bulb temperature at 1.50 m                             & $^\circ$C               \\
+    \texttt{tb1}    & Past 10-minute mean soil temperature at -5 cm                                  & $^\circ$C               \\
+    \texttt{Tb1n6}  & Past 6-hour minimum soil temperature at -5 cm                                  & $^\circ$C               \\
+    \texttt{Tb1x6}  & Past 6-hour maximum soil temperature at -5 cm                                  & $^\circ$C               \\
+    \texttt{tb2}    & Past 10-minute mean soil temperature at -10 cm                                 & $^\circ$C               \\
+    \texttt{Tb2n6}  & Past 6-hour minimum soil temperature at -10 cm                                 & $^\circ$C               \\
+    \texttt{Tb2x6}  & Past 6-hour maximum soil temperature at -10 cm                                 & $^\circ$C               \\
+    \texttt{tb3}    & Past 10-minute mean soil temperature at -20 cm                                 & $^\circ$C               \\
+    \texttt{tb4}    & Past 10-minute mean soil temperature at -50 cm                                 & $^\circ$C               \\
+    \texttt{tb5}    & Past 10-minute mean soil temperature at -100 cm                                & $^\circ$C               \\
+    \texttt{td}     & Past minute mean dew point temperature at 1.50 m                               & $^\circ$C               \\
+    \texttt{td10}   & 10-minute mean dew point temperature                                           & $^\circ$C               \\
+    \texttt{tgn}    & Past 10-minute minimum air temperature at 10 cm                                & $^\circ$C               \\
+    \texttt{Tgn12}  & Past 12-hour minimum air temperature at 10 cm                                  & $^\circ$C               \\
+    \texttt{Tgn14}  & Past 14-hour minimum air temperature at 10 cm                                  & $^\circ$C               \\
+    \texttt{Tgn6}   & Past 6-hour minimum air temperature at 10 cm                                   & $^\circ$C               \\
+    \texttt{tn}     & Past 10-minute minimum air temperature at 1.50 m                               & $^\circ$C               \\
+    \texttt{Tn12}   & Past 12-hour minimum air temperature at 1.50 m                                 & $^\circ$C               \\
+    \texttt{Tn14}   & Past 14-hour minimum air temperature at 1.50 m                                 & $^\circ$C               \\
+    \texttt{Tn6}    & Past 6-hour minimum air temperature at 1.50 m                                  & $^\circ$C               \\
+    \texttt{tsd}    & Past 10-minute standard deviation of air temperature at 1.50 m                 & $^\circ$C               \\
+    \texttt{tx}     & Past 10-minute maximum air temperature at 1.50 m                               & $^\circ$C               \\
+    \texttt{Tx12}   & Past 12-hour maximum air temperature at 1.50 m                                 & $^\circ$C               \\
+    \texttt{Tx24}   & Past 24-hour maximum air temperature at 1.50 m                                 & $^\circ$C               \\
+    \texttt{Tx6}    & Past 6-hour maximum air temperature at 1.50 m                                  & $^\circ$C               \\
+    \texttt{vv}     & Past 10-minute mean horizontal visibility                                      & m                       \\
+    \texttt{W10}    & Past 10-minute past weather indicator code                                     & code                    \\
+    \texttt{W10-10} & Previous 10-minute interval past weather indicator code                        & code                    \\
+    \texttt{ww}     & Past 10-minute WaWa weather code                                               & code                    \\
+    \texttt{ww-10}  & Previous 10-minute interval WaWa weather code                                  & code                    \\
+    \texttt{za}     & Past 10-minute mean background luminance                                       & cd/m\textsuperscript{2} \\
+    \texttt{zm}     & Past 10-minute mean meteorological optical range                               & m                       \\
+\end{longtable}

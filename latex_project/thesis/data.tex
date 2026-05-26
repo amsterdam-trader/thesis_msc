@@ -1,0 +1,67 @@
+\section{Data description}\label{sec:data-description}
+
+Our empirical application for the proposed methodology, we use the dataset \emph{Near real-time 10-minute automated in-situ ground-based meteorological surface observations in the Netherlands}. This is an ongoing dataset from the Royal Netherlands Meteorological Institute (KNMI). The dataset contains 10-minute observations from automatic weather stations in the Netherlands and the Caribbean islands that belong to the Dutch kingdom. The empirical analysis in this thesis focuses on the Dutch stations. Observations are stored in NetCDF format and reported at a \SI{10}{\min} frequency. Each file corresponds to the 10-minute interval immediately preceding the timestamp in the filename. The KNMI documentation further notes that the archive should be interpreted as a history of the near-real-time product: it is unvalidated, may be incomplete, and missing observations can still be updated for up to seven days after first publication.
+
+We chose this dataset because of its combination of high temporal resolution and broad spatial coverage. The observing network consists of land-based stations, sea stations and airport stations. The stations are part of the WMO Integrated Global Observing System, and the station metadata include at least the station identifier, station name, latitude, longitude, and height. Since the network has changed over time, not all stations are observed over the full sample period. Stations have been added to and removed from the network since the start of the archive in 2012, so the panel is unbalanced in the cross-sectional dimension.
+
+Let $i \in \{1,\dots,N_t\}$ index stations and let $t$ index 10-minute timestamps. For station $i$ and time $t$, let
+\[
+    \mathbf{Z}_{i,t} = \bigl(Z^{(1)}_{i,t},\dots,Z^{(p)}_{i,t}\bigr)^{\prime}
+\]
+denote the vector of observed meteorological variables. In the downloaded files, the coordinate dimensions are \texttt{station} and \texttt{time}. In addition to the meteorological variables, the files contain station-level metadata variables such as \texttt{stationname}, \texttt{lat}, \texttt{lon}, \texttt{height}, as well as product descriptors such as \texttt{product} and \texttt{projection}. For the present thesis, the primary variables of interest are the wind-related measurements, especially mean wind speed (\texttt{ff}), maximum gust over the last 10 minutes (\texttt{gff}), gust-related maxima over longer windows, and wind direction variables. These are complemented by precipitation, temperature, pressure, humidity, visibility, cloud-cover, and radiation variables.
+
+For a fixed station $i$ and calendar day $d$, the 10-minute observations can be collected into an intraday curve
+\[
+    X_{i,d}(u), \qquad u \in [0,1],
+\]
+where $u$ denotes clock time within the day. Since 24 hours contain 144 non-overlapping 10-minute intervals, each daily curve is observed on a dense regular grid. This makes it natural to interpret the series not merely as a vector of 144 measurements, but as a discretely observed realization of an underlying smooth stochastic process. In the terminology of functional data analysis, the raw observations are first viewed as noisy measurements of a latent curve, after which smoothing and basis expansion methods can be used to obtain a functional representation. For non-periodic event windows, B-spline bases are a natural candidate, whereas Fourier bases are more attractive when periodicity over the daily cycle is of primary interest.
+
+The high-frequency nature of the dataset is essential for the present application. Extreme wind hazard is not adequately summarized by a single daily or hourly maximum, because damage potential may depend not only on the peak level of wind, but also on within-event duration, persistence, ramp-up and ramp-down behaviour, and the joint occurrence of strong gusts, precipitation, or other meteorological conditions. The 10-minute KNMI observations preserve this intraday temporal structure and therefore allow the construction of event curves rather than only scalar block summaries.
+
+A second important feature is the spatial dimension. Let $\mathcal{S}_t$ denote the set of active stations at time $t$. Then each day produces a cross-section of curves
+\[
+    \{X_{i,d}(\cdot): i \in \mathcal{S}_d\},
+\]
+which can be used to study spatial heterogeneity and cross-station dependence in both ordinary and extreme conditions. Because station coverage changes over time, empirical implementation requires careful bookkeeping of station availability and possibly restricting parts of the analysis to a balanced subset or using methods that can accommodate an unbalanced panel.
+
+The KNMI documentation also emphasizes several practical measurement issues that are relevant for empirical work. First, not all stations measure all variables. Second, some wind variables are reported as measurements at sensor height, whereas others are adjusted to be representative for \SI{10}{\meter}. Third, some timestamps are aligned to the middle rather than the end of the relevant aggregation interval for specific variables. Finally, a subset of wind variables is marked by the ``Marked Discontinuity'' convention, implying that abrupt changes in the recent 2-minute average may alter the effective aggregation window used by KNMI. These features should be taken into account during preprocessing, especially when combining variables or comparing stations.
+
+Table~\ref{tab:knmi-variable-groups} summarizes the composition of the downloaded dataset at a high level. A full variable inventory with descriptions and units is reported in Appendix~\ref{appendix:app:knmi-vars}.
+
+\begin{table}[htbp]
+    \centering
+    \caption{High-level composition of the KNMI 10-minute dataset used in this thesis.}
+    \label{tab:knmi-variable-groups}
+    \begin{tabular}{lcl}
+        \toprule
+        Category                            & Count & Examples                                                                        \\
+        \midrule
+        Temperature variables               & 28    & \texttt{ta}, \texttt{t10}, \texttt{tx}, \texttt{tn}, \texttt{tb1}, \texttt{tb2} \\
+        Wind variables                      & 19    & \texttt{ff}, \texttt{gff}, \texttt{fx}, \texttt{dd}, \texttt{dn}, \texttt{dx}   \\
+        Cloud variables                     & 17    & \texttt{n}, \texttt{n1}, \texttt{h}, \texttt{hc}, \texttt{nc}                   \\
+        Precipitation variables             & 10    & \texttt{dr}, \texttt{rg}, \texttt{pg}, \texttt{R1H}, \texttt{R24H}              \\
+        Visibility / weather-code variables & 7     & \texttt{vv}, \texttt{zm}, \texttt{za}, \texttt{ww}, \texttt{pwc}                \\
+        Solar radiation variables           & 6     & \texttt{qg}, \texttt{qgn}, \texttt{qgx}, \texttt{Q1H}                           \\
+        Air pressure variables              & 4     & \texttt{p0}, \texttt{pp}, \texttt{ps}, \texttt{qnh}                             \\
+        Humidity variables                  & 2     & \texttt{rh}, \texttt{rh10}                                                      \\
+        Metadata variables                  & 6     & \texttt{stationname}, \texttt{lat}, \texttt{lon}, \texttt{height}               \\
+        Coordinates                         & 2     & \texttt{station}, \texttt{time}                                                 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Figure~\ref{fig:knmi-stations} displays the locations of the KNMI stations used in the dataset. Mapping the station network is useful for assessing coastal exposure, the coverage of inland regions, and the spatial distribution of wind-related observations over the Netherlands. In the empirical analysis, such station metadata can also be used to group stations by geography, coastal proximity, or measurement environment.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{./figures/knmi_stations_map.png}
+    \caption{Locations of KNMI automatic weather stations in the Netherlands.}
+    \label{fig:knmi-stations}
+\end{figure}
+
+\noindent
+The station numbering in the map corresponds to the \texttt{map\_id} variable in the station metadata, which is assigned in ascending order of station name. A full inventory of station names and their corresponding map numbers is provided in Table~\ref{tab:knmi_station_numbers} in Appendix~\ref{appendix:knmi-stations}.
+
+Overall, the KNMI 10-minute station data provide precisely the type of information needed for a methodological thesis on extreme wind events: a dense within-day time grid, rich multivariate meteorological content, and broad spatial coverage. These features make the dataset well suited for a pipeline in which event windows are extracted from high-frequency observations, represented as functional objects, reduced to a low-dimensional score representation, and subsequently analysed using extreme-value and dependence models.
+
+A full inventory of meteorological variables is provided in Appendix~\ref{appendix:knmi-vars}.

@@ -1,0 +1,134 @@
+\section{Raw-Data EVT Baseline Methodology}
+\label{sec:methodology_evt}
+
+This section describes the classical peaks-over-threshold framework applied as a univariate, per-station baseline against which functional and dependence extensions are measured.
+
+\subsection{Research Question and Scope}
+
+The baseline analysis addresses a deliberately narrowed research question:
+\begin{quote}
+Using raw 10-minute KNMI wind observations for the calendar year 2014, how well can a classical peaks-over-threshold (POT) framework, applied at the single-station level, characterize the upper-tail behaviour of wind speed and wind gusts in the Netherlands?
+\end{quote}
+
+This is narrower than the thesis question: it fixes one year (2014) rather than the full 2012--2026 window, one resolution (native 10-minute) rather than event-level curves, one modelling paradigm (univariate POT per station), and two observables (\texttt{ff} mean 10-min wind, \texttt{gff} 10-min peak gust). The purpose is to establish a \emph{reference point} against which any more elaborate model must demonstrably improve.
+
+\subsection{Theoretical Foundation}
+
+The Generalized Pareto Distribution (GPD) is the standard statistical model for exceedances over a high threshold. Under mild regularity conditions (Pickands 1975; Balkema and de Haan 1974), the GPD is the unique non-degenerate limit distribution for scaled excesses:
+
+\[
+P(X - u \leq x \mid X > u) \approx G_{\xi, \sigma}(x) \quad \text{as} \quad u \to \infty
+\]
+
+where $G_{\xi, \sigma}$ has the form:
+\[
+G_{\xi, \sigma}(x) = \begin{cases}
+1 - \left(1 + \frac{\xi x}{\sigma}\right)^{-1/\xi} & \text{if } \xi \neq 0 \\
+1 - \exp\left(-\frac{x}{\sigma}\right) & \text{if } \xi = 0
+\end{cases}
+\]
+
+with shape parameter $\xi$ and scale parameter $\sigma > 0$.
+
+\subsection{Data and Variables}
+
+\begin{itemize}
+  \item \textbf{Temporal coverage:} Calendar year 2014; native 10-minute time grid.
+  \item \textbf{Stations:} All 66 KNMI stations in the NetCDF panel; results reported for a readable subset of $\approx 10$ stations spanning coastal, inland, and offshore contexts.
+  \item \textbf{Variables:} 
+    \begin{enumerate}
+      \item $\texttt{ff}$ --- 10-minute mean wind speed (m/s); 98\% coverage.
+      \item $\texttt{gff}$ --- 10-minute peak gust (m/s); 98\% coverage.
+      \item $\texttt{dd}$ --- wind direction (degrees); kept in dataset but not used in marginal fits.
+    \end{enumerate}
+  \item \textbf{Missing data:} NetCDF NaN values preserved; missing rows logged and dropped before threshold selection.
+\end{itemize}
+
+\subsection{Threshold Selection}
+
+Rather than optimize the threshold, we fix it via quantile rules and report threshold sensitivity explicitly:
+\[
+u_p = F^{-1}(p) \quad \text{where} \quad p \in \{0.95, 0.99\}
+\]
+
+Mean residual life (MRL) and parameter-stability plots are produced per station so that the threshold choice is transparent: the reader can visually assess whether the 95th and 99th percentile choices land on a plausibly linear (MRL) or flat (parameter-stability) region. This exposes rather than hides threshold sensitivity.
+
+\subsection{Declustering}
+
+Exceedances cluster strongly in time on the 10-minute grid. To account for short-range dependence before fitting the GPD, we apply runs declustering (Smith and Weissman 1994):
+
+\begin{enumerate}
+  \item Identify runs of consecutive exceedances with run length $r = 3$ (i.e., 30 minutes).
+  \item Within each run, retain only the maximum exceedance; discard others.
+  \item Apply maximum-likelihood GPD fit only to the declustered cluster maxima.
+\end{enumerate}
+
+The declustering parameter $r$ is reported and is diagnosable. Cluster maxima, rather than all exceedances, enter the likelihood.
+
+\subsection{Extremal Index Estimation}
+
+The extremal index $\theta \in [0, 1]$ quantifies the asymptotic dependence of exceedances:
+\[
+\theta = \lim_{u \to \infty} P(M_n \leq u \mid M_1 > u)
+\]
+
+where $M_n$ is the block maximum. We estimate $\theta$ using the Ferro--Segers (2003) intervals estimator applied to \emph{raw} (un-declustered) exceedance times:
+  
+\[
+\hat{\theta}_{\text{FS}} = \frac{2 \sum_i (t_i - t_{i-1} - 1)^2}{\left(\sum_i (t_i - t_{i-1} - 1)\right)^2}
+\]
+
+where $t_i$ are successive exceedance times. This is a closed-form estimator that requires no auxiliary threshold for interexceedance times. $\theta = 1$ indicates independence; $\theta \ll 1$ indicates strong clustering.
+
+\subsection{Return Level Estimation}
+
+The $m$-observation return level (the level exceeded on average once every $m$ observations) is estimated from the fitted GPD and corrected by the extremal index (Coles 2001, \S 4.3):
+
+\[
+\hat{r}_m = u + \frac{\hat{\sigma}}{\hat{\xi}} \left[\left(\frac{m \cdot \hat{\zeta}}{\hat{\theta}}\right)^{\hat{\xi}} - 1\right]
+\]
+
+where $\hat{\zeta}$ is the empirical exceedance rate (fraction of observations above $u$), and $\hat{\theta}$ is the Ferro--Segers estimate. The correction by $\theta$ accounts for clustering: under independence, $\theta = 1$; under clustering ($\theta < 1$), the return level is adjusted upward.
+
+For the baseline, we report the 1-year return level:
+\[
+\hat{r}_{52560} = \text{return level at } m = 52560 \text{ (approximately 10-min observations in one year)}
+\]
+
+\subsection{Methodological Choices Summary}
+
+\begin{table}[h]
+\centering
+\caption{Summary of deliberate choices in the raw-data POT baseline.}
+\label{tab:pot_choices}
+\begin{tabular}{lll}
+\toprule
+\textbf{Choice} & \textbf{Value} & \textbf{Rationale} \\
+\midrule
+Year & 2014 only & Fixes reference point; keeps pipeline inspectable \\
+Resolution & Native 10 min & No hidden aggregation \\
+Spatial scope & Per station (not pooled) & Isolates marginal from dependence question \\
+Threshold & 95th and 99th percentile & Sensitivity reported, not optimized \\
+Declustering & Runs, $r = 3$ (30 min) & Simple, interpretable, standard \\
+Extremal index & Ferro--Segers intervals & Closed-form; no auxiliary threshold needed \\
+Return level & 1-year, corrected by $\theta$ & Follows Coles (2001) \\
+Stations reported & $\approx 10$ land/coastal/offshore & Readable plots; full panel processed upstream \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Outputs and Diagnostics}
+
+For each (station, variable, quantile) combination, the benchmark produces:
+\begin{enumerate}
+  \item \textbf{Summary parameters:} shape $\hat{\xi}$, scale $\hat{\sigma}$, raw and declustered exceedance rates $\hat{\zeta}$, extremal index $\hat{\theta}$, and 1-year return level $\hat{r}_{1\text{yr}}$.
+  \item \textbf{Diagnostic plots:}
+    \begin{itemize}
+      \item Mean residual life plot with $\pm 2\,\text{SE}$ band.
+      \item Parameter-stability plot (modified scale and shape vs.~threshold).
+      \item GPD probability--probability (PP) and quantile--quantile (QQ) plots.
+      \item Time series overlaid with threshold and flagged exceedances.
+    \end{itemize}
+\end{enumerate}
+
+The diagnostic plots allow visual inspection of model adequacy without relying on formal hypothesis tests.

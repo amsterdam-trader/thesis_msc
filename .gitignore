@@ -1,0 +1,15 @@
+data/
+.env
+.venv/
+.venv-1/
+.vscode/
+.devcontainer/
+*.gz
+.ipynb_checkpoints/
+__pycache__/
+*.log
+*.aux
+*.out
+*.toc
+C:\Users\floris\Desktop\MSC\thesis_msc\latex_project\proposal-main.log
+literature

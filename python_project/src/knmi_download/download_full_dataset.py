@@ -2,7 +2,8 @@ import asyncio
 import json
 import logging
 import os
-from concurrent.futures import ThreadPoolExecutor
+import threading
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Any
 import time
@@ -12,14 +13,41 @@ from requests import Session
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
+
+class RateLimiter:
+    """Thread-safe rate limiter that caps the global call rate to ``max_per_second``.
+
+    Each ``acquire()`` call reserves the next slot and sleeps if the caller
+    is ahead of schedule, so N worker threads sharing one limiter will not
+    exceed the target rate in aggregate.
+    """
+
+    def __init__(self, max_per_second: float):
+        self.min_interval = 1.0 / max_per_second
+        self._lock = threading.Lock()
+        self._next_allowed = time.monotonic()
+
+    def acquire(self):
+        with self._lock:
+            now = time.monotonic()
+            wait = self._next_allowed - now
+            self._next_allowed = max(now, self._next_allowed) + self.min_interval
+        if wait > 0:
+            time.sleep(wait)
+
 logging.basicConfig()
 logger = logging.getLogger(__name__)
 logger.setLevel(os.environ.get("LOG_LEVEL", logging.INFO))
 
 
 # Configure session with automatic retries
-def create_resilient_session(token: str = None, max_retries: int = 3) -> Session:
-    """Create a requests session with built-in retry and timeout handling."""
+def create_resilient_session(token: str = None, max_retries: int = 3, pool_size: int = 128) -> Session:
+    """Create a requests session with built-in retry and timeout handling.
+
+    ``pool_size`` controls the urllib3 connection pool; it must be at least
+    as large as the number of concurrent download workers to avoid
+    "Connection pool is full" warnings and serialized requests.
+    """
     session = Session()
 
     # Retry strategy: exponential backoff on connection errors and timeouts
@@ -30,7 +58,11 @@ def create_resilient_session(token: str = None, max_retries: int = 3) -> Session
         backoff_factor=1,  # 1s, 2s, 4s... exponential backoff
     )
 
-    adapter = HTTPAdapter(max_retries=retry_strategy)
+    adapter = HTTPAdapter(
+        max_retries=retry_strategy,
+        pool_connections=pool_size,
+        pool_maxsize=pool_size,
+    )
     session.mount("http://", adapter)
     session.mount("https://", adapter)
 
@@ -56,7 +88,7 @@ def download_dataset_file(
     # if a file from this dataset already exists, skip downloading it.
     file_path = Path(directory, filename).resolve()
     if not overwrite and file_path.exists():
-        logger.info(f"Dataset file '{filename}' was already downloaded.")
+        logger.debug(f"Dataset file '{filename}' was already downloaded.")
         return True, filename
 
     endpoint = f"{base_url}/datasets/{dataset_name}/versions/{dataset_version}/files/{filename}/url"
@@ -99,7 +131,7 @@ def download_file_from_temporary_download_url(download_url, directory, filename,
                     for chunk in r.iter_content(chunk_size=8192):
                         if chunk:
                             f.write(chunk)
-            logger.info(f"Downloaded dataset file '{filename}'")
+            logger.debug(f"Downloaded dataset file '{filename}'")
             return True, filename
         except (requests.ConnectionError, requests.Timeout) as e:
             if attempt < max_retries - 1:
@@ -129,7 +161,9 @@ def list_dataset_files(
     list_files_response = session.get(list_files_endpoint, params=params)
 
     if list_files_response.status_code != 200:
-        raise Exception("Unable to list initial dataset files")
+        raise Exception(
+            f"Unable to list dataset files: {list_files_response.status_code} {list_files_response.text}"
+        )
 
     try:
         list_files_response_json = list_files_response.json()
@@ -149,16 +183,25 @@ def parse_file_utc_timestamp(filename: str):
     import re
     from datetime import datetime, timezone
 
-    # Match 4-digit year + 2-digit month + 2-digit day + 2-digit hour + 2-digit minute before .nc
+    # Try 10-min format: YYYYMMDDHHMM.nc
     m = re.search(r"(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})\.nc$", filename)
-    if m is None:
-        return None
-    year, month, day, hour, minute = m.groups()
-    try:
-        return datetime(int(year), int(month), int(day), int(hour), int(minute), tzinfo=timezone.utc)
-    except ValueError:
-        # Invalid date values
-        return None
+    if m is not None:
+        year, month, day, hour, minute = m.groups()
+        try:
+            return datetime(int(year), int(month), int(day), int(hour), int(minute), tzinfo=timezone.utc)
+        except ValueError:
+            return None
+
+    # Try hourly format: YYYYMMDD-HH.nc
+    m = re.search(r"(\d{4})(\d{2})(\d{2})-(\d{2})\.nc$", filename)
+    if m is not None:
+        year, month, day, hour = m.groups()
+        try:
+            return datetime(int(year), int(month), int(day), int(hour), 0, tzinfo=timezone.utc)
+        except ValueError:
+            return None
+
+    return None
 
 
 def compute_local_filepath(dataset_name: str, filename: str, base_target: str = "D:/thesis"):
@@ -169,6 +212,61 @@ def compute_local_filepath(dataset_name: str, filename: str, base_target: str = 
     return dir_path, dir_path / filename
 
 
+def _list_filenames_in_range(
+    session: Session,
+    base_url: str,
+    dataset_name: str,
+    dataset_version: str,
+    start_datetime,
+    end_datetime,
+    max_keys: int = 1000,
+) -> list[str]:
+    """List all filenames whose parsed timestamp falls in [start, end].
+
+    Uses the KNMI ``begin`` query param for server-side filtering and stops
+    paginating as soon as a file past ``end_datetime`` is seen (files are
+    returned in ascending ``created`` order).
+    """
+    next_page_token = None
+    begin_timestamp = start_datetime.isoformat()
+    collected: list[str] = []
+    pages = 0
+
+    while True:
+        params = {
+            "maxKeys": str(max_keys),
+            "orderBy": "created",
+            "begin": begin_timestamp,
+        }
+        if next_page_token:
+            params["nextPageToken"] = next_page_token
+
+        filenames, resp_json = list_dataset_files(session, base_url, dataset_name, dataset_version, params)
+        pages += 1
+
+        reached_end = False
+        for filename in filenames:
+            dt = parse_file_utc_timestamp(filename)
+            if dt is None:
+                continue
+            if dt > end_datetime:
+                reached_end = True
+                break
+            if dt >= start_datetime:
+                collected.append(filename)
+
+        if pages % 10 == 0:
+            logger.info(f"Listing progress: {pages} pages, {len(collected)} files collected so far")
+
+        if reached_end:
+            break
+        next_page_token = resp_json.get("nextPageToken")
+        if not next_page_token:
+            break
+
+    return collected
+
+
 def download_files_date_range(
     session: Session,
     base_url: str,
@@ -177,88 +275,119 @@ def download_files_date_range(
     start_datetime,
     end_datetime,
     base_target: str = "D:/thesis",
-    max_keys: int = 50,
+    max_keys: int = 1000,
     overwrite: bool = False,
     resume: bool = True,
+    max_workers: int = 50,
+    rate_limit_per_sec: float = 90.0,
 ):
+    """List files for ``[start_datetime, end_datetime]`` then download in parallel.
+
+    Parallelism is capped by a shared ``RateLimiter`` so the aggregate KNMI
+    API call rate stays below ``rate_limit_per_sec`` (default 90 req/s,
+    leaving headroom below the 100 req/s published limit). Increase
+    ``max_workers`` if downloads (the S3 fetch, not rate-limited) become
+    the bottleneck.
+    """
     if start_datetime.tzinfo is None or end_datetime.tzinfo is None:
         raise ValueError("start_datetime and end_datetime must be timezone-aware (UTC)")
 
-    next_page_token = None
-    downloaded = []
-
-    # Format start_datetime for API 'begin' parameter (ISO 8601 format)
-    begin_timestamp = start_datetime.isoformat()
-
-    # Load progress if resuming
     progress_key = f"{dataset_name}_{start_datetime.date()}_{end_datetime.date()}"
+
+    # Phase 1: enumerate all filenames in the requested range.
+    logger.info(f"Listing files for {dataset_name} between {start_datetime} and {end_datetime}...")
+    filenames_in_range = _list_filenames_in_range(
+        session, base_url, dataset_name, dataset_version,
+        start_datetime, end_datetime, max_keys=max_keys,
+    )
+    logger.info(f"Found {len(filenames_in_range)} files in range")
+
+    # Phase 2: figure out what still needs downloading.
+    already_downloaded = _scan_downloaded_files(base_target, dataset_name) if resume else set()
     progress = _load_progress(base_target, progress_key) if resume else {"downloaded": [], "failed": []}
-    downloaded_set = set(progress.get("downloaded", []))
     failed_set = set(progress.get("failed", []))
 
-    if len(downloaded_set) > 0:
-        logger.info(f"Resuming date range download: {len(downloaded_set)} already downloaded")
-
-    while True:
-        # Use 'begin' parameter to filter files server-side, starting from start_datetime
-        params = {
-            "maxKeys": f"{max_keys}",
-            "orderBy": "created",
-            "begin": begin_timestamp,
-        }
-        if next_page_token:
-            params["nextPageToken"] = next_page_token
-
-        filenames, resp_json = list_dataset_files(session, base_url, dataset_name, dataset_version, params)
-
-        for i, filename in enumerate(filenames):
-            # Skip if already processed
-            if filename in downloaded_set or filename in failed_set:
-                continue
-
-            dt = parse_file_utc_timestamp(filename)
-            if dt is None:
-                logger.warning(f"Skipping file with unexpected filename: {filename}")
-                failed_set.add(filename)
-                continue
-
-            # Stop if we've passed the end_datetime (since files are in ascending order)
-            if dt > end_datetime:
-                logger.info(f"Reached end of date range at {dt}")
-                _save_progress(
-                    base_target, progress_key, {"downloaded": list(downloaded_set), "failed": list(failed_set)}
-                )
-                return list(downloaded_set)
-
-            if not (start_datetime <= dt <= end_datetime):
-                continue
-
-            local_dir, local_path = compute_local_filepath(dataset_name, filename, base_target)
-            local_dir.mkdir(parents=True, exist_ok=True)
-
-            success, _ = download_dataset_file(
-                session,
-                base_url,
-                dataset_name,
-                dataset_version,
-                filename,
-                str(local_dir),
-                overwrite,
-            )
-            if success:
-                downloaded.append(str(local_path))
-                downloaded_set.add(filename)
-            else:
-                failed_set.add(filename)
-
-        next_page_token = resp_json.get("nextPageToken")
-        if not next_page_token:
-            break
-
-    _save_progress(base_target, progress_key, {"downloaded": list(downloaded_set), "failed": list(failed_set)})
-
+    if overwrite:
+        to_download = list(filenames_in_range)
+    else:
+        to_download = [f for f in filenames_in_range if f not in already_downloaded]
     logger.info(
-        f"Downloaded {len(downloaded_set)} files from {dataset_name} in range {start_datetime} to {end_datetime}"
+        f"{len(to_download)} files to fetch "
+        f"({len(already_downloaded)} already on disk, {len(failed_set)} previously failed)"
+    )
+
+    downloaded_set = set(already_downloaded)
+    if not to_download:
+        _save_progress(base_target, progress_key, {"downloaded": list(downloaded_set), "failed": list(failed_set)})
+        return list(downloaded_set)
+
+    # Pre-create the year/month directories so worker threads don't race on mkdir.
+    dirs_needed = set()
+    for filename in to_download:
+        dirs_needed.add(compute_local_filepath(dataset_name, filename, base_target)[0])
+    for d in dirs_needed:
+        d.mkdir(parents=True, exist_ok=True)
+
+    # Phase 3: parallel download under a global rate limit.
+    rate_limiter = RateLimiter(rate_limit_per_sec)
+    state_lock = threading.Lock()
+    total = len(to_download)
+    processed = 0
+    new_successes = 0
+    new_failures = 0
+    checkpoint_every = 1000
+    start_wall = time.monotonic()
+
+    def _worker(filename: str):
+        local_dir, _ = compute_local_filepath(dataset_name, filename, base_target)
+        rate_limiter.acquire()
+        return download_dataset_file(
+            session, base_url, dataset_name, dataset_version,
+            filename, str(local_dir), overwrite,
+        )
+
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = {executor.submit(_worker, f): f for f in to_download}
+        for future in as_completed(futures):
+            filename = futures[future]
+            try:
+                success, _ = future.result()
+            except Exception as e:
+                logger.exception(f"Worker crashed for {filename}: {e}")
+                success = False
+
+            with state_lock:
+                if success:
+                    downloaded_set.add(filename)
+                    failed_set.discard(filename)
+                    new_successes += 1
+                else:
+                    failed_set.add(filename)
+                    new_failures += 1
+                processed += 1
+
+                if processed % checkpoint_every == 0 or processed == total:
+                    elapsed = max(time.monotonic() - start_wall, 1e-6)
+                    rate = processed / elapsed
+                    eta_s = (total - processed) / rate if rate > 0 else float("inf")
+                    logger.info(
+                        f"Progress: {processed}/{total} "
+                        f"(ok={new_successes}, fail={new_failures}) "
+                        f"rate={rate:.1f} files/s, eta={eta_s/60:.1f} min"
+                    )
+                    _save_progress(
+                        base_target, progress_key,
+                        {"downloaded": list(downloaded_set), "failed": list(failed_set)},
+                    )
+
+    _save_progress(
+        base_target, progress_key,
+        {"downloaded": list(downloaded_set), "failed": list(failed_set)},
+    )
+    logger.info(
+        f"Done. {new_successes} newly downloaded, {new_failures} failed, "
+        f"{len(downloaded_set)} total for {dataset_name} in range "
+        f"{start_datetime} to {end_datetime}"
     )
     return list(downloaded_set)
 
@@ -266,6 +395,29 @@ def download_files_date_range(
 def _get_progress_file(base_target: str, dataset_name: str) -> Path:
     """Get the path to the progress tracking file."""
     return Path(base_target) / ".download_progress" / f"{dataset_name}_progress.json"
+
+
+def _scan_downloaded_files(base_target: str, dataset_name: str) -> set:
+    """Scan the directory structure to find all already-downloaded files.
+
+    Returns a set of filenames (without path) that are already present.
+    """
+    downloaded_files = set()
+    target_path = Path(base_target) / dataset_name
+
+    if not target_path.exists():
+        logger.info(f"Target directory does not exist yet: {target_path}")
+        return downloaded_files
+
+    # Scan all subdirectories for .nc files
+    for nc_file in target_path.glob("**/*.nc"):
+        filename = nc_file.name
+        downloaded_files.add(filename)
+
+    if len(downloaded_files) > 0:
+        logger.info(f"Found {len(downloaded_files)} already-downloaded files in {target_path}")
+
+    return downloaded_files
 
 
 def _load_progress(base_target: str, dataset_name: str) -> dict:
@@ -300,6 +452,8 @@ def download_full_dataset(
     max_keys: int = 500,
     overwrite: bool = False,
     resume: bool = True,
+    max_workers: int = 64,
+    rate_limit_per_sec: float = 90.0,
 ):
     """Download full dataset with resume capability.
 
@@ -323,63 +477,94 @@ def download_full_dataset(
 
     logger.info(f"Found {len(filenames)} files for dataset {dataset_name}/{dataset_version}")
 
-    # Load progress if resuming
+    # First, scan the directory for already-downloaded files
+    already_downloaded_in_dir = _scan_downloaded_files(base_target, dataset_name) if resume else set()
+
+    # Then, load progress file for any tracked failed files
     progress = _load_progress(base_target, dataset_name) if resume else {"downloaded": [], "failed": []}
 
-    downloaded_set = set(progress.get("downloaded", []))
+    downloaded_set = already_downloaded_in_dir.copy()
     failed_set = set(progress.get("failed", []))
 
     if len(downloaded_set) > 0:
-        logger.info(f"Resuming download: {len(downloaded_set)} already downloaded, {len(failed_set)} failed")
-
-    downloaded = list(downloaded_set)
-    failed = list(failed_set)
-
-    for i, filename in enumerate(filenames):
-        # Check if already processed
-        if filename in downloaded_set or filename in failed_set:
-            continue
-
-        dt = parse_file_utc_timestamp(filename)
-        if dt is None:
-            logger.warning(f"Skipping file with unexpected filename: {filename}")
-            failed.append(filename)
-            continue
-
-        local_dir, local_path = compute_local_filepath(dataset_name, filename, base_target)
-        local_dir.mkdir(parents=True, exist_ok=True)
-
-        logger.info(f"Downloading {i+1}/{len(filenames)}: {filename}")
-
-        success, _ = download_dataset_file(
-            session,
-            base_url,
-            dataset_name,
-            dataset_version,
-            filename,
-            str(local_dir),
-            overwrite,
+        logger.info(
+            f"Resuming download: {len(downloaded_set)} already in directory, {len(failed_set)} tracked failures"
         )
 
-        if success:
-            downloaded.append(str(local_path))
-            downloaded_set.add(filename)
-        else:
-            failed.append(filename)
+    # Filter out already-processed and unparseable filenames
+    to_download = []
+    for filename in filenames:
+        if filename in downloaded_set or filename in failed_set:
+            continue
+        if parse_file_utc_timestamp(filename) is None:
+            logger.warning(f"Skipping file with unexpected filename: {filename}")
             failed_set.add(filename)
+            continue
+        to_download.append(filename)
 
-        # Save progress every 10 files or on failure
-        if len(downloaded) % 10 == 0 or not success:
-            _save_progress(base_target, dataset_name, {"downloaded": list(downloaded_set), "failed": list(failed_set)})
+    logger.info(f"{len(to_download)} files to fetch ({len(downloaded_set)} already on disk, {len(failed_set)} skipped/failed)")
 
-    logger.info(f"Full dataset download complete!")
-    logger.info(f"  Successfully downloaded: {len(downloaded)} files")
-    logger.info(f"  Failed: {len(failed)} files")
+    if not to_download:
+        _save_progress(base_target, dataset_name, {"downloaded": list(downloaded_set), "failed": list(failed_set)})
+        return list(downloaded_set)
 
-    # Save final progress
+    # Pre-create year/month dirs to avoid mkdir races
+    dirs_needed = set()
+    for filename in to_download:
+        dirs_needed.add(compute_local_filepath(dataset_name, filename, base_target)[0])
+    for d in dirs_needed:
+        d.mkdir(parents=True, exist_ok=True)
+
+    rate_limiter = RateLimiter(rate_limit_per_sec)
+    state_lock = threading.Lock()
+    total = len(to_download)
+    processed = 0
+    new_successes = 0
+    new_failures = 0
+    checkpoint_every = 1000
+    start_wall = time.monotonic()
+
+    def _worker(filename: str):
+        local_dir, _ = compute_local_filepath(dataset_name, filename, base_target)
+        rate_limiter.acquire()
+        return download_dataset_file(
+            session, base_url, dataset_name, dataset_version,
+            filename, str(local_dir), overwrite,
+        )
+
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = {executor.submit(_worker, f): f for f in to_download}
+        for future in as_completed(futures):
+            filename = futures[future]
+            try:
+                success, _ = future.result()
+            except Exception as e:
+                logger.exception(f"Worker crashed for {filename}: {e}")
+                success = False
+
+            with state_lock:
+                if success:
+                    downloaded_set.add(filename)
+                    failed_set.discard(filename)
+                    new_successes += 1
+                else:
+                    failed_set.add(filename)
+                    new_failures += 1
+                processed += 1
+
+                if processed % checkpoint_every == 0 or processed == total:
+                    elapsed = max(time.monotonic() - start_wall, 1e-6)
+                    rate = processed / elapsed
+                    eta_s = (total - processed) / rate if rate > 0 else float("inf")
+                    logger.info(
+                        f"Progress: {processed}/{total} (ok={new_successes}, fail={new_failures}) "
+                        f"rate={rate:.1f} files/s, eta={eta_s/60:.1f} min"
+                    )
+                    _save_progress(base_target, dataset_name, {"downloaded": list(downloaded_set), "failed": list(failed_set)})
+
     _save_progress(base_target, dataset_name, {"downloaded": list(downloaded_set), "failed": list(failed_set)})
-
-    return downloaded
+    logger.info(f"Full dataset download complete! ok={new_successes} fail={new_failures} total_on_disk={len(downloaded_set)}")
+    return list(downloaded_set)
 
 
 def get_max_worker_count(filesizes):

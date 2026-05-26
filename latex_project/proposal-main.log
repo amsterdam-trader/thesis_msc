@@ -1,4 +1,4 @@
-This is LuaHBTeX, Version 1.24.0 (MiKTeX 25.12) (format=lualatex 2026.1.24)  24 FEB 2026 17:01
+This is LuaHBTeX, Version 1.24.0 (MiKTeX 25.12) (format=lualatex 2026.1.24)  26 MAY 2026 14:02
  system commands enabled.
  file:line:error style messages enabled.
 **c:/Users/floris/Desktop/MSC/thesis_msc/latex_project/proposal-main.tex
@@ -59,194 +59,36 @@ MiKTeX/luatex-cache/generic/names/luaotfload-names.luc.gz)
 \belowcaptionskip=\skip50
 \bibindent=\dimen147
 )
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/psnfss/times.sty
-Package: times 2020/03/25 PSNFSS-v9.3 (SPQR) 
-)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/base/fontenc.sty
-Package: fontenc 2025/07/18 v2.1d Standard LaTeX package
-LaTeX Font Info:    Trying to load font information for T1+ptm on input line 11
-6.
-
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/psnfss/t1ptm.fd
-File: t1ptm.fd 2001/06/04 font definitions for T1/ptm.
-))
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/base/inputenc.sty
-Package: inputenc 2024/02/08 v1.3d Input encoding file
-\inpenc@prehook=\toks17
-\inpenc@posthook=\toks18
-
-
-Package inputenc Warning: inputenc package ignored with utf8 based engines.
-
-)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/graphics/graphicx.sty
-Package: graphicx 2024/12/31 v1.2e Enhanced LaTeX Graphics (DPC,SPQR)
+(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/geometry/geometry.sty
+Package: geometry 2020/01/02 v5.9 Page Geometry
 
 (C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/graphics/keyval.sty
 Package: keyval 2022/05/29 v1.15 key=value parser (DPC)
-\KV@toks@=\toks19
+\KV@toks@=\toks17
 )
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/graphics/graphics.sty
-Package: graphics 2024/08/06 v1.4g Standard LaTeX Graphics (DPC,SPQR)
-
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/graphics/trig.sty
-Package: trig 2023/12/02 v1.11 sin cos tan (DPC)
-)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/graphics-cfg/graphics.
-cfg
-File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
-)
-Package graphics Info: Driver file: luatex.def on input line 106.
-
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/graphics-def/luatex.de
-f
-File: luatex.def 2025/09/29 v1.2f Graphics/color driver for luatex
-))
-\Gin@req@height=\dimen148
-\Gin@req@width=\dimen149
-)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/epstopdf-pkg/epstopdf.
-sty
-Package: epstopdf 2020-01-24 v2.11 Conversion with epstopdf on the fly (HO)
-
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/infwarerr/infwarerr.
-sty
-Package: infwarerr 2019/12/03 v1.5 Providing info/warning/error messages (HO)
-) (C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/grfext/grfext.sty
-Package: grfext 2019/12/03 v1.3 Manage graphics extensions (HO)
-
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/kvdefinekeys/kvdefin
-ekeys.sty
-Package: kvdefinekeys 2019-12-19 v1.6 Define keys (HO)
-))
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/kvoptions/kvoptions.st
-y
-Package: kvoptions 2022-06-15 v3.15 Key value format for package options (HO)
-
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/ltxcmds/ltxcmds.sty
-Package: ltxcmds 2023-12-04 v1.26 LaTeX kernel commands for general use (HO)
-)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/kvsetkeys/kvsetkeys.st
-y
-Package: kvsetkeys 2022-10-05 v1.19 Key value parser (HO)
-))
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pdftexcmds/pdftexcmd
-s.sty
-Package: pdftexcmds 2020-06-27 v0.33 Utility functions of pdfTeX for LuaTeX (HO
-)
+(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/iftex/ifvtex.sty
+Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
 
 (C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/iftex/iftex.sty
 Package: iftex 2024/12/12 v1.0g TeX engine tests
-)
-Package pdftexcmds Info: \pdf@primitive is available.
-Package pdftexcmds Info: \pdf@ifprimitive is available.
-Package pdftexcmds Info: \pdfdraftmode found.
-\pdftexcmds@toks=\toks20
-)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/epstopdf-pkg/epstopdf-
-base.sty
-Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
-Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
-85.
-Package grfext Info: Graphics extension search list:
-(grfext)             [.pdf,.png,.jpg,.mps,.jpeg,.jbig2,.jb2,.PDF,.PNG,.JPG,.JPE
-G,.JBIG2,.JB2,.eps]
-(grfext)             \AppendGraphicsExtensions on input line 504.
-
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/00miktex/epstopdf-sys.
-cfg
-File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
-))) (C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/float/float.sty
-Package: float 2001/11/08 v1.3d Float enhancements (AL)
-\c@float@type=\count281
-\float@exts=\toks21
-\float@box=\box53
-\@float@everytoks=\toks22
-\@floatcapt=\box54
-) (C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/tools/enumerate.sty
-Package: enumerate 2023/07/04 v3.00 enumerate extensions (DPC)
-\@enLab=\toks23
-) (C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/enumitem/enumitem.st
-y
-Package: enumitem 2025/02/06 v3.11 Customized lists
-\labelindent=\skip51
-\enit@outerparindent=\dimen150
-\enit@toks=\toks24
-\enit@inbox=\box55
-\enit@count@id=\count282
-\enitdp@description=\count283
-)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/boxedminipage/boxedmin
-ipage.sty
-Package: boxedminipage 2020/04/19 v1.1 Boxed LaTeX2e minipages
-\bmp@box=\box56
-\bmp@width=\skip52
-\bmp@height=\skip53
-) (C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/url/url.sty
-\Urlmuskip=\muskip17
-Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
-)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/booktabs/booktabs.sty
-Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
-\heavyrulewidth=\dimen151
-\lightrulewidth=\dimen152
-\cmidrulewidth=\dimen153
-\belowrulesep=\dimen154
-\belowbottomsep=\dimen155
-\aboverulesep=\dimen156
-\abovetopsep=\dimen157
-\cmidrulesep=\dimen158
-\cmidrulekern=\dimen159
-\defaultaddspace=\dimen160
-\@cmidla=\count284
-\@cmidlb=\count285
-\@aboverulesep=\dimen161
-\@belowrulesep=\dimen162
-\@thisruleclass=\count286
-\@lastruleclass=\count287
-\@thisrulewidth=\dimen163
-) (C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/tools/dcolumn.sty
-Package: dcolumn 2025/10/21 v1.06 decimal alignment package (DPC)
-
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/tools/array.sty
-Package: array 2025/09/25 v2.6n Tabular extension package (FMi)
-\col@sep=\dimen164
-\ar@mcellbox=\box57
-\extrarowheight=\dimen165
-\NC@list=\toks25
-\extratabsurround=\skip54
-\backup@length=\skip55
-\ar@cellbox=\box58
 ))
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/multirow/multirow.sty
-Package: multirow 2024/11/12 v2.9 Span multiple rows of a table
-\multirow@colwidth=\skip56
-\multirow@cntb=\count288
-\multirow@dima=\skip57
-\bigstrutjot=\dimen166
-) (C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/geometry/geometry.st
-y
-Package: geometry 2020/01/02 v5.9 Page Geometry
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/iftex/ifvtex.sty
-Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
-)
-\Gm@cnth=\count289
-\Gm@cntv=\count290
-\c@Gm@tempcnt=\count291
-\Gm@bindingoffset=\dimen167
-\Gm@wd@mp=\dimen168
-\Gm@odd@mp=\dimen169
-\Gm@even@mp=\dimen170
-\Gm@layoutwidth=\dimen171
-\Gm@layoutheight=\dimen172
-\Gm@layouthoffset=\dimen173
-\Gm@layoutvoffset=\dimen174
-\Gm@dimlist=\toks26
+\Gm@cnth=\count281
+\Gm@cntv=\count282
+\c@Gm@tempcnt=\count283
+\Gm@bindingoffset=\dimen148
+\Gm@wd@mp=\dimen149
+\Gm@odd@mp=\dimen150
+\Gm@even@mp=\dimen151
+\Gm@layoutwidth=\dimen152
+\Gm@layoutheight=\dimen153
+\Gm@layouthoffset=\dimen154
+\Gm@layoutvoffset=\dimen155
+\Gm@dimlist=\toks18
 
 (C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/geometry/geometry.cfg))
  (C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/amsmath/amsmath.sty
 Package: amsmath 2025/07/09 v2.17z AMS math features
-\@mathmargin=\skip58
+\@mathmargin=\skip51
 
 For additional information on amsmath, use the `?' option.
 (C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/amsmath/amstext.sty
@@ -254,64 +96,67 @@ Package: amstext 2024/11/17 v2.01 AMS text
 
 (C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/amsmath/amsgen.sty
 File: amsgen.sty 1999/11/30 v2.0 generic functions
-\@emptytoks=\toks27
-\ex@=\dimen175
+\@emptytoks=\toks19
+\ex@=\dimen156
 ))
 (C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/amsmath/amsbsy.sty
 Package: amsbsy 1999/11/29 v1.2d Bold Symbols
-\pmbraise@=\dimen176
+\pmbraise@=\dimen157
 )
 (C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/amsmath/amsopn.sty
 Package: amsopn 2022/04/08 v2.04 operator names
 )
-\inf@bad=\count292
+\inf@bad=\count284
 LaTeX Info: Redefining \frac on input line 235.
-\uproot@=\count293
-\leftroot@=\count294
+\uproot@=\count285
+\leftroot@=\count286
 LaTeX Info: Redefining \overline on input line 398.
 LaTeX Info: Redefining \colon on input line 409.
-\classnum@=\count295
-\DOTSCASE@=\count296
+\classnum@=\count287
+\DOTSCASE@=\count288
 LaTeX Info: Redefining \ldots on input line 495.
 LaTeX Info: Redefining \dots on input line 498.
 LaTeX Info: Redefining \cdots on input line 619.
-\Mathstrutbox@=\box59
-\strutbox@=\box60
+\Mathstrutbox@=\box53
+\strutbox@=\box54
 LaTeX Info: Redefining \big on input line 721.
 LaTeX Info: Redefining \Big on input line 722.
 LaTeX Info: Redefining \bigg on input line 723.
 LaTeX Info: Redefining \Bigg on input line 724.
-\big@size=\dimen177
+\big@size=\dimen158
 LaTeX Font Info:    Redeclaring font encoding OML on input line 742.
 LaTeX Font Info:    Redeclaring font encoding OMS on input line 743.
-\macc@depth=\count297
+\macc@depth=\count289
 LaTeX Info: Redefining \bmod on input line 904.
 LaTeX Info: Redefining \pmod on input line 909.
 LaTeX Info: Redefining \smash on input line 939.
 LaTeX Info: Redefining \relbar on input line 969.
 LaTeX Info: Redefining \Relbar on input line 970.
-\c@MaxMatrixCols=\count298
-\dotsspace@=\muskip18
-\c@parentequation=\count299
-\dspbrk@lvl=\count300
-\tag@help=\toks28
-\row@=\count301
-\column@=\count302
-\maxfields@=\count303
-\andhelp@=\toks29
-\eqnshift@=\dimen178
-\alignsep@=\dimen179
-\tagshift@=\dimen180
-\tagwidth@=\dimen181
-\totwidth@=\dimen182
-\lineht@=\dimen183
-\@envbody=\toks30
-\multlinegap=\skip59
-\multlinetaggap=\skip60
-\mathdisplay@stack=\toks31
+\c@MaxMatrixCols=\count290
+\dotsspace@=\muskip17
+\c@parentequation=\count291
+\dspbrk@lvl=\count292
+\tag@help=\toks20
+\row@=\count293
+\column@=\count294
+\maxfields@=\count295
+\andhelp@=\toks21
+\eqnshift@=\dimen159
+\alignsep@=\dimen160
+\tagshift@=\dimen161
+\tagwidth@=\dimen162
+\totwidth@=\dimen163
+\lineht@=\dimen164
+\@envbody=\toks22
+\multlinegap=\skip52
+\multlinetaggap=\skip53
+\mathdisplay@stack=\toks23
 LaTeX Info: Redefining \[ on input line 2950.
 LaTeX Info: Redefining \] on input line 2951.
 )
+(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/amsfonts/amssymb.sty
+Package: amssymb 2013/01/14 v3.01 AMS font symbols
+
 (C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/amsfonts/amsfonts.sty
 Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
 \symAMSa=\mathgroup4
@@ -319,767 +164,256 @@ Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
 LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
 LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 (Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
-) (C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/amsfonts/amssymb.sty
-Package: amssymb 2013/01/14 v3.01 AMS font symbols
-) (C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/amscls/amsthm.sty
-Package: amsthm 2020/05/29 v2.20.6
-\thm@style=\toks32
-\thm@bodyfont=\toks33
-\thm@headfont=\toks34
-\thm@notefont=\toks35
-\thm@headpunct=\toks36
-\thm@preskip=\skip61
-\thm@postskip=\skip62
-\thm@headsep=\skip63
-\dth@everypar=\toks37
-)
-(./template/shared_preamble.tex
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/tcolorbox/tcolorbox.st
+))
+(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/booktabs/booktabs.sty
+Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
+\heavyrulewidth=\dimen165
+\lightrulewidth=\dimen166
+\cmidrulewidth=\dimen167
+\belowrulesep=\dimen168
+\belowbottomsep=\dimen169
+\aboverulesep=\dimen170
+\abovetopsep=\dimen171
+\cmidrulesep=\dimen172
+\cmidrulekern=\dimen173
+\defaultaddspace=\dimen174
+\@cmidla=\count296
+\@cmidlb=\count297
+\@aboverulesep=\dimen175
+\@belowrulesep=\dimen176
+\@thisruleclass=\count298
+\@lastruleclass=\count299
+\@thisrulewidth=\dimen177
+) (C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/enumitem/enumitem.st
 y
-Package: tcolorbox 2025/11/28 version 6.9.0 text color boxes
+Package: enumitem 2025/02/06 v3.11 Customized lists
+\labelindent=\skip54
+\enit@outerparindent=\dimen178
+\enit@toks=\toks24
+\enit@inbox=\box55
+\enit@count@id=\count300
+\enitdp@description=\count301
+)
+(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/hyperref/hyperref.sty
+Package: hyperref 2025-07-12 v7.01o Hypertext links for LaTeX
 
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/pgf/frontendlayer/tikz
-.sty
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/pgf/basiclayer/pgf.sty
-
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/pgf/utilities/pgfrcs.s
-ty
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/utilities/pgfuti
-l-common.tex
-\pgfutil@everybye=\toks38
-\pgfutil@tempdima=\dimen184
-\pgfutil@tempdimb=\dimen185
+(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/kvsetkeys/kvsetkeys.st
+y
+Package: kvsetkeys 2022-10-05 v1.19 Key value parser (HO)
 )
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/utilities/pgfuti
-l-latex.def
-\pgfutil@abb=\box61
+(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/kvdefinekeys/kvdefin
+ekeys.sty
+Package: kvdefinekeys 2019-12-19 v1.6 Define keys (HO)
 )
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/utilities/pgfrcs
-.code.tex
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/pgf.revision.tex
-)
-Package: pgfrcs 2025-08-29 v3.1.11a (3.1.11a)
-))
-Package: pgf 2025-08-29 v3.1.11a (3.1.11a)
-
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/pgf/basiclayer/pgfcore
-.sty
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/pgf/systemlayer/pgfsys
-.sty
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/systemlayer/pgfs
-ys.code.tex
-Package: pgfsys 2025-08-29 v3.1.11a (3.1.11a)
-
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/utilities/pgfkey
-s.code.tex
-\pgfkeys@pathtoks=\toks39
-\pgfkeys@temptoks=\toks40
-
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/utilities/pgfkey
-slibraryfiltered.code.tex
-\pgfkeys@tmptoks=\toks41
-))
-\pgf@x=\dimen186
-\pgf@y=\dimen187
-\pgf@xa=\dimen188
-\pgf@ya=\dimen189
-\pgf@xb=\dimen190
-\pgf@yb=\dimen191
-\pgf@xc=\dimen192
-\pgf@yc=\dimen193
-\pgf@xd=\dimen194
-\pgf@yd=\dimen195
-\w@pgf@writea=\write3
-\r@pgf@reada=\read2
-\c@pgf@counta=\count304
-\c@pgf@countb=\count305
-\c@pgf@countc=\count306
-\c@pgf@countd=\count307
-\t@pgf@toka=\toks42
-\t@pgf@tokb=\toks43
-\t@pgf@tokc=\toks44
-\pgf@sys@id@count=\count308
-
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/systemlayer/pgf.
-cfg
-File: pgf.cfg 2025-08-29 v3.1.11a (3.1.11a)
-)
-Driver file for pgf: pgfsys-luatex.def
-
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/systemlayer/pgfs
-ys-luatex.def
-File: pgfsys-luatex.def 2025-08-29 v3.1.11a (3.1.11a)
-
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/systemlayer/pgfs
-ys-common-pdf.def
-File: pgfsys-common-pdf.def 2025-08-29 v3.1.11a (3.1.11a)
-)))
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/systemlayer/pgfs
-yssoftpath.code.tex
-File: pgfsyssoftpath.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgfsyssoftpath@smallbuffer@items=\count309
-\pgfsyssoftpath@bigbuffer@items=\count310
-)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/systemlayer/pgfs
-ysprotocol.code.tex
-File: pgfsysprotocol.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-))
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/xcolor/xcolor.sty
-Package: xcolor 2024/09/29 v3.02 LaTeX color extensions (UK)
-
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/graphics-cfg/color.cfg
-File: color.cfg 2016/01/02 v1.6 sample color configuration
-)
-Package xcolor Info: Driver file: luatex.def on input line 274.
-
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/graphics/mathcolor.ltx
-)
-Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1349.
-Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1353.
-Package xcolor Info: Model `RGB' extended on input line 1365.
-Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1367.
-Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1368.
-Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1369.
-Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1370.
-Package xcolor Info: Model `Gray' substituted by `gray' on input line 1371.
-Package xcolor Info: Model `wave' substituted by `hsb' on input line 1372.
-)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/basiclayer/pgfco
-re.code.tex
-Package: pgfcore 2025-08-29 v3.1.11a (3.1.11a)
-
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/math/pgfmath.cod
-e.tex
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/math/pgfmathutil
-.code.tex)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/math/pgfmathpars
-er.code.tex
-\pgfmath@dimen=\dimen196
-\pgfmath@count=\count311
-\pgfmath@box=\box62
-\pgfmath@toks=\toks45
-\pgfmath@stack@operand=\toks46
-\pgfmath@stack@operation=\toks47
-)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/math/pgfmathfunc
-tions.code.tex)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/math/pgfmathfunc
-tions.basic.code.tex)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/math/pgfmathfunc
-tions.trigonometric.code.tex)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/math/pgfmathfunc
-tions.random.code.tex)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/math/pgfmathfunc
-tions.comparison.code.tex)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/math/pgfmathfunc
-tions.base.code.tex)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/math/pgfmathfunc
-tions.round.code.tex)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/math/pgfmathfunc
-tions.misc.code.tex)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/math/pgfmathfunc
-tions.integerarithmetics.code.tex)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/math/pgfmathcalc
-.code.tex)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/math/pgfmathfloa
-t.code.tex
-\c@pgfmathroundto@lastzeros=\count312
-))
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/math/pgfint.code
-.tex)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/basiclayer/pgfco
-repoints.code.tex
-File: pgfcorepoints.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgf@picminx=\dimen197
-\pgf@picmaxx=\dimen198
-\pgf@picminy=\dimen199
-\pgf@picmaxy=\dimen256
-\pgf@pathminx=\dimen257
-\pgf@pathmaxx=\dimen258
-\pgf@pathminy=\dimen259
-\pgf@pathmaxy=\dimen260
-\pgf@xx=\dimen261
-\pgf@xy=\dimen262
-\pgf@yx=\dimen263
-\pgf@yy=\dimen264
-\pgf@zx=\dimen265
-\pgf@zy=\dimen266
-)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/basiclayer/pgfco
-repathconstruct.code.tex
-File: pgfcorepathconstruct.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgf@path@lastx=\dimen267
-\pgf@path@lasty=\dimen268
-)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/basiclayer/pgfco
-repathusage.code.tex
-File: pgfcorepathusage.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgf@shorten@end@additional=\dimen269
-\pgf@shorten@start@additional=\dimen270
-)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/basiclayer/pgfco
-rescopes.code.tex
-File: pgfcorescopes.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgfpic=\box63
-\pgf@hbox=\box64
-\pgf@layerbox@main=\box65
-\pgf@picture@serial@count=\count313
-)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/basiclayer/pgfco
-regraphicstate.code.tex
-File: pgfcoregraphicstate.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgflinewidth=\dimen271
-)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/basiclayer/pgfco
-retransformations.code.tex
-File: pgfcoretransformations.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgf@pt@x=\dimen272
-\pgf@pt@y=\dimen273
-\pgf@pt@temp=\dimen274
-)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/basiclayer/pgfco
-requick.code.tex
-File: pgfcorequick.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/basiclayer/pgfco
-reobjects.code.tex
-File: pgfcoreobjects.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/basiclayer/pgfco
-repathprocessing.code.tex
-File: pgfcorepathprocessing.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/basiclayer/pgfco
-rearrows.code.tex
-File: pgfcorearrows.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgfarrowsep=\dimen275
-)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/basiclayer/pgfco
-reshade.code.tex
-File: pgfcoreshade.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgf@max=\dimen276
-\pgf@sys@shading@range@num=\count314
-\pgf@shadingcount=\count315
-)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/basiclayer/pgfco
-reimage.code.tex
-File: pgfcoreimage.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/basiclayer/pgfco
-reexternal.code.tex
-File: pgfcoreexternal.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgfexternal@startupbox=\box66
-)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/basiclayer/pgfco
-relayers.code.tex
-File: pgfcorelayers.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/basiclayer/pgfco
-retransparency.code.tex
-File: pgfcoretransparency.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/basiclayer/pgfco
-repatterns.code.tex
-File: pgfcorepatterns.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/basiclayer/pgfco
-rerdf.code.tex
-File: pgfcorerdf.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-)))
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/modules/pgfmodul
-eshapes.code.tex
-File: pgfmoduleshapes.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgfnodeparttextbox=\box67
-)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/modules/pgfmodul
-eplot.code.tex
-File: pgfmoduleplot.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/pgf/compatibility/pgfc
-omp-version-0-65.sty
-Package: pgfcomp-version-0-65 2025-08-29 v3.1.11a (3.1.11a)
-\pgf@nodesepstart=\dimen277
-\pgf@nodesepend=\dimen278
-)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/pgf/compatibility/pgfc
-omp-version-1-18.sty
-Package: pgfcomp-version-1-18 2025-08-29 v3.1.11a (3.1.11a)
-))
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/pgf/utilities/pgffor.s
-ty
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/pgf/utilities/pgfkeys.
+(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pdfescape/pdfescape.
 sty
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/utilities/pgfkey
-s.code.tex))
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/pgf/math/pgfmath.sty
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/math/pgfmath.cod
-e.tex))
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/utilities/pgffor
-.code.tex
-Package: pgffor 2025-08-29 v3.1.11a (3.1.11a)
-\pgffor@iter=\dimen279
-\pgffor@skip=\dimen280
-\pgffor@stack=\toks48
-\pgffor@toks=\toks49
-))
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/frontendlayer/ti
-kz/tikz.code.tex
-Package: tikz 2025-08-29 v3.1.11a (3.1.11a)
+Package: pdfescape 2019/12/09 v1.15 Implements pdfTeX's escape features (HO)
 
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/libraries/pgflib
-raryplothandlers.code.tex
-File: pgflibraryplothandlers.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgf@plot@mark@count=\count316
-\pgfplotmarksize=\dimen281
+(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/ltxcmds/ltxcmds.sty
+Package: ltxcmds 2023-12-04 v1.26 LaTeX kernel commands for general use (HO)
 )
-\tikz@lastx=\dimen282
-\tikz@lasty=\dimen283
-\tikz@lastxsaved=\dimen284
-\tikz@lastysaved=\dimen285
-\tikz@lastmovetox=\dimen286
-\tikz@lastmovetoy=\dimen287
-\tikzleveldistance=\dimen288
-\tikzsiblingdistance=\dimen289
-\tikz@figbox=\box68
-\tikz@figbox@bg=\box69
-\tikz@tempbox=\box70
-\tikz@tempbox@bg=\box71
-\tikztreelevel=\count317
-\tikznumberofchildren=\count318
-\tikznumberofcurrentchild=\count319
-\tikz@fig@count=\count320
-
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/modules/pgfmodul
-ematrix.code.tex
-File: pgfmodulematrix.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgfmatrixcurrentrow=\count321
-\pgfmatrixcurrentcolumn=\count322
-\pgf@matrix@numberofcolumns=\count323
+(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pdftexcmds/pdftexcmd
+s.sty
+Package: pdftexcmds 2020-06-27 v0.33 Utility functions of pdfTeX for LuaTeX (HO
 )
-\tikz@expandcount=\count324
 
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/pgf/frontendlayer/ti
-kz/libraries/tikzlibrarytopaths.code.tex
-File: tikzlibrarytopaths.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-)))
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/tools/verbatim.sty
-Package: verbatim 2024-01-22 v1.5x LaTeX2e package for verbatim enhancements
-\every@verbatim=\toks50
-\verbatim@line=\toks51
-\verbatim@in@stream=\read3
-)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/environ/environ.sty
-Package: environ 2014/05/04 v0.3 A new way to define environments
-
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/trimspaces/trimspaces.
+(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/infwarerr/infwarerr.
 sty
-Package: trimspaces 2009/09/17 v1.1 Trim spaces around a token list
+Package: infwarerr 2019/12/03 v1.5 Providing info/warning/error messages (HO)
+)
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+\pdftexcmds@toks=\toks25
 ))
+(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/hycolor/hycolor.sty
+Package: hycolor 2020-01-27 v1.10 Color options for hyperref/bookmark (HO)
+)
+(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/hyperref/nameref.sty
+Package: nameref 2025-06-21 v2.57 Cross-referencing by name of section
+
+(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/refcount/refcount.sty
+Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
+)
+(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/gettitlestring/getti
+tlestring.sty
+Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
+
+(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/kvoptions/kvoptions.st
+y
+Package: kvoptions 2022-06-15 v3.15 Key value format for package options (HO)
+))
+\c@section@level=\count302
+)
 (C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/etoolbox/etoolbox.sty
 Package: etoolbox 2025/10/02 v2.5m e-TeX tools for LaTeX (JAW)
-\etb@tempcnta=\count325
+\etb@tempcnta=\count303
 )
-\tcb@titlebox=\box72
-\tcb@upperbox=\box73
-\tcb@lowerbox=\box74
-\tcb@phantombox=\box75
-\c@tcbbreakpart=\count326
-\c@tcblayer=\count327
-\c@tcolorbox@number=\count328
-\l__tcobox_tmpa_box=\box76
-\l__tcobox_tmpa_dim=\dimen290
-\tcb@temp=\box77
-\tcb@temp=\box78
-\tcb@temp=\box79
-\tcb@temp=\box80
+(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/stringenc/stringenc.
+sty
+Package: stringenc 2019/11/29 v1.12 Convert strings between diff. encodings (HO
 )
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/doublestroke/dsfont.st
-y
-Package: dsfont 1995/08/01 v0.1 Double stroke roman fonts
 )
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/verbatimbox/verbatimbo
-x.sty
-Package: verbatimbox 2023/08/08 v3.2\ Routines for placing verbatim text into b
-oxes, useful in places where the verbatim environment is inaccessible. Secondar
-ily, for adding vertical buffer around an object.
+\@linkdim=\dimen179
+\Hy@linkcounter=\count304
+\Hy@pagecounter=\count305
 
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/readarray/readarray.st
-y
-Package: readarray 2021/09/17\ 3.1\ Routines for inputting 2D and 3D array data
- and recalling it on an element-by-element basis.
- (C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/forloop/forloop.sty
-Package: forloop 2023/05/03 v3.0 For Loops for LaTeX
+(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/hyperref/pd1enc.def
+File: pd1enc.def 2025-07-12 v7.01o Hyperref: PDFDocEncoding definition (HO)
+)
+(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/intcalc/intcalc.sty
+Package: intcalc 2019/12/15 v1.3 Expandable calculations with integers (HO)
+)
+\Hy@SavedSpaceFactor=\count306
+(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/hyperref/puenc.def
+File: puenc.def 2025-07-12 v7.01o Hyperref: PDF Unicode definition (HO)
+)
+Package hyperref Info: Hyper figures OFF on input line 4195.
+Package hyperref Info: Link nesting OFF on input line 4200.
+Package hyperref Info: Hyper index ON on input line 4203.
+Package hyperref Info: Plain pages OFF on input line 4210.
+Package hyperref Info: Backreferencing OFF on input line 4215.
+Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
+Package hyperref Info: Bookmarks ON on input line 4462.
+\c@Hy@tempcnt=\count307
 
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/base/ifthen.sty
-Package: ifthen 2024/03/16 v1.1e Standard LaTeX ifthen package (DPC)
+(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/url/url.sty
+\Urlmuskip=\muskip18
+Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
+)
+LaTeX Info: Redefining \url on input line 4801.
+\XeTeXLinkMargin=\dimen180
+
+(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/bitset/bitset.sty
+Package: bitset 2019/12/09 v1.3 Handle bit-vector datatype (HO)
+
+(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/bigintcalc/bigintcal
+c.sty
+Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO
+)
 ))
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/listofitems/listofitem
-s.sty
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/listofitems/listofit
-ems.tex
-\loi_cnt_foreach_nest=\count329
-\loi_nestcnt=\count330
+\Fld@menulength=\count308
+\Field@Width=\dimen181
+\Fld@charsize=\dimen182
+Package hyperref Info: Hyper figures OFF on input line 6078.
+Package hyperref Info: Link nesting OFF on input line 6083.
+Package hyperref Info: Hyper index ON on input line 6086.
+Package hyperref Info: backreferencing OFF on input line 6093.
+Package hyperref Info: Link coloring OFF on input line 6098.
+Package hyperref Info: Link coloring with OCG OFF on input line 6103.
+Package hyperref Info: PDF/A mode OFF on input line 6108.
+\Hy@abspage=\count309
+\c@Item=\count310
+\c@Hfootnote=\count311
 )
-Package: listofitems 2024/03/09 v1.65 Grab items in lists using user-specified 
-sep char (CT)
-)
-\c@@index=\count331
-\c@@plane=\count332
-\c@@row=\count333
-\c@@col=\count334
-\c@use@args=\count335
-\c@@record=\count336
-\c@index@count=\count337
-\Arg@toks=\toks52
-\@arrayident@toks=\toks53
-\rdar@file=\read4
-\readarrayendlinechar=\count338
+Package hyperref Info: Driver (autodetected): hluatex.
 
-readarray: bounds checking OFF
+(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/hyperref/hluatex.def
+File: hluatex.def 2025-07-12 v7.01o Hyperref driver for luaTeX
+\Fld@listcount=\count312
+\c@bookmark@seq@number=\count313
+
+(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/rerunfilecheck/rerunfi
+lecheck.sty
+Package: rerunfilecheck 2025-06-21 v1.11 Rerun checks for auxiliary files (HO)
+
+(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/generic/uniquecounter/unique
+counter.sty
+Package: uniquecounter 2019/12/15 v1.4 Provide unlimited unique counter (HO)
 )
-\savedverbbox=\box81
-\c@VerbboxLineNo=\count339
-\boxtopsep=\dimen291
-\boxbottomsep=\dimen292
-\ps@tempdima=\dimen293
-\ps@tempboxa=\box82
-\boxtop@sep=\skip64
-\boxbottom@sep=\skip65
+Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
+84.
+)
+\Hy@SectionHShift=\skip55
+)
+(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/natbib/natbib.sty
+Package: natbib 2010/09/13 8.31b (PWD, AO)
+\bibhang=\skip56
+\bibsep=\skip57
+LaTeX Info: Redefining \cite on input line 694.
+\c@NAT@ctr=\count314
+)
+(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/base/fontenc.sty
+Package: fontenc 2025/07/18 v2.1d Standard LaTeX package
+LaTeX Font Info:    Trying to load font information for T1+lmr on input line 11
+6.
+
+(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/lm/t1lmr.fd
+File: t1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 ))
-\c@theorem=\count340
-\c@corollary=\count341
-\c@proposition=\count342
-\c@lemma=\count343
-\c@assumption=\count344
-\c@definition=\count345
-\c@example=\count346
-\c@remark=\count347
-\c@notation=\count348
+(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/base/inputenc.sty
+Package: inputenc 2024/02/08 v1.3d Input encoding file
+\inpenc@prehook=\toks26
+\inpenc@posthook=\toks27
 
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/algorithms/algorithm.s
-ty
-Package: algorithm 2009/08/24 v0.1 Document Style `algorithm' - floating enviro
-nment
-\@float@every@algorithm=\toks54
-\c@algorithm=\count349
+
+Package inputenc Warning: inputenc package ignored with utf8 based engines.
+
+) (C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/lm/lmodern.sty
+Package: lmodern 2015/05/01 v1.6.1 Latin Modern Fonts
+LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
+(Font)                  OT1/cmr/m/n --> OT1/lmr/m/n on input line 22.
+LaTeX Font Info:    Overwriting symbol font `letters' in version `normal'
+(Font)                  OML/cmm/m/it --> OML/lmm/m/it on input line 23.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `normal'
+(Font)                  OMS/cmsy/m/n --> OMS/lmsy/m/n on input line 24.
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `normal'
+(Font)                  OMX/cmex/m/n --> OMX/lmex/m/n on input line 25.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
+(Font)                  OT1/cmr/bx/n --> OT1/lmr/bx/n on input line 26.
+LaTeX Font Info:    Overwriting symbol font `letters' in version `bold'
+(Font)                  OML/cmm/b/it --> OML/lmm/b/it on input line 27.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `bold'
+(Font)                  OMS/cmsy/b/n --> OMS/lmsy/b/n on input line 28.
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `bold'
+(Font)                  OMX/cmex/m/n --> OMX/lmex/m/n on input line 29.
+LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
+(Font)                  OT1/cmr/bx/n --> OT1/lmr/bx/n on input line 31.
+LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `normal'
+(Font)                  OT1/cmss/m/n --> OT1/lmss/m/n on input line 32.
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
+(Font)                  OT1/cmr/m/it --> OT1/lmr/m/it on input line 33.
+LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `normal'
+(Font)                  OT1/cmtt/m/n --> OT1/lmtt/m/n on input line 34.
+LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `bold'
+(Font)                  OT1/cmr/bx/n --> OT1/lmr/bx/n on input line 35.
+LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
+(Font)                  OT1/cmss/bx/n --> OT1/lmss/bx/n on input line 36.
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
+(Font)                  OT1/cmr/bx/it --> OT1/lmr/bx/it on input line 37.
+LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
+(Font)                  OT1/cmtt/m/n --> OT1/lmtt/m/n on input line 38.
 )
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/algorithmicx/algpseudo
-code.sty
-Package: algpseudocode 
-
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/algorithmicx/algorithm
-icx.sty
-Package: algorithmicx 2005/04/27 v1.2 Algorithmicx
-
-Document Style algorithmicx 1.2 - a greatly improved `algorithmic' style
-\c@ALG@line=\count350
-\c@ALG@rem=\count351
-\c@ALG@nested=\count352
-\ALG@tlm=\skip66
-\ALG@thistlm=\skip67
-\c@ALG@Lnr=\count353
-\c@ALG@blocknr=\count354
-\c@ALG@storecount=\count355
-\c@ALG@tmpcounter=\count356
-\ALG@tmplength=\skip68
-)
-Document Style - pseudocode environments for use with the `algorithmicx' style
-)
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/biblatex/biblatex.sty
-Package: biblatex 2025/07/10 v3.21 programmable bibliographies (PK/MW)
-
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/logreq/logreq.sty
-Package: logreq 2010/08/04 v1.0 xml request logger
-\lrq@indent=\count357
-
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/logreq/logreq.def
-File: logreq.def 2010/08/04 v1.0 logreq spec v1.0
-))
-\c@tabx@nest=\count358
-\c@listtotal=\count359
-\c@listcount=\count360
-\c@liststart=\count361
-\c@liststop=\count362
-\c@citecount=\count363
-\c@citetotal=\count364
-\c@multicitecount=\count365
-\c@multicitetotal=\count366
-\c@instcount=\count367
-\c@maxnames=\count368
-\c@minnames=\count369
-\c@maxitems=\count370
-\c@minitems=\count371
-\c@citecounter=\count372
-\c@maxcitecounter=\count373
-\c@savedcitecounter=\count374
-\c@uniquelist=\count375
-\c@uniquename=\count376
-\c@refsection=\count377
-\c@refsegment=\count378
-\c@maxextratitle=\count379
-\c@maxextratitleyear=\count380
-\c@maxextraname=\count381
-\c@maxextradate=\count382
-\c@maxextraalpha=\count383
-\c@abbrvpenalty=\count384
-\c@highnamepenalty=\count385
-\c@lownamepenalty=\count386
-\c@maxparens=\count387
-\c@parenlevel=\count388
-\blx@tempcnta=\count389
-\blx@tempcntb=\count390
-\blx@tempcntc=\count391
-\c@blx@maxsection=\count392
-\blx@maxsegment@0=\count393
-\blx@notetype=\count394
-\blx@parenlevel@text=\count395
-\blx@parenlevel@foot=\count396
-\blx@sectionciteorder@0=\count397
-\blx@sectionciteorderinternal@0=\count398
-\blx@entrysetcounter=\count399
-\blx@biblioinstance=\count400
-\labelnumberwidth=\skip69
-\labelalphawidth=\skip70
-\biblabelsep=\skip71
-\bibitemsep=\skip72
-\bibnamesep=\skip73
-\bibinitsep=\skip74
-\bibparsep=\skip75
-\bibhang=\skip76
-\blx@bcfin=\read5
-\blx@bcfout=\write4
-\blx@langwohyphens=\language2
-\c@mincomprange=\count401
-\c@maxcomprange=\count402
-\c@mincompwidth=\count403
-Package biblatex Info: Trying to load biblatex default data model...
-Package biblatex Info: ... file 'blx-dm.def' found.
-
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/biblatex/blx-dm.def
-File: blx-dm.def 2025/07/10 v3.21 biblatex datamodel (PK/MW)
-)
-Package biblatex Info: Trying to load biblatex style data model...
-Package biblatex Info: ... file 'authoryear.dbx' not found.
-Package biblatex Info: Trying to load biblatex custom data model...
-Package biblatex Info: ... file 'biblatex-dm.cfg' not found.
-\c@afterword=\count404
-\c@savedafterword=\count405
-\c@annotator=\count406
-\c@savedannotator=\count407
-\c@author=\count408
-\c@savedauthor=\count409
-\c@bookauthor=\count410
-\c@savedbookauthor=\count411
-\c@commentator=\count412
-\c@savedcommentator=\count413
-\c@editor=\count414
-\c@savededitor=\count415
-\c@editora=\count416
-\c@savededitora=\count417
-\c@editorb=\count418
-\c@savededitorb=\count419
-\c@editorc=\count420
-\c@savededitorc=\count421
-\c@foreword=\count422
-\c@savedforeword=\count423
-\c@holder=\count424
-\c@savedholder=\count425
-\c@introduction=\count426
-\c@savedintroduction=\count427
-\c@namea=\count428
-\c@savednamea=\count429
-\c@nameb=\count430
-\c@savednameb=\count431
-\c@namec=\count432
-\c@savednamec=\count433
-\c@translator=\count434
-\c@savedtranslator=\count435
-\c@shortauthor=\count436
-\c@savedshortauthor=\count437
-\c@shorteditor=\count438
-\c@savedshorteditor=\count439
-\c@labelname=\count440
-\c@savedlabelname=\count441
-\c@institution=\count442
-\c@savedinstitution=\count443
-\c@lista=\count444
-\c@savedlista=\count445
-\c@listb=\count446
-\c@savedlistb=\count447
-\c@listc=\count448
-\c@savedlistc=\count449
-\c@listd=\count450
-\c@savedlistd=\count451
-\c@liste=\count452
-\c@savedliste=\count453
-\c@listf=\count454
-\c@savedlistf=\count455
-\c@location=\count456
-\c@savedlocation=\count457
-\c@organization=\count458
-\c@savedorganization=\count459
-\c@origlocation=\count460
-\c@savedoriglocation=\count461
-\c@origpublisher=\count462
-\c@savedorigpublisher=\count463
-\c@publisher=\count464
-\c@savedpublisher=\count465
-\c@language=\count466
-\c@savedlanguage=\count467
-\c@origlanguage=\count468
-\c@savedoriglanguage=\count469
-\c@pageref=\count470
-\c@savedpageref=\count471
-\shorthandwidth=\skip77
-\shortjournalwidth=\skip78
-\shortserieswidth=\skip79
-\shorttitlewidth=\skip80
-\shortauthorwidth=\skip81
-\shorteditorwidth=\skip82
-\locallabelnumberwidth=\skip83
-\locallabelalphawidth=\skip84
-\localshorthandwidth=\skip85
-\localshortjournalwidth=\skip86
-\localshortserieswidth=\skip87
-\localshorttitlewidth=\skip88
-\localshortauthorwidth=\skip89
-\localshorteditorwidth=\skip90
-Package biblatex Info: Trying to load enhanced support for Unicode engines...
-Package biblatex Info: ... file 'blx-unicode.def' found.
-
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/biblatex/blx-unicode.d
-ef)
-Package biblatex Info: Trying to load compatibility code...
-Package biblatex Info: ... file 'blx-compat.def' found.
-
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/biblatex/blx-compat.de
-f
-File: blx-compat.def 2025/07/10 v3.21 biblatex compatibility (PK/MW)
-)
-Package biblatex Info: Trying to load generic definitions...
-Package biblatex Info: ... file 'biblatex.def' found.
-
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/biblatex/biblatex.def
-File: biblatex.def 2025/07/10 v3.21 biblatex compatibility (PK/MW)
-\c@textcitecount=\count472
-\c@textcitetotal=\count473
-\c@textcitemaxnames=\count474
-\c@biburlbigbreakpenalty=\count475
-\c@biburlbreakpenalty=\count476
-\c@biburlnumpenalty=\count477
-\c@biburlucpenalty=\count478
-\c@biburllcpenalty=\count479
-\biburlbigskip=\muskip19
-\biburlnumskip=\muskip20
-\biburlucskip=\muskip21
-\biburllcskip=\muskip22
-\c@smartand=\count480
-)
-Package biblatex Info: Trying to load natbib compatibility...
-Package biblatex Info: ... file 'blx-natbib.def' found.
-
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/biblatex/blx-natbib.de
-f
-File: blx-natbib.def 2025/07/10 v3.21 biblatex compatibility (PK/MW)
-Package biblatex Info: Delimiter 'nameyeardelim' in context '' already defined,
- overwriting.
-)
-Package biblatex Info: Trying to load bibliography style 'authoryear'...
-Package biblatex Info: ... file 'authoryear.bbx' found.
-
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/biblatex/bbx/authoryea
-r.bbx
-File: authoryear.bbx 2025/07/10 v3.21 biblatex bibliography style (PK/MW)
-Package biblatex Info: Trying to load bibliography style 'standard'...
-Package biblatex Info: ... file 'standard.bbx' found.
-
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/biblatex/bbx/standard.
-bbx
-File: standard.bbx 2025/07/10 v3.21 biblatex bibliography style (PK/MW)
-\c@bbx:relatedcount=\count481
-\c@bbx:relatedtotal=\count482
-))
-Package biblatex Info: Trying to load citation style 'authoryear'...
-Package biblatex Info: ... file 'authoryear.cbx' found.
-
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/biblatex/cbx/authoryea
-r.cbx
-File: authoryear.cbx 2025/07/10 v3.21 biblatex citation style (PK/MW)
-Package biblatex Info: Redefining '\cite'.
-Package biblatex Info: Redefining '\parencite'.
-Package biblatex Info: Redefining '\footcite'.
-Package biblatex Info: Redefining '\footcitetext'.
-Package biblatex Info: Redefining '\smartcite'.
-Package biblatex Info: Redefining '\textcite'.
-Package biblatex Info: Redefining '\textcites'.
-)
-Package biblatex Info: Trying to load configuration file...
-Package biblatex Info: ... file 'biblatex.cfg' found.
-
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/biblatex/biblatex.cfg
-File: biblatex.cfg 
-)
-Package biblatex Info: LuaTeX detected.
-(biblatex)             Assuming input encoding 'utf8'.
-Package biblatex Info: Document encoding is UTF8 ....
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/l3kernel/expl3.sty
-Package: expl3 2025-12-29 L3 programming layer (loader) 
+Package hyperref Info: Option `colorlinks' set `true' on input line 18.
 
 (C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/l3backend/l3backend-lu
 atex.def
 File: l3backend-luatex.def 2025-10-09 L3 backend support: PDF output (LuaTeX)
-\l__color_backend_stack_int=\count483
-Inserting `l3color' in `luaotfload.parse_color'.))
-Package biblatex Info: ... and expl3
-(biblatex)             2025-12-29 L3 programming layer (loader) 
-(biblatex)             is new enough (at least 2020/04/06),
-(biblatex)             setting 'casechanger=expl3'.
-
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/biblatex/blx-case-expl
-3.sty
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/l3packages/xparse/xpar
-se.sty
-Package: xparse 2025-10-09 L3 Experimental document command parser
-)
-Package: blx-case-expl3 2025/07/10 v3.21 expl3 case changing code for biblatex
-))
-\@quotelevel=\count484
-\@quotereset=\count485
- (./proposal-main.aux)
+\l__color_backend_stack_int=\count315
+Inserting `l3color' in `luaotfload.parse_color'.) (./proposal-main.aux)
 \openout1 = proposal-main.aux
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 60.
-LaTeX Font Info:    ... okay on input line 60.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 60.
-LaTeX Font Info:    ... okay on input line 60.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 60.
-LaTeX Font Info:    ... okay on input line 60.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 60.
-LaTeX Font Info:    ... okay on input line 60.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 60.
-LaTeX Font Info:    ... okay on input line 60.
-LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 60.
-LaTeX Font Info:    ... okay on input line 60.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 60.
-LaTeX Font Info:    ... okay on input line 60.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 60.
-LaTeX Font Info:    ... okay on input line 60.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 24.
+LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 24.
+LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 24.
+LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 24.
+LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 24.
+LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 24.
+LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 24.
+LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 24.
+LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 24.
+LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 24.
+LaTeX Font Info:    ... okay on input line 24.
 
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/context/base/mkii/supp-pdf.m
-kii
-[Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count486
-\scratchdimen=\dimen294
-\scratchbox=\box83
-\nofMPsegments=\count487
-\nofMParguments=\count488
-\everyMPshowfont=\toks55
-\MPscratchCnt=\count489
-\MPscratchDim=\dimen295
-\MPnumerator=\count490
-\makeMPintoPDFobject=\count491
-\everyMPtoPDFconversion=\toks56
-)
 *geometry* driver: auto-detecting
 *geometry* detected driver: luatex
 *geometry* verbose mode - [ preamble ] result:
@@ -1088,15 +422,15 @@ kii
 * layout: <same size as paper>
 * layoutoffset:(h,v)=(0.0pt,0.0pt)
 * modes: 
-* h-part:(L,W,R)=(85.35826pt, 426.79135pt, 85.35826pt)
-* v-part:(T,H,B)=(85.35826pt, 674.33032pt, 85.35826pt)
+* h-part:(L,W,R)=(71.13188pt, 455.24411pt, 71.13188pt)
+* v-part:(T,H,B)=(71.13188pt, 702.78308pt, 71.13188pt)
 * \paperwidth=597.50787pt
 * \paperheight=845.04684pt
-* \textwidth=426.79135pt
-* \textheight=674.33032pt
-* \oddsidemargin=13.08827pt
-* \evensidemargin=13.08827pt
-* \topmargin=-23.91173pt
+* \textwidth=455.24411pt
+* \textheight=702.78308pt
+* \oddsidemargin=-1.1381pt
+* \evensidemargin=-1.1381pt
+* \topmargin=-38.1381pt
 * \headheight=12.0pt
 * \headsep=25.0pt
 * \topskip=11.0pt
@@ -1114,70 +448,127 @@ kii
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-Package biblatex Info: Trying to load language 'english'...
-Package biblatex Info: ... file 'english.lbx' found.
+(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/graphics/color.sty
+Package: color 2025/01/14 v1.3e Standard LaTeX Color (DPC)
 
-(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/biblatex/lbx/english.l
-bx
-File: english.lbx 2025/07/10 v3.21 biblatex localization (PK/MW)
+(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/graphics-cfg/color.cfg
+File: color.cfg 2016/01/02 v1.6 sample color configuration
 )
-Package biblatex Info: LuaTeX detected.
-(biblatex)             Assuming input encoding 'utf8'.
-Package biblatex Info: Automatic encoding selection.
-(biblatex)             Assuming data encoding 'utf8'.
+Package color Info: Driver file: luatex.def on input line 149.
 
-\openout4 = proposal-main.bcf
-Package biblatex Info: Trying to load bibliographic data...
-Package biblatex Info: ... file 'proposal-main.bbl' not found.
+(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/graphics-def/luatex.de
+f
+File: luatex.def 2025/09/29 v1.2f Graphics/color driver for luatex
 
-No file proposal-main.bbl.
-Package biblatex Info: Reference section=0 on input line 60.
-Package biblatex Info: Reference segment=0 on input line 60.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 84.
+(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/context/base/mkii/supp-pdf.m
+kii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count316
+\scratchdimen=\dimen183
+\scratchbox=\box56
+\nofMPsegments=\count317
+\nofMParguments=\count318
+\everyMPshowfont=\toks28
+\MPscratchCnt=\count319
+\MPscratchDim=\dimen184
+\MPnumerator=\count320
+\makeMPintoPDFobject=\count321
+\everyMPtoPDFconversion=\toks29
+))
+(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/graphics/mathcolor.ltx
+))
+Package hyperref Info: Link coloring ON on input line 24.
+ (./proposal-main.out) (./proposal-main.out)
+\@outlinefile=\write3
+
+\openout3 = proposal-main.out
+LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 2
+6.
+
+(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/lm/ot1lmr.fd
+File: ot1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+LaTeX Font Info:    Trying to load font information for OML+lmm on input line 2
+6.
+
+(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/lm/omllmm.fd
+File: omllmm.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 
+26.
+
+(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/lm/omslmsy.fd
+File: omslmsy.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 
+26.
+
+(C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/lm/omxlmex.fd
+File: omxlmex.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <12> on input line 26.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <8> on input line 26.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <6> on input line 26.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 26.
+
 
 (C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 84.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 26.
 
 
 (C:/Users/floris/AppData/Local/Programs/MiKTeX/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-(./proposal/motivation.tex) (./proposal/research_question.tex)
-(./proposal/methods.tex)
+Overfull \hbox (7.23676pt too wide) in paragraph at lines 55--56
+[]\T1/lmr/m/n/10.95 The main em-pir-i-cal hy-poth-e-sis is that win-ter ex-treme
+s may be more ge-o-graph-i-cally widespread,
+ []
 
-LaTeX Warning: Empty bibliography on input line 115.
-
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <10.95> on input line 59.
 [1
 
-{C:/Users/floris/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}]
-(./proposal-main.aux)
+{C:/Users/floris/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}] [2]
+[3] [4] [5] (./proposal-main.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-29>
  ***********
-Package logreq Info: Writing requests to 'proposal-main.run.xml'.
-
-\openout1 = proposal-main.run.xml
+Package rerunfilecheck Info: File `proposal-main.out' has not changed.
+(rerunfilecheck)             Checksum: 1D6B6F19EA3B522C54B9509DB4C2C362;2383.
 )
 
 Here is how much of LuaTeX's memory you used:
- 26213 strings out of 476081
- 100000,1373583 words of node,token memory allocated
- 646 words of node memory still in use:
-   6 hlist, 2 vlist, 2 rule, 2 glue, 18 kern, 1 glyph, 12 attribute, 65 glue_spe
-c, 12 attribute_list, 2 write nodes
-   avail lists: 1:1,2:150,3:45,4:18,5:84,6:16,7:2468,8:1,9:128,10:8,11:206
- 47976 multiletter control sequences out of 65536+600000
- 39 fonts using 2322623 bytes
- 103i,6n,116p,754b,801s stack positions out of 10000i,1000n,20000p,200000b,200000s
-{C:/Users/floris/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc}<C:/U
-sers/floris/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/U
-sers/floris/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb>
-Output written on proposal-main.pdf (1 page, 29643 bytes).
+ 11261 strings out of 476081
+ 100000,662416 words of node,token memory allocated
+ 520 words of node memory still in use:
+   6 hlist, 2 vlist, 2 rule, 2 glue, 4 kern, 1 glyph, 10 attribute, 56 glue_spec
+, 10 attribute_list, 1 write nodes
+   avail lists: 2:420,3:258,4:102,5:393,6:54,7:7039,8:36,9:267,10:12,11:558
+ 33454 multiletter control sequences out of 65536+600000
+ 47 fonts using 3019879 bytes
+ 72i,6n,75p,1055b,493s stack positions out of 10000i,1000n,20000p,200000b,200000s
+{C:/Users/floris/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathsy.enc}
+{C:/Users/floris/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-rm.enc}{C:/
+Users/floris/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathit.enc}{C:/
+Users/floris/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ec.enc}<C:/User
+s/floris/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx10.pfb><C:/User
+s/floris/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx12.pfb><C:/User
+s/floris/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi10.pfb><C:/User
+s/floris/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi8.pfb><C:/Users
+/floris/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr10.pfb><C:/Users/
+floris/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr12.pfb><C:/Users/f
+loris/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr17.pfb><C:/Users/fl
+oris/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmri10.pfb><C:/Users/fl
+oris/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmsy10.pfb>
+Output written on proposal-main.pdf (5 pages, 197709 bytes).
 
-PDF statistics: 18 PDF objects out of 1000 (max. 8388607)
- 0 named destinations out of 1000 (max. 1048576)
- 16 words of extra memory for PDF output out of 10000 (max. 100000000)
+PDF statistics: 164 PDF objects out of 1000 (max. 8388607)
+ 52 named destinations out of 1000 (max. 1048576)
+ 105 words of extra memory for PDF output out of 10000 (max. 100000000)
 
