@@ -8,12 +8,15 @@
 \usepackage{enumitem}
 \usepackage{titlesec}
 \usepackage{hyperref}
+\usepackage{array}
+\usepackage{ragged2e}
 \usepackage{booktabs}
 \usepackage{microtype}
 \usepackage{setspace}
 \usepackage{longtable}
 \usepackage{siunitx}
 \usepackage{parskip}
+\newcolumntype{P}[1]{>{\RaggedRight\arraybackslash}p{#1}}
 \setlength{\parskip}{0.42em}
 \setlength{\parindent}{0pt}
 \setlist[itemize]{leftmargin=1.35em,itemsep=0.18em,topsep=0.2em}
@@ -58,6 +61,10 @@
 %\usepackage{natbib} % in case of classic bibtex
 \usepackage[natbib,style=authoryear,maxcitenames=2,
     maxbibnames=99,hyperref,backend=biber,hyperref=false]{biblatex}
+% TODO (setup pass): the file bib/EORthesis.bib referenced below does
+%       not exist yet; both bib/thesis/ and bib/proposal/ are empty.
+%       Either create EORthesis.bib (preferred) or change the path.
+%       Comment out this line if running latexmk fails without it.
 \addbibresource{bib/EORthesis.bib}
 
 %%%%%%%%%%%%%%%% start document %%%%%%%%%%%
@@ -69,7 +76,7 @@
 \begin{center}
     {\huge\bf
         \noindent
-        Functional and Dependence Modelling of Extreme Wind Events in the Netherlands
+        Seasonal Variation in Spatial Extremal Dependence of Wind Gusts in the Netherlands
     }
 \end{center}
 
@@ -102,21 +109,42 @@
     }
 \end{center}
 
+\input{thesis/introduction.tex}
 
 \input{thesis/data.tex}
 
 \newpage
-
 \input{thesis/literature.tex}
 
 \newpage
+\input{thesis/evt_spatial_dependence.tex}
 
-\input{thesis/methodology_evt_baseline.tex}
 \newpage
-\input{thesis/results_evt_baseline.tex}
-\newpage
-\input{thesis/interpretation_evt_baseline.tex}
+\input{thesis/methodology.tex}
 
+\newpage
+\input{thesis/empirical_design.tex}
+
+\newpage
+\input{thesis/results.tex}
+
+\newpage
+\input{thesis/robustness.tex}
+
+\newpage
+\input{thesis/conclusion.tex}
+
+% =====================================================================
+% Bibliography
+% TODO: bib/EORthesis.bib does not exist yet (see TODO comment on the
+%       \addbibresource line above). Once the file is populated,
+%       \printbibliography will resolve. Until then this command
+%       prints an empty list, which is the expected behaviour.
+% =====================================================================
+\newpage
+\printbibliography[heading=bibintoc,title={References}]
+
+\newpage
 \input{thesis/appendix.tex}
 
 \end{document}

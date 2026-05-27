@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(python -W ignore -c ' *)",
-      "Bash(C:/Users/floris/Desktop/MSC/thesis_msc/.venv/Scripts/python.exe -c ' *)",
-      "Bash(python *)"
-    ]
-  }
-}

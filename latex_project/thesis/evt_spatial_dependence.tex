@@ -1,0 +1,342 @@
+% =====================================================================
+% Extreme value theory and spatial extremal dependence
+% Status: scaffold draft (setup pass). Every symbol used here must be
+% defined here, and must be reused without redefinition in
+% methodology.tex, empirical_design.tex, results.tex.
+% Notation follows the Climate Data Science convention listed in the
+% project skills:
+%   t = 1,...,T            : time index
+%   tau_t = t/T            : normalised time
+%   s_i                    : spatial location of station i
+%   X_{i,t} = X_{s_i,t}    : hourly maximum wind gust (FX)
+%   c in {W,S}             : seasonal label, W = DJF, S = JJA
+% Beta is reserved for actual regression parameters and is not used in
+% this section.
+% =====================================================================
+\section{Extreme value theory and spatial extremal dependence}
+\label{sec:evt-spatial}
+
+This section sets up the formal framework that the rest of the thesis
+relies on. We first fix notation and recall the univariate extreme
+value result that underpins marginal modelling of hourly wind gusts.
+We then turn to the spatial case and define the pairwise extremal
+dependence summaries that are estimated in the empirical part. The
+exposition follows the order ``intuition, model, assumption,
+interpretation''.
+
+\subsection{Notation and data structure}\label{sec:evt-notation}
+
+We observe hourly maximum wind gusts at a finite collection of KNMI
+stations. Let
+\[
+    \mathcal{S} = \{s_1,\dots,s_N\}
+\]
+denote the set of station locations \(s_i \in \mathbb{R}^2\) under
+study, with \(N\) the number of stations.
+% TODO: confirm N once the station-selection rules in
+%       empirical_design.tex are applied.
+Time is discrete and indexed by \(t = 1,\dots,T\), where one unit of
+\(t\) corresponds to one hour. We write
+\[
+    X_{i,t} \;=\; X_{s_i,t} \;\in\; \mathbb{R}_{\ge 0}
+\]
+for the hourly maximum wind gust (\(\mathrm{FX}\)) observed at
+station \(s_i\) at hour \(t\). When the normalised time
+\(\tau_t = t/T \in (0,1]\) is needed, for example to refer to within-
+sample time variation, we use that explicit notation.
+
+Seasonal stratification is encoded by a label \(c \in \{\mathrm{W},
+\mathrm{S}\}\), with \(\mathrm{W}\) for winter (December--February)
+and \(\mathrm{S}\) for summer (June--August). We write
+\(\mathcal{T}_c \subset \{1,\dots,T\}\) for the set of hours that
+belong to season \(c\), and
+\[
+    X^{(c)}_{i,t} \;=\; X_{i,t}\quad\text{for } t \in \mathcal{T}_c
+\]
+to make the seasonal stratification explicit when needed. The
+convention that December of calendar year \(y\) is attached to
+winter year \(y+1\) is part of the empirical design and is stated in
+Section~\ref{sec:empirical-design}.
+
+\subsection{Univariate extreme value modelling}
+\label{sec:evt-univariate}
+
+The intuition behind extreme value theory is that, for a wide class
+of distributions of \(X_{i,t}\), the distribution of the suitably
+normalised maximum over a long block of observations converges to a
+single parametric family. This justifies modelling block maxima of
+hourly wind gusts by a fixed three-parameter distribution even though
+the full distribution of \(X_{i,t}\) is unknown.
+
+Fix a station \(s_i\) and a season \(c\) and let \(n\) be a block
+size in hours. The block maximum is
+\[
+    M^{(c)}_{i,n} \;=\; \max\!\bigl\{ X_{i,t}\,:\, t \in
+    \mathcal{B}^{(c)}_{i,n}\bigr\},
+\]
+where \(\mathcal{B}^{(c)}_{i,n}\) is a block of \(n\) consecutive
+hours inside \(\mathcal{T}_c\). Under the standard extreme value
+limit assumption, there exist sequences \(a_n>0\) and \(b_n\) such
+that
+\[
+    \Pr\!\left( \frac{M^{(c)}_{i,n} - b_n}{a_n} \le z \right)
+    \;\xrightarrow[n\to\infty]{}\;
+    G_{\mu,\sigma,\xi}(z)
+    \;=\;
+    \exp\!\left\{-\Bigl[1 + \xi\,\tfrac{z-\mu}{\sigma}\Bigr]_{+}^{-1/\xi}\right\},
+\]
+the generalised extreme value (GEV) distribution with location
+\(\mu\), scale \(\sigma>0\), and shape \(\xi\), where
+\([\,\cdot\,]_{+}\) denotes the positive part. The case \(\xi=0\) is
+interpreted as the Gumbel limit \(\exp\{-\exp[-(z-\mu)/\sigma]\}\).
+% TODO: cite Fisher--Tippett--Gnedenko and the Coles textbook (not in
+%       the local literature folder; add manually). The same
+%       statement is also surveyed in \citet{TODO-davison2012} and
+%       \citet{TODO-cooley2012}, both of which are in the local
+%       folder.
+
+For station-by-station marginal modelling we will use either this
+block-maxima route or its threshold-exceedance counterpart through
+the generalised Pareto distribution
+\[
+    H_{\sigma_u,\xi}(y) \;=\; 1 - \Bigl(1 + \xi\,\tfrac{y}{\sigma_u}\Bigr)_{+}^{-1/\xi},
+\]
+where \(Y = X_{i,t} - u\) given \(X_{i,t} > u\) is the exceedance
+over a high threshold \(u\) and \(\sigma_u\) is a scale parameter
+that depends on \(u\).
+% TODO: cite Pickands and Balkema--de Haan (not in the local
+%       folder). Direct wind-gust precedent for the GPD fit is
+%       \citet{TODO-brabson2000}, which is in the local folder.
+
+The role of marginal modelling in this thesis is twofold. First, it
+gives station-specific tail summaries (shape \(\xi_i\), high
+quantiles, return levels) that are useful in their own right.
+Second, it provides a way to standardise the marginal distributions
+of \(X_{i,t}\) across stations before estimating dependence, so that
+seasonal differences in marginal scale do not contaminate the
+estimated dependence. The choice between block maxima and
+threshold exceedances is treated in Section~\ref{sec:methodology}.
+
+\subsection{Spatial extremes: heuristic}\label{sec:evt-spatial-heuristic}
+
+Univariate extreme value theory describes the upper tail at a single
+location. The empirical question of this thesis is about the joint
+upper tail across multiple locations. Two locations can each have
+heavy upper tails and yet have very different joint behaviour:
+either large values at \(s_i\) and \(s_j\) tend to occur together,
+in which case we say the locations are asymptotically dependent, or
+large values at \(s_i\) are essentially uninformative about
+simultaneously large values at \(s_j\), in which case the locations
+are asymptotically independent. Spatial extreme value theory makes
+this dichotomy precise; the distinction is central to the modern
+review \citep{TODO-huser2020}, which emphasises that classical
+max-stable models impose asymptotic dependence by construction
+whereas environmental data often exhibit asymptotic independence at
+the very top of the tail.
+
+\subsection{Pairwise extremal dependence}\label{sec:evt-pairwise}
+
+Let \(F_i\) denote the marginal cumulative distribution function of
+\(X_{i,t}\). To remove marginal effects we standardise to a common
+scale by setting
+\[
+    U_{i,t} \;=\; F_i(X_{i,t}) \;\in\; (0,1).
+\]
+Under any continuous \(F_i\), \(U_{i,t}\) is uniform on \((0,1)\) so
+the joint distribution of \((U_{i,t},U_{j,t})\) carries dependence
+information only. In practice \(F_i\) is unknown and must be
+estimated either nonparametrically by the empirical CDF (rank
+transform) or parametrically through the GEV / GPD fit of
+Section~\ref{sec:evt-univariate}. Both choices are revisited as
+robustness checks.
+
+The \emph{upper tail dependence coefficient} of the station pair
+\((i,j)\) is
+\[
+    \chi_{ij}
+    \;=\;
+    \lim_{u \uparrow 1}\,
+    \Pr\!\bigl(\, U_{j,t} > u \,\big|\, U_{i,t} > u \,\bigr),
+\]
+which lies in \([0,1]\). The value \(\chi_{ij}=0\) corresponds to
+asymptotic independence; \(\chi_{ij}=1\) corresponds to perfect
+asymptotic dependence. The intuitive reading is: given that
+station \(i\) is in the top \((1-u)\)-fraction of its own
+distribution, what is the limiting probability that station \(j\)
+is in the top \((1-u)\)-fraction of \emph{its} distribution at the
+same hour.
+
+A closely related summary is the \emph{extremal coefficient}, which
+can be defined for any pair as
+\[
+    \theta_{ij}
+    \;=\;
+    \lim_{u\uparrow 1}\;
+    \frac{\log \Pr(U_{i,t}\le u,\,U_{j,t}\le u)}{\log u},
+\]
+and takes values in \([1,2]\). The endpoint \(\theta_{ij}=1\)
+corresponds to perfect dependence, and \(\theta_{ij}=2\) to
+asymptotic independence. When the underlying field is max-stable,
+\(\theta_{ij}\) and \(\chi_{ij}\) are in a one-to-one relationship:
+\(\chi_{ij} = 2 - \theta_{ij}\)
+\citep{TODO-davison2012,TODO-cooley2012}.
+
+To diagnose the asymptotic-independence case in which
+\(\chi_{ij}=0\) and \(\chi_{ij}\) alone is uninformative, we follow
+\citet{TODO-cooley2012} and report the chibar coefficient
+\[
+    \bar\chi_{ij}
+    \;=\; \lim_{u \uparrow 1}\,
+    \frac{2\,\log(1-u)}{\log \Pr(U_{i,t} > u,\, U_{j,t} > u)} - 1
+    \;\in\; (-1, 1],
+\]
+which equals \(1\) in the asymptotic-dependence case and is
+strictly smaller than \(1\) in the asymptotic-independence case.
+The practical reading is that \(\chi_{ij}\) and \(\bar\chi_{ij}\)
+are reported together: \(\chi_{ij}\) describes the strength of
+dependence under asymptotic dependence, and \(\bar\chi_{ij}\)
+calibrates the asymptotic-independence regime.
+
+Because the asymptotic value \(\chi_{ij}\) is itself unobserved
+and only the finite-level estimator
+\(\chi_{ij}(u) = \Pr(U_{j,t} > u \mid U_{i,t} > u)\) is available
+from data, we follow \citet{TODO-wadsworth2012} and report
+\(\chi_{ij}(u)\) on a grid of \(u\) close to \(1\) rather than
+committing to a single asymptotic value. The seasonal contrast is
+therefore interpreted at finite tail levels, not at the limit.
+
+\paragraph{Season-stratified versions.}
+When the empirical analysis stratifies the hourly observations by
+season, the same definitions apply within each subsample. We write
+\[
+    \chi_{ij}^{(c)},\qquad \theta_{ij}^{(c)},\qquad \bar\chi_{ij}^{(c)},
+    \qquad c \in \{\mathrm{W},\mathrm{S}\},
+\]
+for the pairwise summaries restricted to the hours
+\(t \in \mathcal{T}_c\). The headline empirical question of this
+thesis is whether \(\chi_{ij}^{(\mathrm{W})}\) and
+\(\chi_{ij}^{(\mathrm{S})}\) differ systematically.
+
+In the empirical part of the thesis we treat \(\chi_{ij}^{(c)}(u)\)
+and \(\theta_{ij}^{(c)}\) as primary objects, with
+\(\bar\chi_{ij}^{(c)}\) reported as a diagnostic. Whether the
+seasonal contrast is reported in terms of \(\chi_{ij}^{(c)}(u)\),
+in terms of \(\theta_{ij}^{(c)}\), or in both, is set in
+Section~\ref{sec:methodology}.
+
+\subsection{Spatial max-stable processes as
+motivation}\label{sec:evt-maxstable}
+
+The pairwise summaries above arise naturally if \(\{X_{i,t}\}\)
+behaves like a max-stable process when viewed at its upper tail. A
+stationary spatial process \(\{Z(s):s\in\mathbb{R}^2\}\) with unit
+Fr\'echet margins is \emph{max-stable} if for every \(n\ge 1\),
+\[
+    \max_{k=1,\dots,n} \frac{1}{n}\, Z^{(k)}(s)
+    \;\stackrel{d}{=}\;
+    Z(s),
+\]
+for i.i.d.\ copies \(Z^{(k)}\). For any finite collection
+\(\{s_{i_1},\dots,s_{i_d}\}\) the joint distribution then admits an
+exponent measure representation
+\[
+    \Pr\!\bigl( Z(s_{i_1}) \le z_1,\dots,Z(s_{i_d}) \le z_d \bigr)
+    \;=\;
+    \exp\!\bigl\{-V(z_1,\dots,z_d)\bigr\},
+\]
+where the dependence is encoded in the function \(V\). The bivariate
+extremal coefficient \(\theta_{ij}\) of
+Section~\ref{sec:evt-pairwise} appears as \(V(1,1)\) in this
+representation, evaluated at the pair \((s_i,s_j)\).
+% TODO: cite the max-stable construction. In the local folder the
+%       relevant references are \citet{TODO-davison2012} (review),
+%       \citet{TODO-padoan2010} (inference), and
+%       \citet{TODO-dehaan2006} (simple parametric families). Add
+%       Smith (1990, unpublished) manually if needed. The exponent
+%       measure / spectral representation is most readable in
+%       \citet{TODO-cooley2012}.
+
+Two methodological consequences are relevant. First, all pairwise
+dependence summaries used in the empirical analysis can be defined
+without committing to a specific parametric max-stable family;
+max-stability is the theoretical justification for using them, not
+an estimation assumption. Second, if we later want to fit a
+parametric model, the pairwise composite likelihood of
+\citet{TODO-padoan2010} gives a tractable route. Parsimonious
+parametric families with closed-form pairwise tail dependence are
+provided by \citet{TODO-dehaan2006}; these supply the analytic
+benchmark for the empirical \(\widehat\chi^{(c)}(d)\) curves
+introduced below, where \(d\) is the inter-station distance. We
+treat parametric max-stable fitting as optional
+(Section~\ref{sec:meth-maxstable}).
+
+\subsection{Dependence as a function of distance}
+\label{sec:evt-dependence-distance}
+
+The empirical implementation does not estimate one dependence
+number per pair in isolation: we estimate the pair-level summary
+\(\widehat{\chi}_{ij}^{(c)}\) (or \(\widehat{\theta}_{ij}^{(c)}\))
+for every available station pair \((i,j)\) and every season
+\(c \in \{\mathrm{W},\mathrm{S}\}\), and then summarise these as a
+function of the geographical distance
+\[
+    d_{ij} \;=\; \lVert s_i - s_j \rVert,
+\]
+measured along the Earth's surface. The seasonal comparison is then
+a comparison of the season-conditional functions
+\[
+    \chi^{(c)}(d) \;=\; \mathbb{E}\!\bigl[\,
+    \chi_{ij}^{(c)} \,\big|\, d_{ij} = d \,\bigr],
+    \qquad c \in \{\mathrm{W},\mathrm{S}\},
+\]
+or their nonparametric estimators on a grid of distances.
+% TODO: decide whether to report d in great-circle kilometres or in
+%       projected kilometres; specify in empirical_design.tex.
+
+The intuition for using a dependence--distance summary is that the
+station-pair scatter is noisy and high dimensional. Collapsing it
+to a one-dimensional summary along distance keeps the meaningful
+spatial structure (decay with distance) while making the seasonal
+comparison legible in a single figure. If
+\(\chi^{(\mathrm{W})}(d) > \chi^{(\mathrm{S})}(d)\) at the
+distances of interest, this is evidence that extreme gusts in
+winter are spatially more widespread than in summer at those
+scales; the converse interpretation applies if the inequality is
+reversed; and the size of the gap calibrates how much of the joint
+upper tail is shared between stations.
+
+\subsection{Assumptions and their cost}\label{sec:evt-assumptions}
+
+We collect the main assumptions used throughout the thesis here.
+
+\begin{enumerate}
+    \item Within season \(c\), the field \(\{X_{i,t}: i=1,\dots,N,\,
+          t\in\mathcal{T}_c\}\) is taken to be stationary in \(t\).
+          This is plausible only approximately and is the main
+          reason for splitting the analysis by season rather than
+          pooling across the year.
+    \item Each marginal \(F_i\) is continuous, so the rank transform
+          \(U_{i,t} = F_i(X_{i,t})\) is well defined.
+    \item Pairwise extremal dependence summaries are estimated
+          under the assumption that the upper tail of
+          \((U_{i,t},U_{j,t})\) admits a well-defined limit. The
+          empirical tail levels at which we estimate \(\chi_{ij}\)
+          and \(\theta_{ij}\) are reported in
+          Section~\ref{sec:empirical-design}.
+    \item When we display \(\chi^{(c)}(d)\), we implicitly assume
+          isotropy: dependence depends on the distance between
+          stations and not on the direction between them. The
+          formal warrant for relaxing this — letting the dependence
+          kernel itself depend on covariates such as direction or
+          season — is in \citet{TODO-huser-genton2016}, whose
+          covariate-dependent max-stable construction is the
+          theoretical counterpart of the season-stratified analysis
+          undertaken here.
+          % TODO: comment on isotropy as a robustness check (e.g.\
+          % stratify pairs by direction and recompute the
+          % dependence--distance smoother).
+\end{enumerate}
+
+None of these assumptions is innocuous; the role of
+Section~\ref{sec:robustness} is to assess how sensitive the seasonal
+conclusion is to relaxing them.

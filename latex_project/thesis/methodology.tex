@@ -1,0 +1,340 @@
+% =====================================================================
+% Methodology
+% Status: first full draft.
+% Headline route fixed to block maxima (main) with POT as
+% robustness, per literature/notes/methodology_options.md.
+% Notation matches thesis/evt_spatial_dependence.tex.
+% Operational numbers (block size, threshold quantile, bootstrap
+% block length, smoother bandwidth) remain in
+% thesis/empirical_design.tex as TODOs.
+% =====================================================================
+\section{Methodology}\label{sec:methodology}
+
+We consider the empirical strategy used to answer the seasonal
+extremal-dependence question of
+Section~\ref{sec:intro-rq}. The strategy is built around four
+ingredients: (i) construction of extreme observations from the
+hourly \(\mathrm{FX}\) series; (ii) marginal standardisation across
+stations; (iii) estimation of pairwise extremal dependence; and
+(iv) summarisation as a function of distance, separately for winter
+and summer. Each ingredient corresponds to one subsection below.
+Operational numerical choices (e.g.\ block size in hours, threshold
+quantile, bootstrap block length) are recorded in
+Section~\ref{sec:empirical-design}, so that the methodology section
+remains valid when those numbers are tuned.
+
+\subsection{Overview of the empirical
+strategy}\label{sec:meth-overview}
+
+The goal is to estimate the seasonal dependence--distance curves
+\[
+    \chi^{(c)}(d) \;=\; \mathbb{E}\!\bigl[\,\chi_{ij}^{(c)} \,\big|\,
+    d_{ij} = d\,\bigr],
+    \qquad c \in \{\mathrm{W},\mathrm{S}\},
+\]
+introduced in Section~\ref{sec:evt-dependence-distance}, together
+with the analogous curve in \(\theta_{ij}^{(c)}\). The seasonal
+comparison is then the pair of estimates
+\(\widehat\chi^{(\mathrm{W})}(d)\) and
+\(\widehat\chi^{(\mathrm{S})}(d)\), displayed on the same axes with
+bootstrap uncertainty bands and supplemented by a pointwise test of
+the null hypothesis \(\chi^{(\mathrm{W})}(d) = \chi^{(\mathrm{S})}(d)\).
+
+The main estimation route is via \emph{block maxima}: one block-
+maximum observation per station per block, with the block defined
+inside a single season. The threshold-exceedance (POT) route is
+treated as a robustness check
+(Section~\ref{sec:meth-extremes-pot}). This ordering is motivated
+by three considerations. Block maxima have a clean GEV-limit
+interpretation that does not require declustering of hourly
+observations; the bivariate extremal coefficient is naturally
+estimated from block maxima via the F-madogram; and a single
+block per season per station per year is the smallest unit that
+keeps the methodology tractable for an MSc-scale project.
+
+\subsection{Station and sample selection}\label{sec:meth-filter}
+
+We restrict the panel \(\{X_{i,t}\}\) by the following filters,
+applied in order.
+
+\begin{enumerate}
+    \item Keep only Dutch land and coastal KNMI stations with
+          \(\mathrm{FX}\) reduced to the 10\,m reference height
+          (Section~\ref{sec:emp-stations}).
+    \item Discard hours where \(\mathrm{FX}\) is missing or flagged
+          invalid by KNMI quality control.
+    \item Discard station-season-years that fail the within-season
+          completeness threshold of
+          Section~\ref{sec:emp-missing}.
+    \item Define the balanced station panel as the set of stations
+          satisfying steps 1--3 in every winter and every summer of
+          the chosen sample window. Stations that fail this
+          requirement are retained only in the larger unbalanced
+          panel used for robustness
+          (Section~\ref{sec:rob-stations}).
+\end{enumerate}
+
+\subsection{Seasonal stratification}\label{sec:meth-seasons}
+
+We split the hourly panel into two non-overlapping seasonal
+subsamples,
+\[
+    \mathcal{T}_{\mathrm{W}}
+    \;=\; \{t : \mathrm{month}(t) \in \{12,1,2\}\},
+    \qquad
+    \mathcal{T}_{\mathrm{S}}
+    \;=\; \{t : \mathrm{month}(t) \in \{6,7,8\}\}.
+\]
+December of calendar year \(y\) is attached to winter year
+\(y+1\), so that each winter is contiguous in calendar time. The
+remaining months (MAM and SON) are dropped from the main analysis.
+
+\subsection{Construction of extreme observations (main route:
+block maxima)}\label{sec:meth-extremes}
+
+For each station \(i\), each season \(c\) and each year \(y\), we
+construct one or more block maxima of \(X_{i,t}\) over consecutive
+hours within \(\mathcal{T}_c\). Let \(n\) denote the block length
+in hours and let \(\mathcal{B}_{i,n,k}^{(c)}\) denote the
+\(k\)-th non-overlapping block of \(n\) hours inside season \(c\)
+of year \(y\). The block maximum is
+\[
+    M_{i,b}^{(c)}
+    \;=\;
+    \max\!\bigl\{ X_{i,t}\,:\, t \in \mathcal{B}_{i,n,k}^{(c)} \bigr\},
+\]
+where the index \(b\) ranges over the available
+(year, season-block) combinations for station \(i\). A block is
+discarded if its within-block missing fraction exceeds the
+threshold in Section~\ref{sec:emp-missing}.
+
+Two natural block sizes are considered:
+
+\begin{itemize}
+    \item \emph{Seasonal block} (\(n = |\mathcal{T}_c|\)): one
+          observation per station per season per year. This is
+          the cleanest block-maximum from the GEV perspective.
+    \item \emph{Monthly-within-season block} (\(n \approx 24\times
+          30\) hours): roughly three observations per station per
+          season per year. This gives a larger effective sample
+          at the cost of a less clean block-maximum interpretation.
+\end{itemize}
+
+% TODO: pin one block size as primary in empirical_design.tex.
+
+\subsection{Construction of extreme observations (alternative
+route: threshold exceedances)}\label{sec:meth-extremes-pot}
+
+As an alternative we construct, for each station \(i\) and each
+season \(c\), peaks over a high station- and season-specific
+threshold \(u_i^{(c)}\), set as a fixed empirical quantile of
+\(\{X_{i,t}: t \in \mathcal{T}_c\}\). Exceedances are
+\[
+    Y_{i,t}^{(c)} \;=\; X_{i,t} - u_i^{(c)}
+    \quad\text{for}\quad
+    X_{i,t} > u_i^{(c)},\ t \in \mathcal{T}_c.
+\]
+The exceedance sequence at each station is declustered via the
+automatic scheme of \citet{TODO-ferro2003}, which is based on the
+extremal index estimated from inter-exceedance times. The result
+is an approximately independent set of station-level cluster
+peaks per (station, season). This route is reported as a robustness
+check; it is not the primary route because the dependence
+estimators below treat the within-season hourly time index as the
+natural pairing axis, which is cleaner for block maxima than for
+declustered exceedances.
+
+\subsection{Marginal standardisation}\label{sec:meth-marginals}
+
+To remove differences in marginal scale between stations and
+between seasons, we transform each station's series to a common
+\((0,1)\) margin. Two transforms are considered.
+
+\paragraph{Empirical rank transform (main).}
+For each (station, season), set
+\[
+    \widehat U_{i,t}^{(c)}
+    \;=\; \widehat F_i^{(c)}(X_{i,t}),
+    \qquad t \in \mathcal{T}_c,
+\]
+where \(\widehat F_i^{(c)}\) is the within-season empirical CDF at
+station \(i\). This is the default because it makes no
+parametric assumption about the marginal distribution.
+
+\paragraph{Parametric tail transform (robustness).}
+For each (station, season), fit either a GEV to the block-maxima
+series \(\{M_{i,b}^{(c)}\}_b\) or a GPD to the exceedances
+\(\{Y_{i,t}^{(c)}\}\), depending on which extreme-construction
+route is being used, and transform to a unit-Fréchet margin via
+\(Z_{i,t}^{(c)} = -1/\log\widehat G_i^{(c)}(X_{i,t})\). This
+exploits the extreme-value limit but is sensitive to the marginal
+fit; we report it as a robustness check (Section~\ref{sec:rob-marginals}).
+
+\subsection{Pairwise extremal dependence
+estimation}\label{sec:meth-dependence}
+
+We estimate the season-stratified pairwise dependence summaries
+\(\chi_{ij}^{(c)}\), \(\theta_{ij}^{(c)}\) and \(\bar\chi_{ij}^{(c)}\)
+defined in Section~\ref{sec:evt-pairwise}. The estimators are
+empirical and apply directly to the rank-transformed series
+\(\widehat U_{i,t}^{(c)}\).
+
+\paragraph{Empirical \(\chi\) at level \(u\).}
+For every pair \((i,j)\) and every \(u\) close to 1 we compute
+\[
+    \widehat\chi_{ij}^{(c)}(u)
+    \;=\;
+    \frac{\#\bigl\{t \in \mathcal{T}_c :
+       \widehat U_{i,t}^{(c)} > u,\,
+       \widehat U_{j,t}^{(c)} > u\bigr\}}
+         {\#\bigl\{t \in \mathcal{T}_c :
+       \widehat U_{i,t}^{(c)} > u\bigr\}}.
+\]
+We report \(\widehat\chi_{ij}^{(c)}(u)\) on a grid of \(u\)
+following \citet{TODO-wadsworth2012}, together with a chosen
+reference level set in Section~\ref{sec:empirical-design}.
+
+\paragraph{Empirical extremal coefficient via the F-madogram.}
+On the block-maxima series \(\{M_{i,b}^{(c)}\}_b\) we use the
+F-madogram estimator of \citet{TODO-davison2012},
+\[
+    \widehat\nu_F\bigl(\,i,j;\,c\,\bigr)
+    \;=\;
+    \frac{1}{2B^{(c)}} \sum_{b=1}^{B^{(c)}}
+    \bigl| \widehat F_i^{(c)}(M_{i,b}^{(c)}) -
+           \widehat F_j^{(c)}(M_{j,b}^{(c)}) \bigr|,
+\]
+and convert to the extremal coefficient via
+\(\widehat\theta_{ij}^{(c)} = (1 + 2\widehat\nu_F)/(1 - 2\widehat\nu_F)\).
+Here \(B^{(c)}\) is the number of available season-\(c\) blocks
+for the pair on a pairwise-complete basis.
+
+\paragraph{Chibar diagnostic.}
+For each pair we also compute the finite-level
+\(\widehat{\bar\chi}_{ij}^{(c)}(u)\) on the same grid as
+\(\widehat\chi_{ij}^{(c)}(u)\), reported jointly for diagnosing
+asymptotic independence.
+
+\subsection{Distance summary}\label{sec:meth-distance}
+
+The pair-level estimates above are noisy. We summarise them along
+geographical distance \(d_{ij} = \mathrm{dist}(s_i,s_j)\) by
+fitting, for each season \(c\), a one-dimensional smoother
+\[
+    \widehat\chi^{(c)}(d)
+    \;=\; \mathrm{smoother}\!\Bigl(\bigl\{(\widehat\chi_{ij}^{(c)},\,
+        d_{ij})\bigr\}_{i<j}\Bigr).
+\]
+We use a local-linear kernel smoother with Gaussian kernel; the
+bandwidth is selected by leave-one-out cross-validation within
+each season and is reported in
+Section~\ref{sec:emp-extremes}. The smoother is not the object of
+interest in its own right — it is a device to make the seasonal
+comparison legible. The raw pair-level scatter is shown alongside
+the smoothed curve so that the reader can judge whether the
+smoother is hiding structure.
+
+% TODO: confirm smoother choice (kernel vs local linear vs
+%       Nadaraya-Watson) and bandwidth selection rule once notebook
+%       03 has run on the actual data.
+
+\subsection{Winter--summer comparison}\label{sec:meth-comparison}
+
+The headline empirical comparison combines three reports.
+
+\begin{enumerate}
+    \item \textbf{Overlay.} The two smoothed curves
+          \(\widehat\chi^{(\mathrm{W})}(d)\) and
+          \(\widehat\chi^{(\mathrm{S})}(d)\) on a single panel
+          with their bootstrap bands.
+    \item \textbf{Scalar summaries.} The values
+          \(\widehat\chi^{(c)}(d_0)\) at a small set of reference
+          distances \(d_0\) (e.g.\ \(50\), \(100\), \(200\) km),
+          with bootstrap percentile intervals.
+    \item \textbf{Difference curve.} The pointwise difference
+          \(\widehat\chi^{(\mathrm{W})}(d) - \widehat\chi^{(\mathrm{S})}(d)\)
+          with a bootstrap band and a permutation test of the null
+          hypothesis \(\chi^{(\mathrm{W})}(d) = \chi^{(\mathrm{S})}(d)\).
+\end{enumerate}
+
+The permutation test is constructed by randomly relabelling the
+seasonal indicator across whole seasons (not across individual
+hours), which preserves the within-season dependence structure that
+the bootstrap also needs to preserve.
+
+\subsection{Uncertainty quantification}\label{sec:meth-uncertainty}
+
+Hourly wind gusts within a season exhibit strong serial dependence
+(storm clusters); the block-maxima series also display modest
+serial dependence between consecutive years. We therefore use a
+\emph{block bootstrap} that resamples consecutive blocks of length
+\(L\) hours from the panel \(\{X_{i,t}: t \in \mathcal{T}_c\}\),
+re-runs the rank transform and the pairwise estimators inside each
+bootstrap replication, and produces a percentile interval over
+\(B\) replications. The block length \(L\) must exceed a typical
+storm duration; \citet{TODO-fawcett2006} and
+\citet{TODO-ferro2003} provide informal guidance for the
+appropriate scale. The numerical values of \(L\) and \(B\) are
+recorded in Section~\ref{sec:emp-inference}.
+
+\subsection{Robustness checks}\label{sec:meth-robustness}
+
+The robustness panel is detailed in
+Section~\ref{sec:robustness}. The main exercises are:
+
+\begin{enumerate}
+    \item Balanced vs.\ unbalanced station panel.
+    \item Block size: monthly-within-season vs.\ seasonal block.
+    \item Threshold-exceedance route as an alternative to block
+          maxima.
+    \item Marginal standardisation: rank transform vs.\ parametric
+          GEV/GPD tail transform.
+    \item Calendar-time sample split (early half vs.\ late half),
+          as the secondary long-run analysis.
+\end{enumerate}
+
+\subsection{Optional: parametric max-stable
+fitting}\label{sec:meth-maxstable}
+
+% Marked optional. Pursue only if the empirical results above are
+% complete and time remains.
+
+If time permits we fit a parametric max-stable process — for
+example the Brown--Resnick, Schlather or extremal Gaussian family
+\citep{TODO-davison2012,TODO-dehaan2006} — to the block-maxima
+series by pairwise composite likelihood
+\citep{TODO-padoan2010}, one season at a time. The fitted
+dependence function is then compared with the nonparametric
+\(\widehat\chi^{(c)}(d)\) of Section~\ref{sec:meth-distance}. This
+step is optional and is not required to answer the main research
+question. A fully covariate-dependent (season-indexed) max-stable
+model in the spirit of \citet{TODO-huser-genton2016} is well
+beyond the scope of an MSc thesis and is recorded only as a
+future-work direction in Section~\ref{sec:conclusion-future}.
+
+\subsection{Limitations}\label{sec:meth-limitations}
+
+Three limitations are worth flagging at this point.
+
+\begin{itemize}
+    \item \emph{Within-season stationarity.} The empirical
+          strategy treats the field as approximately stationary
+          within season \(c\). This is the methodological reason
+          for the seasonal stratification, but it is not exact:
+          there is residual non-stationarity inside a single DJF
+          season (e.g.\ a December warming trend), which the
+          robustness sample-split addresses only partially.
+    \item \emph{Asymptotic dependence assumption.} The estimators
+          \(\widehat\chi_{ij}^{(c)}\) and
+          \(\widehat\theta_{ij}^{(c)}\) treat finite-\(u\)
+          quantities as informative about the asymptotic
+          quantities. \citet{TODO-wadsworth2012} show that finite-
+          level dependence can decay to zero at the very top of the
+          tail; we partially address this by reporting on a grid of
+          \(u\) and by including the \(\bar\chi\) diagnostic.
+    \item \emph{Isotropy.} The distance smoother treats the
+          dependence as a function of the scalar distance only.
+          Anisotropy due to prevailing wind direction is a
+          plausible second-order effect; it is examined in
+          Section~\ref{sec:rob-stations} as a robustness check.
+\end{itemize}

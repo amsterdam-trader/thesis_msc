@@ -1,0 +1,204 @@
+% =====================================================================
+% Introduction
+% Status: first full draft.
+% Opening paragraphs follow the anecdotal motivation that the author
+% drafted in introduction_myself.tex. The factual claims have been
+% pared down to those that are either uncontroversial or can be
+% sourced; every remaining claim that requires a citation or a data
+% lookup carries a precise % TODO.
+% =====================================================================
+\section{Introduction}\label{sec:introduction}
+
+\subsection{Motivation}\label{sec:intro-motivation}
+
+The Netherlands occupies a low-lying river delta on the southern
+edge of the North Sea, with sizeable parts of its territory near or
+below mean sea level. The country's relationship with extreme
+weather has historically been framed as a relationship with water:
+the flood of February 1953, known in Dutch as the
+\emph{Watersnoodramp}, killed more than \num{1800} people in Zeeland
+and South Holland after dikes failed during a spring tide combined
+with a severe North Sea storm,
+% TODO: cite an authoritative reference for the 1953 flood (e.g.\
+%       the Dutch Delta Commission report or Gerritsen 2005,
+%       Philos. Trans. R. Soc. A 363:1271-1291). Not in the local
+%       literature folder; add manually.
+and the subsequent Delta Commission set design return periods for
+sea defences of \num{10000} years in central Holland and of
+\num{1250} years for the major rivers
+\citep{TODO-davison2012}.
+% Note: the 1 250-year river return-level figure is the one quoted
+% in Davison, Padoan and Ribatet (2012, Section 2.2). The original
+% Delta Commission documents would be a better primary source but
+% are not in the local literature folder.
+These engineering norms are the most visible legacy of an
+extreme-value tradition that, in the Dutch context, has long been
+oriented towards flood risk.
+
+Wind has played a comparatively under-emphasised role in this
+tradition, despite the fact that wind extremes contribute directly
+to two distinct hazards. First, the surface wind field forces the
+storm surge that produced the 1953 disaster: a sustained westerly
+wind over the North Sea pushes water against the Dutch coast, and
+the joint occurrence of a deep low-pressure system, a long fetch
+of strong wind and an astronomical high tide is what brings extreme
+sea levels to the coastal defences. Second, the
+short-duration peak gusts associated with the same extratropical
+cyclones are themselves damaging: roofs, infrastructure, forestry
+and transport are all sensitive to peak gust speed rather than to
+the hourly mean, and a substantial share of insured natural-hazard
+losses in the Netherlands is attributable to wind storm events
+rather than to flooding alone.
+% TODO: cite a Dutch insurance-loss source for the share-of-losses
+%       claim (e.g.\ Verbond van Verzekeraars climate statistics).
+%       If no source is available, soften this sentence rather than
+%       quoting a precise share. \citet{TODO-klawa2003} provide the
+%       analogous index for Germany.
+This thesis is about the second of these two hazards: the spatial
+behaviour of extreme hourly wind gusts at the surface, as observed
+by the Dutch national meteorological network.
+
+\subsection{Spatial extremal dependence and the seasonal
+question}\label{sec:intro-spatial-dependence}
+
+Wind extremes are spatial events. A single mature extratropical
+cyclone can affect almost the entire Dutch land area within a few
+hours, producing strong gusts at many stations simultaneously; a
+localised summer convective gust front, by contrast, may strike
+one station and miss its neighbour twenty kilometres away. The two
+events can have indistinguishable peak gust speeds at the point
+where they happen to hit a station, yet have very different
+implications for aggregate exposure across the country. The
+relevant statistical object is therefore not the marginal upper
+tail at a single station but the \emph{joint} upper tail across
+stations: how strongly does an extreme gust at one location predict
+an extreme gust at another, and how does this dependence decay with
+distance?
+
+Spatial extreme value theory provides a precise vocabulary for
+these questions. The pairwise extremal coefficient \(\theta_{ij}\)
+and the upper tail dependence coefficient \(\chi_{ij}\) summarise
+the joint behaviour of a station pair at the tail; under
+max-stability they are in one-to-one correspondence
+\citep{TODO-davison2012,TODO-cooley2012}. Most empirical
+applications of these tools to wind data treat the field as
+stationary across the calendar year, pooling all observations
+together. This obscures a basic physical asymmetry: Dutch winter
+gust extremes are dominated by large-scale extratropical cyclones
+that are inherently spatial, whereas Dutch summer gust extremes
+include a larger share of convective events with much smaller
+footprints. There is, accordingly, a reasonable prior that the
+\emph{spatial structure} of the upper tail of gust observations
+differs between winter and summer.
+
+This thesis asks whether that prior is borne out empirically. The
+formal counterpart of letting the dependence structure of a
+spatial extreme field vary with a covariate is developed in
+\citet{TODO-huser-genton2016}; this thesis treats the seasonal
+label as a discrete covariate and estimates the dependence
+structure separately on a winter and a summer subsample.
+
+\subsection{Research question}\label{sec:intro-rq}
+
+The main research question of this thesis is:
+
+\begin{quote}\itshape
+    Is there seasonal variation in the spatial extremal dependence
+    of extreme wind gusts at KNMI station locations in the
+    Netherlands?
+\end{quote}
+
+The primary empirical comparison is winter (December--February,
+DJF) versus summer (June--August, JJA). The question of whether
+spatial extremal dependence has changed over the historical record
+is treated as a secondary, exploratory sample-split analysis, on
+the understanding that the changing KNMI station network makes a
+clean long-run statement difficult.
+
+\subsection{Data}\label{sec:intro-data}
+
+The empirical application uses hourly observations from the
+network of automatic weather stations operated by the Royal
+Netherlands Meteorological Institute (KNMI). The primary variable
+is the hourly maximum wind gust, denoted \(\mathrm{FX}\), expressed
+in metres per second. Stations are indexed by their location
+\(s_i \in \mathbb{R}^2\), with latitude, longitude and a sensor-
+height attribute recorded in the station metadata. The hourly
+parquet store covers 1951--2026 (76 years, 911 monthly partitions).
+% Data audit 2026-05-26, see python_project/outputs/data_audit_report.md.
+% FX is effectively unobserved before 1971 (92.5% missing in 1951,
+% 12.8% in 1971). The first year with at least 10 stations
+% reporting FX in at least 80% of hours is 1971; with at least 20
+% stations, 1981; with at least 30 stations, 1990. A balanced
+% panel of 25 stations is achievable from 1991 onwards at the 0.80
+% threshold; 38 stations from 2001 onwards.
+The contemporary KNMI network contains approximately
+\(N \approx 60\) Dutch land and coastal stations active in any
+single recent year, and 70 unique station identifiers appear at
+least once across the full archive. The station
+network is unbalanced: stations have been added and retired over
+the sample period, so the set of stations active at any given hour
+varies with time. The empirical strategy accounts for this by using
+a balanced station subset for the main analysis and treating the
+larger unbalanced panel as a robustness check
+(Section~\ref{sec:emp-stations}).
+
+The hourly parquet files also contain the hourly mean wind speed
+\(\mathrm{FH}\) and the station metadata variables; \(\mathrm{FH}\)
+is read alongside \(\mathrm{FX}\) but is not the thesis variable
+and does not enter any of the dependence estimators.
+
+\subsection{Methodological direction}\label{sec:intro-method}
+
+The thesis stays within spatial extreme value theory and emphasises
+tools that are empirically tractable for an MSc-scale project. We
+construct extreme observations from the hourly \(\mathrm{FX}\)
+series either as seasonal block maxima or as threshold exceedances,
+estimate pairwise extremal dependence between station pairs, and
+summarise the dependence as a function of the geographical distance
+between stations. The seasonal comparison then reduces to a
+comparison of two dependence--distance curves on the same set of
+station pairs. Max-stable processes appear as the theoretical
+motivation for the pairwise estimators
+\citep{TODO-davison2012,TODO-padoan2010,TODO-dehaan2006}, but a
+full parametric max-stable fit is treated as an optional extension
+rather than as the main contribution. The estimates are accompanied
+by robustness checks over station selection, block size or
+threshold choice, marginal standardisation, and a calendar-time
+sample split.
+
+\subsection{Contribution}\label{sec:intro-contribution}
+
+The contribution of this thesis is empirical rather than
+methodological. We provide a focused application of pairwise
+spatial extremal dependence estimation to hourly Dutch wind gust
+data, and a direct seasonal comparison of the resulting
+dependence--distance relationship. The closest existing precedent
+is \citet{TODO-bonazzi2012}, who use bivariate extreme-value
+copulas on European peak gust footprints from 135 selected
+windstorms; the present thesis differs by working at the seasonal
+rather than the per-storm level, by using the KNMI network alone,
+and by summarising dependence through the extremal coefficient and
+the tail dependence coefficient rather than through Pickands'
+dependence function. The seasonal contrast itself is the object of
+interest: it is informative for any risk-aggregation exercise that
+currently treats wind gust extremes as having a single,
+time-invariant spatial footprint. The thesis does not draw climate-
+change conclusions, and the secondary sample-splitting analysis is
+presented as exploratory only.
+
+\subsection{Outline}\label{sec:intro-outline}
+
+The remainder of this thesis is organised as follows.
+Section~\ref{sec:data-description} describes the KNMI hourly
+station data, the station network and the analysis sample.
+Section~\ref{sec:literature} reviews the relevant literature on
+univariate and spatial extreme value theory and on wind gust
+extremes. Section~\ref{sec:evt-spatial} develops the formal
+extreme value framework and the notation that is used throughout
+the rest of the thesis. Section~\ref{sec:methodology} sets out the
+estimation strategy. Section~\ref{sec:empirical-design} translates
+that strategy into concrete operational choices for the KNMI data.
+Section~\ref{sec:results} reports the seasonal results.
+Section~\ref{sec:robustness} reports robustness checks.
+Section~\ref{sec:conclusion} concludes.

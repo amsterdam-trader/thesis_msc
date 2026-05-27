@@ -1,0 +1,158 @@
+% =====================================================================
+% Results
+% Status: placeholder — no empirical numbers are entered until the
+% pipeline of python_project/notebooks/ has been run.
+% Each subsection includes a "what will be reported" template so
+% that the structure is fixed before the analysis is done.
+% =====================================================================
+\section{Results}\label{sec:results}
+
+This section reports the empirical estimates produced by the
+pipeline of Section~\ref{sec:methodology} on the main sample of
+Section~\ref{sec:emp-samples}. Section~\ref{sec:results-marginals}
+reports the marginal extremes per station, season by season.
+Section~\ref{sec:results-pairwise} reports the pairwise
+dependence estimates. Section~\ref{sec:results-distance} reports
+the dependence--distance summary, and
+Section~\ref{sec:results-comparison} reports the seasonal
+comparison.
+
+% TODO: every numerical claim below is to be inserted only after
+%       the pipeline has been executed. Do not pre-write
+%       conclusions.
+
+\subsection{Marginal extremes per
+station}\label{sec:results-marginals}
+
+We first inspect the marginal upper tail of \(\mathrm{FX}\) at
+each station, separately for winter and summer.
+
+\paragraph{What is reported.}
+\begin{itemize}
+    \item Empirical 95\%, 97\% and 99\% within-(station, season)
+          quantiles of hourly \(\mathrm{FX}\).
+    \item GEV parameter estimates
+          \((\widehat\mu_i^{(c)}, \widehat\sigma_i^{(c)},
+          \widehat\xi_i^{(c)})\) on the seasonal block-maxima
+          series, with the standard sandwich standard errors.
+    \item GPD parameter estimates
+          \((\widehat\sigma_{u,i}^{(c)}, \widehat\xi_i^{(c)})\) at
+          the chosen tail level (Section~\ref{sec:emp-extremes}).
+    \item Goodness-of-fit diagnostics: return-level plot and QQ
+          plot per (station, season).
+\end{itemize}
+
+% TODO: insert Figure \ref{fig:marginal-fits-per-station}
+%       (\texttt{marginal\_fits\_per\_station.pdf}) and Table
+%       \ref{tab:marginal-fits} (\texttt{marginal\_fits.tex}) once
+%       produced by notebook 02.
+
+\paragraph{Interpretation template.}
+After inspection, this paragraph will report whether the shape
+parameter \(\widehat\xi_i^{(c)}\) is systematically different
+between winter and summer, and whether the seasonal contrast in
+the marginal upper tail justifies the use of a season-conditional
+marginal transform in Section~\ref{sec:results-pairwise}.
+
+\subsection{Pairwise extremal
+dependence}\label{sec:results-pairwise}
+
+We now estimate the pairwise dependence summaries
+\(\widehat\chi_{ij}^{(c)}(u)\), \(\widehat\theta_{ij}^{(c)}\) and
+\(\widehat{\bar\chi}_{ij}^{(c)}(u)\) for every pair on the balanced
+panel.
+
+\paragraph{What is reported.}
+\begin{itemize}
+    \item Scatter plot of
+          \(\widehat\chi_{ij}^{(c)}(u_0)\) versus \(d_{ij}\) for
+          each season, at the reference level \(u_0\)
+          (Section~\ref{sec:emp-extremes}).
+    \item Scatter plot of \(\widehat\theta_{ij}^{(c)}\) versus
+          \(d_{ij}\) using the F-madogram estimator on block
+          maxima.
+    \item Joint plot of \(\widehat\chi_{ij}^{(c)}(u)\) and
+          \(\widehat{\bar\chi}_{ij}^{(c)}(u)\) on the grid of
+          \(u\), for a small set of representative pairs at
+          different distances.
+\end{itemize}
+
+% TODO: insert Figure
+%       \ref{fig:pair-chi-vs-distance-by-season}
+%       (\texttt{pair\_chi\_vs\_distance\_by\_season.pdf}) once
+%       produced by notebook 03.
+
+\paragraph{Interpretation template.}
+The text will note whether the \(\widehat\chi_{ij}^{(c)}(u)\)
+estimates appear to converge to a strictly positive limit (the
+asymptotic-dependence case) or to decay to zero (the asymptotic-
+independence case), and whether the diagnosis differs between
+winter and summer.
+
+\subsection{Dependence as a function of
+distance}\label{sec:results-distance}
+
+The pair-level estimates are noisy; we summarise them by the
+local-linear smoother
+\(\widehat\chi^{(c)}(d)\) defined in
+Section~\ref{sec:meth-distance}.
+
+\paragraph{What is reported.}
+\begin{itemize}
+    \item Smoothed curve \(\widehat\chi^{(c)}(d)\) with block-
+          bootstrap percentile band, one curve per season, on a
+          single panel.
+    \item Same plot for \(\widehat\theta^{(c)}(d)\).
+    \item Bandwidth used, plus a small bandwidth-sensitivity
+          panel.
+\end{itemize}
+
+% TODO: insert Figure \ref{fig:chi-distance-curves}
+%       (\texttt{chi\_distance\_curves.pdf}) once produced by
+%       notebook 03.
+
+\paragraph{Interpretation template.}
+The text will describe the qualitative shape of each curve
+(monotone decay, intercept near zero distance, behaviour at the
+maximum distance in the panel), report the smoother bandwidth, and
+note whether the two seasonal curves are visually separable on the
+range of distances spanned by the balanced panel.
+
+\subsection{Winter--summer comparison}\label{sec:results-comparison}
+
+Finally we compare the two seasonal curves directly.
+
+\paragraph{What is reported.}
+\begin{itemize}
+    \item Scalar summaries
+          \(\widehat\chi^{(c)}(d_0)\) at the reference distances
+          \(d_0 \in \{50, 100, 200\}\) km (or the revised set of
+          Section~\ref{sec:emp-distances}), with bootstrap
+          percentile intervals, in a two-column (winter, summer)
+          table.
+    \item Pointwise difference
+          \(\widehat\chi^{(\mathrm{W})}(d) -
+          \widehat\chi^{(\mathrm{S})}(d)\) with bootstrap band.
+    \item Permutation-test \(p\)-value for the null
+          \(\chi^{(\mathrm{W})}(d) = \chi^{(\mathrm{S})}(d)\) on
+          the reference distance grid.
+\end{itemize}
+
+% TODO: insert Figure
+%       \ref{fig:chi-distance-winter-minus-summer}
+%       (\texttt{chi\_distance\_winter\_minus\_summer.pdf}) and
+%       Table \ref{tab:seasonal-summary}
+%       (\texttt{seasonal\_summary.tex}) once produced by notebook
+%       03.
+
+\paragraph{Interpretation template.}
+The text will state, in careful language (``evidence suggests''
+rather than ``proves''), the sign and approximate magnitude of the
+seasonal contrast at the reference distances, whether the
+permutation test rejects the null at the chosen significance
+level, and how the contrast varies with distance. Climate-change
+interpretations are explicitly avoided. The interpretation will
+explicitly distinguish finite-level dependence (i.e.\ what
+\(\widehat\chi_{ij}^{(c)}(u)\) reports at the chosen \(u\)) from
+the asymptotic-dependence question discussed in
+Section~\ref{sec:results-pairwise}.

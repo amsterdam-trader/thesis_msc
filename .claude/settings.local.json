@@ -1,7 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "Bash(python *)"
+      "Bash(python *)",
+      "Bash(grep -hoE '\\\\\\\\\\(ref|label\\)\\\\{[^}]+\\\\}' latex_project/thesis/*.tex)",
+      "Bash(awk '{print $1,$2}')",
+      "Bash(awk '{ if \\($1==\"label\"\\) labels[$2]=1; else refs[$2]=1 } END { print \"--- refs without label ---\"; for \\(r in refs\\) if \\(!\\(r in labels\\)\\) print r; print \"--- labels without ref ---\"; for \\(l in labels\\) if \\(!\\(l in refs\\)\\) print l }')"
     ]
   }
 }

@@ -1,0 +1,124 @@
+% =====================================================================
+% Simulation (optional)
+% Status: first full draft.
+% Not currently wired into thesis-main.tex (kept optional per the
+% scope of the thesis). Wire in via
+% \input{thesis/simulation.tex} if/when needed.
+% Aligned with python_project/src/simulation.py and notebook 04.
+% =====================================================================
+\section{Simulation design (optional)}\label{sec:simulation}
+
+This section describes a small simulation that is intended as a
+methodological validation exercise for the empirical pipeline of
+Section~\ref{sec:methodology}. The purpose is not to introduce a
+new statistical model; it is to check that the pairwise extremal
+dependence estimator and the dependence--distance smoother can
+recover a seasonal contrast that is built into the data-generating
+process by construction. The simulation is optional and produces
+no empirical claim about Dutch wind gusts.
+
+\subsection{Purpose}\label{sec:sim-purpose}
+
+We consider whether the proposed pipeline can detect that one
+seasonal regime has stronger spatial extremal dependence than the
+other when this difference is known to be present. Concretely we
+simulate two regimes that differ only in their spatial dependence
+range, apply the estimator of
+Section~\ref{sec:meth-dependence}, and compare the estimated
+dependence--distance curves with their analytic counterparts.
+
+\subsection{Synthetic station locations}\label{sec:sim-locations}
+
+We consider \(N^{\mathrm{sim}}\) synthetic station locations
+\(s_i^{\mathrm{sim}} \in [0, L] \times [0, L]\) sampled uniformly
+on a square domain of side length \(L\) kilometres. Both
+\(N^{\mathrm{sim}}\) and \(L\) are chosen of the same order of
+magnitude as the Dutch KNMI panel:
+\(N^{\mathrm{sim}} \approx 30\), \(L \approx 300\) km.
+The distance matrix \(\{d_{ij}^{\mathrm{sim}}\}\) is the matrix of
+pairwise Euclidean distances.
+
+\subsection{Two seasonal dependence
+regimes}\label{sec:sim-regimes}
+
+We simulate two regimes, indexed by \(c \in \{\mathrm{W},\mathrm{S}\}\),
+that share the same station locations and differ only in a single
+dependence-range parameter \(\rho^{(c)}\). The winter regime has
+\(\rho^{(\mathrm{W})} > \rho^{(\mathrm{S})}\), so that under the
+construction \(\chi^{(\mathrm{W})}(d) > \chi^{(\mathrm{S})}(d)\) at
+every distance \(d\) of interest.
+% TODO: pin the concrete dependence model (Smith-type max-stable,
+%       Schlather-type, or a Gaussian copula with unit-Frechet
+%       margins) in python_project/src/simulation.py. The
+%       requirement on the chosen family is that chi(d) has a
+%       closed-form analytic expression under each regime.
+
+\subsection{Simulated extreme observations}\label{sec:sim-data}
+
+We generate \(B^{\mathrm{sim}}\) independent replications per
+regime, each replication consisting of one block-maximum
+observation per synthetic station. The simulated panel is
+therefore an \(N^{\mathrm{sim}} \times B^{\mathrm{sim}}\) matrix
+per regime. We do not simulate sub-block hourly observations; the
+purpose is to test the pair-level estimator on block maxima, which
+is the headline route of Section~\ref{sec:meth-extremes}.
+
+\subsection{Estimator}\label{sec:sim-estimator}
+
+The same estimator as in the empirical chapter is applied to the
+simulated panel:
+
+\begin{enumerate}
+    \item Marginal rank transform per station per regime.
+    \item Empirical \(\widehat\chi_{ij}^{(c)}(u_0)\) at a fixed
+          reference level \(u_0\) for every pair.
+    \item Empirical \(\widehat\theta_{ij}^{(c)}\) via the
+          F-madogram on block maxima.
+    \item Local-linear kernel smoother
+          \(\widehat\chi^{(c)}(d)\) over distance.
+\end{enumerate}
+
+The estimator is implemented in
+\texttt{python\_project/src/dependence\_estimators.py} for the
+empirical pipeline and is reused without modification in the
+simulation. The simulation driver is
+\texttt{python\_project/src/simulation.py}, called from
+\texttt{notebooks/04\_simulation\_design.ipynb}.
+
+\subsection{Evaluation metrics}\label{sec:sim-metrics}
+
+We evaluate three things.
+
+\begin{enumerate}
+    \item \emph{Pair-level bias.} Mean and standard deviation of
+          \(\widehat\chi_{ij}^{(c)}(u_0) - \chi_{ij}^{(c)}(u_0)\)
+          across pairs and replications.
+    \item \emph{Recovery of the seasonal ordering.} Fraction of
+          replications in which the smoothed curve
+          \(\widehat\chi^{(\mathrm{W})}(d)\) is uniformly above
+          \(\widehat\chi^{(\mathrm{S})}(d)\) on the reference
+          distance grid.
+    \item \emph{Coverage.} Empirical coverage of the block-
+          bootstrap percentile interval for
+          \(\widehat\chi^{(c)}(d)\) at the reference distances.
+\end{enumerate}
+
+\subsection{Expected interpretation}\label{sec:sim-interpretation}
+
+A successful simulation produces approximately unbiased pair-level
+estimates, recovers the seasonal ordering in the large majority of
+replications, and shows bootstrap coverage close to the nominal
+level. If any of these three diagnostics fails, the empirical
+estimates of Section~\ref{sec:results} should be re-interpreted in
+light of the failure mode (e.g.\ systematic underestimation of
+\(\chi\), or under-coverage of the bootstrap band).
+
+\subsection{Scope and disclaimer}\label{sec:sim-disclaimer}
+
+The simulation is by construction stationary, isotropic and based
+on a known dependence family. It is not a model of Dutch wind
+gusts. Its role is to certify that the estimator behaves as
+expected when its assumptions are met, so that the seasonal
+contrast in the empirical chapter can be more confidently
+attributed to the data rather than to estimator artefacts. This
+chapter contains no empirical claim about Dutch wind gusts.

@@ -1,0 +1,96 @@
+% =====================================================================
+% Conclusion
+% Status: careful placeholder. No empirical claim is written until
+% the pipeline has produced results.
+% =====================================================================
+\section{Conclusion}\label{sec:conclusion}
+
+This thesis has asked whether there is seasonal variation in the
+spatial extremal dependence of extreme wind gusts at KNMI station
+locations in the Netherlands. The empirical strategy has been to
+estimate, separately for winter (DJF) and summer (JJA), the
+pairwise upper-tail dependence coefficient
+\(\chi_{ij}^{(c)}\) and the extremal coefficient
+\(\theta_{ij}^{(c)}\) for every station pair on a balanced subset
+of the KNMI network, and to summarise these along the geographical
+distance \(d_{ij}\) between stations. The seasonal comparison is
+then a comparison of the two dependence--distance curves
+\(\widehat\chi^{(\mathrm{W})}(d)\) and
+\(\widehat\chi^{(\mathrm{S})}(d)\) on the same panel.
+
+% TODO: this section currently states the question and the
+%       methodology only. The numerical findings will be inserted
+%       after the empirical pipeline of Section~\ref{sec:methodology}
+%       has been run on the actual data. Do not pre-write empirical
+%       conclusions.
+
+\subsection{Summary of findings}\label{sec:conclusion-summary}
+
+% TODO: insert 1--2 short paragraphs that answer the research
+%       question, using careful language ("evidence suggests"
+%       rather than "proves"). Refer to the dependence--distance
+%       curves and the scalar summaries at the reference
+%       distances. Do not draw climate-change conclusions.
+
+\subsection{Limitations}\label{sec:conclusion-limitations}
+
+The thesis has three first-order limitations.
+
+\begin{enumerate}
+    \item The changing KNMI station network means that any
+          temporal comparison (the secondary sample-split analysis
+          in Section~\ref{sec:rob-period}) cannot cleanly separate
+          changes in the dependence structure from changes in
+          spatial coverage. The seasonal comparison is robust to
+          this concern because winter and summer are estimated on
+          the same balanced panel.
+    \item The finite-sample tail estimators of
+          Section~\ref{sec:meth-dependence} report on
+          \(\chi_{ij}^{(c)}(u)\) at finite \(u\), not at the
+          asymptotic limit. \citet{TODO-wadsworth2012} show that
+          finite-level dependence can decay to zero at the very
+          top of the tail; the thesis addresses this only
+          partially by reporting on a grid of \(u\) and by
+          including the \(\bar\chi\) diagnostic.
+    \item The dependence--distance summary assumes isotropy of the
+          dependence. Anisotropy due to prevailing wind direction
+          is a plausible second-order effect that the thesis
+          examines only as a robustness check
+          (Section~\ref{sec:rob-direction}).
+\end{enumerate}
+
+\subsection{Directions for further work}\label{sec:conclusion-future}
+
+Three directions are natural extensions of the work undertaken
+here.
+
+\begin{enumerate}
+    \item Fit a covariate-dependent (season-indexed) max-stable
+          process in the spirit of
+          \citet{TODO-huser-genton2016}, using pairwise
+          composite likelihood. This would replace the
+          ``estimate separately by season'' strategy of the
+          thesis with a single non-stationary model and would let
+          the seasonal contrast be tested directly through a
+          likelihood-ratio statistic.
+    \item Reformulate the analysis at the level of intraday gust
+          curves rather than hourly maxima, using the functional
+          peaks-over-threshold framework of
+          \citet{TODO-fondeville2022} or the spatio-temporal
+          functional construction of \citet{TODO-french2018}.
+          This would allow the spatial dependence of \emph{whole
+          storm footprints} rather than of single hours to be
+          estimated.
+    \item Extend the analysis from pairwise dependence to joint
+          high-dimensional dependence using vine copulas in the
+          construction of \citet{TODO-aas2008}, treating the
+          present pairwise summaries as the building blocks. Vine
+          copulas were excluded as the main method of this thesis
+          and are recorded here only as a future-work direction.
+\end{enumerate}
+
+A more modest extension is the verification simulation described
+in Section~\ref{sec:simulation}: it is optional and not part of
+the main contribution, but it is the cleanest available check
+that the estimator behaves as expected under known dependence
+regimes.

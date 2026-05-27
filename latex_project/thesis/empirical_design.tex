@@ -1,0 +1,288 @@
+% =====================================================================
+% Empirical Design
+% Status: first full draft.
+% Each numerical choice that the methodology of
+% thesis/methodology.tex defers to this section is recorded
+% explicitly here, either as a fixed value or as a precise TODO
+% tied to a specific notebook.
+% =====================================================================
+\section{Empirical Design}\label{sec:empirical-design}
+
+This section translates the methodology of
+Section~\ref{sec:methodology} into concrete operational choices for
+the KNMI hourly wind gust data. Every numerical choice that the
+methodology leaves to the empirical design is either pinned here or
+recorded as a TODO that names the notebook responsible for fixing
+it.
+
+\subsection{Data paths and input files}\label{sec:emp-paths}
+
+The pipeline reads from two locations under the project root.
+
+\begin{itemize}
+    \item Hourly observations:
+          \texttt{data/yearly\_aggregated\_FH\_FX/year=YYYY/month=MM/knmi\_fh\_YYYY\_MM.parquet},
+          schema
+          \texttt{time, station, stationname, lat, lon, height, FH, FX}.
+    \item Station metadata:
+          \texttt{data/station\_metadata.csv}, schema
+          \texttt{station\_id, stationname, lat, lon, height}.
+\end{itemize}
+
+The loader is \texttt{python\_project/src/data\_loading.py}. The
+station-metadata reader is
+\texttt{python\_project/src/station\_metadata.py}.
+
+\subsection{Variable selection}\label{sec:emp-vars}
+
+The only thesis variable is \(\mathrm{FX}\). The hourly mean wind
+speed \(\mathrm{FH}\) is read from the same parquet schema but is
+not used in any of the dependence estimators. Other columns
+(\texttt{stationname}, \texttt{lat}, \texttt{lon}, \texttt{height})
+are used for filtering and for the pair distance.
+
+\subsection{Sample period}\label{sec:emp-sample}
+
+\begin{itemize}
+    \item Sample frequency: one observation per (station, hour).
+    \item Sample window for the main analysis:
+          % Data audit 2026-05-26 (outputs/data_audit_report.md):
+          %   - 1971 onwards: 13 balanced stations at FX presence
+          %     threshold 0.80 across every year.
+          %   - 1981 onwards: 14 balanced stations.
+          %   - 1991 onwards: 25 balanced stations.
+          %   - 2001 onwards: 38 balanced stations.
+          %   - 1951 and 1961: only 1 balanced station; FX is
+          %     effectively unobserved in the early decades.
+          % Recommended candidates: 1991 (good balance of length
+          % and panel size) or 1981 (longer window, smaller panel).
+          % TODO: pin one start year before estimation.
+    \item Sample end year: 2026 (76 calendar years of partitions
+          on disk).
+          % Note: 2026 is partial -- only 5 months at the audit
+          % date. If a complete calendar year is required, use 2025
+          % as the end year.
+\end{itemize}
+
+\subsection{Station inclusion criteria}\label{sec:emp-stations}
+
+Stations are retained for the main analysis if they satisfy all of
+the following.
+
+\begin{enumerate}
+    \item Located in the Netherlands (Dutch land or coastal
+          stations). North-Sea platform stations are excluded from
+          the main panel on the grounds of differing measurement
+          environment.
+          % Data audit 2026-05-26: 70 unique station ids ever
+          % observed across 1951-2026. The balanced panel at
+          % start_year=1991, FX-presence threshold 0.80 contains 25
+          % stations; the explicit list is in
+          % outputs/tables/audit_balanced_panels.csv (column
+          % station_ids of the row with
+          % start_year=1991, fx_present_share_threshold=0.80).
+          % TODO: filter offshore platforms from the 25-station
+          % list before adopting it as the main panel.
+    \item \(\mathrm{FX}\) sensor documented as representative for
+          a reference height of 10\,m.
+    \item Present in every winter and every summer of the chosen
+          sample window.
+    \item Meet the within-season completeness threshold of
+          Section~\ref{sec:emp-missing}.
+\end{enumerate}
+
+Stations that satisfy criteria 1--2 but fail criterion 3 or 4 are
+retained only in the larger \emph{unbalanced panel} used as a
+robustness check in Section~\ref{sec:rob-stations}.
+
+\subsection{Season definitions and winter-year
+convention}\label{sec:emp-seasons}
+
+\begin{itemize}
+    \item Winter \(c = \mathrm{W}\): December, January, February
+          (DJF).
+    \item Summer \(c = \mathrm{S}\): June, July, August (JJA).
+    \item Winter year. December of calendar year \(y\) is assigned
+          to winter year \(y+1\). So winter \(1967\) consists of
+          December \(1966\), January \(1967\) and February
+          \(1967\). This convention is enforced in
+          \texttt{python\_project/src/seasons.py}.
+\end{itemize}
+
+Spring and autumn hours are dropped.
+
+\subsection{Missingness rules}\label{sec:emp-missing}
+
+\begin{itemize}
+    \item Hourly observations with missing \(\mathrm{FX}\) are
+          dropped at the hour level.
+    \item A block (Section~\ref{sec:meth-extremes}) is discarded
+          if more than a fixed fraction of its hours are missing.
+          % TODO: set the fraction. Suggested starting value: 0.10.
+    \item A station-season-year is discarded if its within-season
+          coverage is below a fixed fraction.
+          % TODO: set the fraction. Suggested starting value: 0.80.
+    \item Station-level pairwise estimators
+          (\(\widehat\chi_{ij}^{(c)}\), \(\widehat\theta_{ij}^{(c)}\))
+          use pairwise-complete hours.
+\end{itemize}
+
+\subsection{Construction of station pairs and
+distances}\label{sec:emp-pairs}
+
+The set of unordered station pairs on the balanced panel is
+\(\mathcal{P} = \{(i,j) : 1 \le i < j \le N\}\), with cardinality
+\(N(N-1)/2\). For each pair the geographical distance is computed
+in kilometres by the haversine formula on the WGS84
+latitude/longitude coordinates of the two stations:
+\[
+    d_{ij} \;=\;
+    \mathrm{haversine}(s_i, s_j) \quad \text{in km}.
+\]
+The implementation is in
+\texttt{python\_project/src/station\_pairs.py}. As a robustness
+check, distances are recomputed in the projected Dutch RD~New
+(EPSG:28992) coordinate system; the projected distance differs from
+the great-circle distance by at most a few hundred metres for the
+Dutch domain and should not affect the dependence-distance summary
+materially.
+
+\subsection{Extreme-event construction: numerical
+choices}\label{sec:emp-extremes}
+
+\begin{itemize}
+    \item Main route (block maxima): block size
+          \(n =\)
+          % TODO: pin one. Candidates: monthly-within-season (\(n
+          %       \approx 720\) hours) or seasonal (\(n \approx
+          %       2160\) hours).
+          .
+    \item Robustness route (POT): threshold quantile
+          \(q =\)
+          % TODO: pin one. Candidates: 0.95, 0.97, 0.99 of the
+          %       within-station-season empirical distribution of
+          %       FX.
+          .
+    \item POT declustering: runs declustering with minimum
+          separation
+          % TODO: hours. Suggested starting value: 12.
+          .
+    \item Tail-level grid for
+          \(\widehat\chi_{ij}^{(c)}(u)\):
+          % TODO: pin a grid. Suggested starting grid:
+          %       u in {0.95, 0.96, 0.97, 0.98, 0.99}.
+          .
+    \item Reference tail level for the headline scalar summary:
+          % TODO: pin one u_0, e.g.\ 0.97.
+          .
+\end{itemize}
+
+\subsection{Distance smoother}\label{sec:emp-smoother}
+
+The dependence--distance smoother in
+Section~\ref{sec:meth-distance} is a local-linear kernel smoother
+with Gaussian kernel; the bandwidth is selected by leave-one-out
+cross-validation per season.
+% TODO: confirm bandwidth choice and report it in
+%       Section~\ref{sec:results-distance}.
+
+\subsection{Reference distances for scalar
+summaries}\label{sec:emp-distances}
+
+The headline scalar summaries
+\(\widehat\chi^{(c)}(d_0)\) are reported at a small set of
+reference distances \(d_0\). The default set is
+\(\{50, 100, 200\}\)\,km.
+% TODO: revise the reference set after notebook 01 has produced
+%       the empirical distribution of pair distances on the
+%       balanced panel.
+
+\subsection{Inference and uncertainty}\label{sec:emp-inference}
+
+\begin{itemize}
+    \item Bootstrap method: block bootstrap on the within-season
+          hourly panel.
+    \item Block length \(L =\)
+          % TODO: hours. Should exceed a typical storm duration.
+          %       Suggested starting value: 36 hours.
+          .
+    \item Number of bootstrap replications \(B =\)
+          % TODO: pin. Suggested starting value: 1000.
+          .
+    \item Significance level for confidence bands and for the
+          seasonal-equality permutation test: \(\alpha = 0.05\).
+\end{itemize}
+
+\subsection{Main sample and robustness samples}\label{sec:emp-samples}
+
+\begin{itemize}
+    \item \emph{Main sample.} Balanced station panel
+          (\(\S\)~\ref{sec:emp-stations}), block-maxima route
+          (\(\S\)~\ref{sec:emp-extremes}), empirical rank-transform
+          marginal (\(\S\)~\ref{sec:meth-marginals}), full sample
+          window (\(\S\)~\ref{sec:emp-sample}).
+    \item \emph{Robustness sample 1.} As main, but unbalanced
+          station panel.
+    \item \emph{Robustness sample 2.} As main, but threshold-
+          exceedance route in place of block maxima.
+    \item \emph{Robustness sample 3.} As main, but parametric
+          (GEV/GPD) marginal transform.
+    \item \emph{Robustness sample 4.} As main, but sample-split
+          into an early half and a late half of the sample window.
+\end{itemize}
+
+\subsection{Planned outputs and how they enter the
+thesis}\label{sec:emp-outputs}
+
+The empirical pipeline is expected to produce the figures and
+tables listed below. All outputs are first written to
+\texttt{python\_project/output/} and then included in the relevant
+thesis section via the standard
+\verb|\includegraphics{../python_project/output/figures/...}|
+path.
+
+\textbf{Figures} (all to
+\texttt{python\_project/output/figures/}):
+\begin{enumerate}
+    \item \texttt{stations\_map.pdf} — map of the balanced
+          station panel. Referenced from
+          Section~\ref{sec:data-stations}.
+    \item \texttt{station\_coverage\_heatmap.pdf} — station-by-year
+          coverage matrix. Referenced from
+          Section~\ref{sec:data-descriptives}.
+    \item \texttt{seasonal\_maxima\_boxplot.pdf} — per-station
+          distributions of seasonal block maxima for winter and
+          summer. Referenced from
+          Section~\ref{sec:results-marginals}.
+    \item \texttt{marginal\_fits\_per\_station.pdf} — GEV/GPD
+          diagnostic plots per (station, season).
+          Section~\ref{sec:results-marginals}.
+    \item \texttt{pair\_chi\_vs\_distance\_by\_season.pdf} —
+          pair-level scatter of
+          \(\widehat\chi_{ij}^{(c)}\) versus \(d_{ij}\), winter
+          and summer panels. Section~\ref{sec:results-pairwise}.
+    \item \texttt{chi\_distance\_curves.pdf} — smoothed
+          \(\widehat\chi^{(c)}(d)\) and \(\widehat\theta^{(c)}(d)\)
+          with bootstrap bands. Section~\ref{sec:results-distance}.
+    \item \texttt{chi\_distance\_winter\_minus\_summer.pdf} —
+          pointwise difference and bootstrap band, plus
+          permutation-test panel.
+          Section~\ref{sec:results-comparison}.
+\end{enumerate}
+
+\textbf{Tables} (all to \texttt{python\_project/output/tables/}):
+\begin{enumerate}
+    \item \texttt{station\_inventory.tex} — balanced and unbalanced
+          station inventories, with coverage statistics.
+          Section~\ref{sec:data-sample}.
+    \item \texttt{station\_descriptives.tex} — per-station hourly
+          \(\mathrm{FX}\) descriptive statistics, winter vs.\ summer.
+          Section~\ref{sec:data-descriptives}.
+    \item \texttt{marginal\_fits.tex} — GEV/GPD parameter
+          estimates per (station, season).
+          Section~\ref{sec:results-marginals}.
+    \item \texttt{seasonal\_summary.tex} — scalar dependence
+          summaries at the reference distances of
+          Section~\ref{sec:emp-distances} with bootstrap intervals.
+          Section~\ref{sec:results-comparison}.
+\end{enumerate}

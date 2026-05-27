@@ -1,2 +1,244 @@
-\section{Literature Review}
+% =====================================================================
+% Literature review
+% Status: first real draft (resumed L-Agent 5 pass).
+% Every \cite{...} is a TODO key: no BibTeX file exists in
+% latex_project/bib/EORthesis.bib yet. Suggested keys match those
+% listed in literature/notes/bibliography_gaps.md.
+% Only papers found in literature/markdown/ (or named therein) are
+% cited; nothing is invented.
+% Style target: methodology-focused, MSc Econometrics, concise.
+% =====================================================================
+\section{Literature Review}\label{sec:literature}
 
+The thesis sits at the intersection of univariate extreme value
+theory, spatial extremes, and the applied literature on wind gust
+extremes. This section reviews the strands that motivate the
+methodological choices in Sections~\ref{sec:evt-spatial} and
+\ref{sec:methodology}. We organise the review by methodological
+role: only papers that supply a definition, an estimator, an
+empirical benchmark, or a non-stationarity hook for the seasonal
+question are discussed.
+
+\subsection{Extreme value theory for environmental
+data}\label{sec:lit-univariate}
+
+The point of departure is the classical extreme value theorem and
+its threshold counterpart. Under mild conditions, the suitably
+normalised maximum of an i.i.d.\ sequence converges to the
+generalised extreme value (GEV) distribution, and the conditional
+exceedance of a continuous variable over a high threshold converges
+to the generalised Pareto (GPD) family. Both limits underlie the
+marginal modelling of \(\mathrm{FX}\) at each station before any
+dependence object is estimated. Textbook-level treatments include
+the monograph by \citet{TODO-falk2019} on multivariate extreme value
+theory and \(D\)-norms, which we use as a background reference for
+the joint representation results that recur in
+Section~\ref{sec:evt-spatial}.
+
+The applied wind-extremes literature has used both routes. In a
+direct precedent for our marginal step, \citet{TODO-brabson2000}
+fit the GPD to peak gust speeds at five Scottish sites and study
+how the shape parameter \(\xi\) varies with the threshold choice;
+their conclusion that GPD predictions are sensitive to threshold
+selection motivates our robustness check over multiple threshold
+quantiles in Section~\ref{sec:rob-extremes}. Earlier directional
+GEV work by \citet{TODO-coles1994} treats extreme wind speeds as a
+function of wind direction and is one of the first papers to import
+spatial-extremes techniques into a wind context; we cite it as a
+possible robustness extension if seasonal differences turn out to
+covary with prevailing wind direction.
+
+A practical complication for hourly wind data is serial dependence:
+consecutive hourly observations during a single storm cannot be
+treated as independent. \citet{TODO-fawcett2006} model this through
+a Markov chain on the high-threshold exceedance process and argue
+that ignoring within-storm dependence biases standard errors of
+extreme-quantile estimates. \citet{TODO-ferro2003} provide an
+automatic declustering scheme based on the extremal index that can
+be applied before any inference about cluster characteristics. We
+adopt this scheme as the standard pre-processing step on the
+peaks-over-threshold route in Section~\ref{sec:meth-extremes}.
+
+\subsection{Spatial extremes and max-stable
+processes}\label{sec:lit-spatial}
+
+The natural generalisation of univariate extreme value theory to a
+spatial field is the class of max-stable processes, which arise as
+the limit of pointwise maxima of i.i.d.\ replicated fields. They
+provide closed-form expressions for the joint exceedance
+probabilities of a finite collection of locations and form the
+theoretical motivation for the pairwise dependence summaries used
+in this thesis.
+
+The foundational practical reference is
+\citet{TODO-dehaan2006}, who construct simple stationary
+max-stable processes in \(\mathbb{R}\) and \(\mathbb{R}^2\) with a
+single dependence parameter and a closed-form decay of pairwise
+tail dependence with distance, and prove consistency and asymptotic
+normality of two semiparametric estimators of that parameter.
+\citet{TODO-davison2012} review the latent-variable, copula, and
+max-stable routes to spatial extremes and compare them on summer
+maximum daily rainfall at 51 Swiss stations; their result that
+max-stable models and copula models capture the joint upper tail
+substantially better than latent-variable models is the
+methodological reason we work directly with pairwise dependence
+objects. The inferential engine for max-stable models in moderate
+dimensions is the pairwise composite likelihood of
+\citet{TODO-padoan2010}, which replaces the intractable
+\(D\)-dimensional density by a sum of pair-level densities and
+estimates marginal and dependence parameters jointly. We treat
+this route as optional rather than central
+(Section~\ref{sec:meth-maxstable}); the headline empirical
+analysis uses non-parametric pairwise summaries.
+
+A more recent review, \citet{TODO-huser2020}, surveys what has
+been added since 2012: \(r\)-Pareto processes for spatial
+threshold exceedances, conditional spatial extremes models, and
+random-scale-mixture constructions that interpolate between
+asymptotic dependence and asymptotic independence. Their main
+methodological message is that classical max-stable models often
+impose more asymptotic dependence than data exhibit. We honour
+this caveat by reporting empirical \(\widehat{\chi}^{(c)}_u\) on a
+grid of \(u\) rather than at a single tail level.
+
+\subsection{Pairwise extremal dependence
+measures}\label{sec:lit-pairwise}
+
+The pairwise summaries on which the empirical part of this thesis
+relies — the bivariate extremal coefficient \(\theta(s_i,s_j)\in
+[1,2]\), the upper tail dependence coefficient \(\chi(s_i,s_j)\in
+[0,1]\), and the chibar coefficient \(\bar\chi\) used to diagnose
+asymptotic independence — are surveyed by
+\citet{TODO-cooley2012}. They lay out the empirical estimators
+(F-madogram for \(\theta\); empirical conditional tail probabilities
+for \(\chi\) and \(\bar\chi\)) and the conditions under which each
+is well defined. We follow their notation closely in
+Section~\ref{sec:evt-spatial}.
+
+A central caveat for any empirical application is delivered by
+\citet{TODO-wadsworth2012}, who introduce a flexible model class
+that interpolates between asymptotic dependence and asymptotic
+independence and apply it to significant wave heights in the North
+Sea. They show that finite-level pairwise dependence can be much
+weaker than the asymptotic dependence implied by a fitted
+max-stable model, and recommend reporting the level-dependent
+\(\chi(u) = \Pr(U_j > u \mid U_i > u)\) rather than committing to a
+single asymptotic value. This is directly relevant to our seasonal
+comparison: summer convective gust events may have a finite-level
+spatial signature that vanishes at the very top of the tail, so we
+report \(\widehat{\chi}^{(c)}_u\) on a grid of \(u\) and interpret
+the seasonal contrast at finite tail levels.
+
+A functional-data analogue of the extremal correlation coefficient
+is developed by \citet{TODO-kim2024}; it falls outside the scope
+of the scalar-FX thesis but is recorded as a future-work pointer
+in Section~\ref{sec:conclusion-future}. Vine copulas
+\citep{TODO-aas2008} are likewise out of scope as the main
+dependence object; they are mentioned only as the natural starting
+point if a future extension wants to model the joint upper tail of
+\(\mathrm{FX}\) across more than two stations at once.
+
+\subsection{Wind gust and windstorm
+extremes}\label{sec:lit-wind}
+
+The closest empirical predecessor to this thesis is
+\citet{TODO-bonazzi2012}, who use bivariate extreme value copulas
+to characterise the spatial dependence of peak gusts across 135
+major European windstorms over 1972--2010. Their data combine
+several national networks, including 34 Dutch KNMI stations, and
+they show that pairwise dependence varies substantially between
+storms and across climate-variability regimes. The present thesis
+differs by (i) working at the seasonal rather than the per-storm
+level, (ii) using only the KNMI network with hourly maximum wind
+gusts (\(\mathrm{FX}\)), and (iii) summarising dependence through
+the extremal coefficient and tail dependence coefficient rather
+than through Pickands' dependence function. Bonazzi
+et~al.'s estimates provide a useful empirical order of magnitude
+against which the winter dependence-distance curves of
+Section~\ref{sec:results-distance} can be compared.
+
+European windstorm climatology more broadly is treated by
+\citet{TODO-dellamarta2009}, who apply peak-over-threshold analysis
+to ERA-40 reanalysis wind gust/speed fields to estimate return
+periods for named European storms, and by
+\citet{TODO-roberts2014}, who curate the XWS catalogue of 50
+extreme European windstorms over 1979--2012 with footprint maps.
+Both provide empirical context for what should drive the winter
+upper tail of \(\mathrm{FX}\) at Dutch stations, and the XWS
+catalogue is the natural cross-reference for sanity-checking the
+events that dominate the seasonal pairwise dependence in winter.
+\citet{TODO-klawa2003} construct a station-level storm-loss index
+in Germany by scaling daily peak gusts by the local upper 2\%
+quantile; we cite it as a methodological precedent for working
+with locally normalised gust exceedances.
+
+\subsection{Seasonal and nonstationary
+extremes}\label{sec:lit-seasonal}
+
+The seasonal question undertaken in this thesis is, formally, a
+question about non-stationary dependence: the spatial extremal
+dependence structure is allowed to depend on a covariate, here the
+seasonal label \(c \in \{\mathrm{W}, \mathrm{S}\}\). A visual
+precedent for the seasonal contrast is already in the Swiss
+rainfall application of \citet{TODO-davison2012}: their Figure~2
+displays annual, summer (June--August) and winter (December--
+February) maximum daily rainfall at four station pairs and shows
+that the joint behaviour differs visibly across seasons even on a
+small panel. The formal counterpart that allows the dependence
+structure itself to depend on a covariate is provided by
+\citet{TODO-huser-genton2016}.
+They construct max-stable models in which the dependence kernel
+itself is a function of covariates through a Paciorek--Schervish
+construction, fit them by pairwise composite likelihood, and show
+through simulation that ignoring non-stationarity in the dependence
+structure can substantially bias return-level estimates for
+spatial functionals. The present thesis does not fit a parametric
+non-stationary model; instead it estimates separate dependence
+structures for winter and summer and asks empirically whether the
+two differ. Huser and Genton supply the theoretical justification
+that this question is well posed.
+
+The case for stratifying by season rather than fitting a single
+non-stationary annual model is methodological: stratification
+sidesteps the strong within-year non-stationarity in the joint
+distribution of hourly wind gusts by restricting attention to
+windows over which a within-season stationarity assumption is at
+least more defensible. The cost is a smaller effective sample per
+season and a residual within-season non-stationarity that is
+treated as part of the robustness analysis
+(Section~\ref{sec:rob-period}).
+
+Functional-extreme-value approaches such as the heat-wave
+construction of \citet{TODO-french2018} and the functional
+peaks-over-threshold framework of
+\citet{TODO-fondeville2022} are noted as future-work directions
+for representing storm events as intraday curves rather than as
+hourly maxima; they are outside the scope of the scalar-FX
+thesis. Likewise the functional-extreme tooling developed in
+\citet{TODO-kim2019,TODO-kokoszka2017,TODO-kokoszka2019} is
+recorded only as a future-work pointer.
+
+\subsection{Positioning of this thesis}\label{sec:lit-positioning}
+
+The thesis combines four ingredients from the literature reviewed
+above. From \citet{TODO-cooley2012} and
+\citet{TODO-davison2012} we take the pairwise dependence summaries
+\(\theta\) and \(\chi\) and the F-madogram / empirical conditional
+estimators. From \citet{TODO-dehaan2006} we take the view that
+spatial extremal dependence is naturally summarised as a function
+of pairwise distance. From \citet{TODO-wadsworth2012} we take the
+discipline of reporting \(\chi(u)\) on a grid rather than at a
+single asymptotic level. From \citet{TODO-huser-genton2016} we
+take the formal warrant for treating the seasonal label as a
+covariate that indexes a family of dependence structures.
+
+The empirical hook is the windstorm literature
+(\citealt{TODO-bonazzi2012}, \citealt{TODO-dellamarta2009},
+\citealt{TODO-roberts2014}, \citealt{TODO-klawa2003}). The
+contribution is to apply this combination of tools to a single
+homogeneous national network — the KNMI hourly archive — and to
+compare the resulting dependence-distance summary explicitly
+between winter and summer. We do not attempt a parametric
+non-stationary max-stable fit; we do not extend to compound hazards
+or vine copulas as the main method; and we do not draw climate-
+change conclusions.
