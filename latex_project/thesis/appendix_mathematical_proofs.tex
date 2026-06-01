@@ -1,0 +1,539 @@
+% Appendix: Mathematical details for pairwise extremal dependence estimators
+% This file is intended to be included in the thesis by \input{appendix_mathematics.tex}.
+% Required packages in the main preamble:
+% \usepackage{amsmath, amssymb, amsthm}
+
+\appendix
+\section{Mathematical details for pairwise extremal dependence estimators}\label{app:mathematics}
+
+\subsection{Probability integral transform}\label{app:pit}
+
+We prove that the marginal transform $U_{i,t}=F_i(X_{i,t})$ has a standard uniform distribution when $F_i$ is continuous.
+
+\begin{proof}
+    Let $X_{i,t}$ be a real-valued random variable with continuous distribution function $F_i$.
+    Define
+    \[
+        U_{i,t}=F_i(X_{i,t}).
+    \]
+    For $u<0$,
+    \[
+        \Pr(U_{i,t}\leq u)=0.
+    \]
+    For $u>1$,
+    \[
+        \Pr(U_{i,t}\leq u)=1.
+    \]
+    Let $u\in[0,1]$.
+    Define the generalized inverse
+    \[
+        F_i^{-1}(u)=\inf\{x\in\mathbb{R}:F_i(x)\geq u\}.
+    \]
+    Since $F_i$ is continuous,
+    \[
+        F_i(F_i^{-1}(u))=u.
+    \]
+    Then
+    \begin{align*}
+        \Pr(U_{i,t}\leq u)
+         & =\Pr(F_i(X_{i,t})\leq u)      \\
+         & =\Pr(X_{i,t}\leq F_i^{-1}(u)) \\
+         & =F_i(F_i^{-1}(u))             \\
+         & =u.
+    \end{align*}
+    Hence
+    \[
+        \Pr(U_{i,t}\leq u)=u,\qquad u\in[0,1].
+    \]
+    Therefore
+    \[
+        U_{i,t}\sim\mathrm{Uniform}(0,1).
+    \]
+    For two stations $i$ and $j$, define
+    \[
+        U_{i,t}=F_i(X_{i,t}),
+        \qquad
+        U_{j,t}=F_j(X_{j,t}).
+    \]
+    Then
+    \[
+        U_{i,t}\sim\mathrm{Uniform}(0,1),
+        \qquad
+        U_{j,t}\sim\mathrm{Uniform}(0,1).
+    \]
+    The marginal distributions are therefore equal after transformation, and the joint distribution of $(U_{i,t},U_{j,t})$ contains only dependence information.
+\end{proof}
+
+\subsection{Relation between $\chi_{ij}$ and $\theta_{ij}$ under max-stability}\label{app:chi-theta}
+
+We prove that, under bivariate max-stability with standard uniform margins, the upper tail dependence coefficient and the extremal coefficient satisfy $\chi_{ij}=2-\theta_{ij}$.
+
+\begin{proof}
+    Let $(U_i,U_j)$ have standard uniform margins.
+    Assume the bivariate extreme-value copula representation
+    \[
+        \Pr(U_i\leq u,U_j\leq u)=u^{\theta_{ij}},
+        \qquad
+        u\in(0,1),
+    \]
+    where
+    \[
+        \theta_{ij}\in[1,2].
+    \]
+    The upper tail dependence coefficient is
+    \[
+        \chi_{ij}
+        =
+        \lim_{u\uparrow 1}
+        \Pr(U_j>u\mid U_i>u).
+    \]
+    By the definition of conditional probability,
+    \begin{align*}
+        \Pr(U_j>u\mid U_i>u)
+         & =
+        \frac{\Pr(U_i>u,U_j>u)}{\Pr(U_i>u)}.
+    \end{align*}
+    Since $U_i\sim\mathrm{Uniform}(0,1)$,
+    \[
+        \Pr(U_i>u)=1-u.
+    \]
+    By inclusion-exclusion,
+    \begin{align*}
+        \Pr(U_i>u,U_j>u)
+         & =1-\Pr(U_i\leq u)-\Pr(U_j\leq u)+\Pr(U_i\leq u,U_j\leq u) \\
+         & =1-u-u+u^{\theta_{ij}}                                    \\
+         & =1-2u+u^{\theta_{ij}}.
+    \end{align*}
+    Therefore
+    \begin{align*}
+        \Pr(U_j>u\mid U_i>u)
+         & =
+        \frac{1-2u+u^{\theta_{ij}}}{1-u}.
+    \end{align*}
+    Thus
+    \[
+        \chi_{ij}
+        =
+        \lim_{u\uparrow 1}
+        \frac{1-2u+u^{\theta_{ij}}}{1-u}.
+    \]
+    Both numerator and denominator converge to zero:
+    \[
+        \lim_{u\uparrow 1}(1-2u+u^{\theta_{ij}})=1-2+1=0,
+    \]
+    \[
+        \lim_{u\uparrow 1}(1-u)=0.
+    \]
+    By l'Hopital's rule,
+    \begin{align*}
+        \chi_{ij}
+         & =
+        \lim_{u\uparrow 1}
+        \frac{-2+\theta_{ij}u^{\theta_{ij}-1}}{-1} \\
+         & =
+        \frac{-2+\theta_{ij}}{-1}                  \\
+         & =2-\theta_{ij}.
+    \end{align*}
+    Hence
+    \[
+        \boxed{\chi_{ij}=2-\theta_{ij}.}
+    \]
+    The endpoints are consistent with the interpretation:
+    \[
+        \theta_{ij}=1
+        \quad\Longrightarrow\quad
+        \chi_{ij}=1,
+    \]
+    \[
+        \theta_{ij}=2
+        \quad\Longrightarrow\quad
+        \chi_{ij}=0.
+    \]
+\end{proof}
+
+\subsection{Extremal coefficient as the exponent measure evaluated at $(1,1)$}\label{app:extremal-coefficient-exponent-measure}
+
+We prove that, for a bivariate max-stable distribution with unit Fr\'echet margins, the pairwise extremal coefficient is $\theta_{ij}=V_{ij}(1,1)$.
+
+\begin{proof}
+    Let $(Z_i,Z_j)$ denote the bivariate vector
+    \[
+        (Z_i,Z_j)=(Z(s_i),Z(s_j)).
+    \]
+    Assume unit Fr\'echet margins:
+    \[
+        \Pr(Z_i\leq z)=\exp(-1/z),
+        \qquad z>0,
+    \]
+    \[
+        \Pr(Z_j\leq z)=\exp(-1/z),
+        \qquad z>0.
+    \]
+    Let the joint distribution have exponent measure representation
+    \[
+        \Pr(Z_i\leq z_i,Z_j\leq z_j)
+        =
+        \exp\{-V_{ij}(z_i,z_j)\},
+        \qquad z_i,z_j>0.
+    \]
+    Set
+    \[
+        z_i=z,
+        \qquad
+        z_j=z.
+    \]
+    Then
+    \begin{align*}
+        \Pr(Z_i\leq z,Z_j\leq z)
+         & =\exp\{-V_{ij}(z,z)\}.
+    \end{align*}
+    For a max-stable distribution with unit Fr\'echet margins, the exponent measure is homogeneous of order $-1$:
+    \[
+        V_{ij}(az_i,az_j)=a^{-1}V_{ij}(z_i,z_j),
+        \qquad a>0.
+    \]
+    Take
+    \[
+        a=z,
+        \qquad
+        z_i=1,
+        \qquad
+        z_j=1.
+    \]
+    Then
+    \begin{align*}
+        V_{ij}(z,z)
+         & =V_{ij}(z\cdot 1,z\cdot 1) \\
+         & =z^{-1}V_{ij}(1,1).
+    \end{align*}
+    Therefore
+    \begin{align*}
+        \Pr(Z_i\leq z,Z_j\leq z)
+         & =\exp\{-z^{-1}V_{ij}(1,1)\}                 \\
+         & =\exp\left\{-\frac{V_{ij}(1,1)}{z}\right\}.
+    \end{align*}
+    The pairwise extremal coefficient $\theta_{ij}$ is defined by
+    \[
+        \Pr(Z_i\leq z,Z_j\leq z)
+        =
+        \Pr(Z_i\leq z)^{\theta_{ij}}.
+    \]
+    Since
+    \[
+        \Pr(Z_i\leq z)=\exp(-1/z),
+    \]
+    we have
+    \begin{align*}
+        \Pr(Z_i\leq z)^{\theta_{ij}}
+         & =\left[\exp(-1/z)\right]^{\theta_{ij}} \\
+         & =\exp(-\theta_{ij}/z).
+    \end{align*}
+    Equating the two expressions for the same joint probability gives
+    \[
+        \exp\left\{-\frac{V_{ij}(1,1)}{z}\right\}
+        =
+        \exp\left\{-\frac{\theta_{ij}}{z}\right\}.
+    \]
+    Taking logarithms gives
+    \[
+        -\frac{V_{ij}(1,1)}{z}
+        =
+        -\frac{\theta_{ij}}{z}.
+    \]
+    Multiplying by $-z$ gives
+    \[
+        V_{ij}(1,1)=\theta_{ij}.
+    \]
+    Hence
+    \[
+        \boxed{\theta_{ij}=V_{ij}(1,1).}
+    \]
+    The bounds follow from the two limiting cases.
+    Perfect dependence gives
+    \[
+        Z_i=Z_j,
+    \]
+    so
+    \[
+        \Pr(Z_i\leq z,Z_j\leq z)=\Pr(Z_i\leq z)=\exp(-1/z),
+    \]
+    which implies
+    \[
+        \theta_{ij}=1.
+    \]
+    Independence gives
+    \begin{align*}
+        \Pr(Z_i\leq z,Z_j\leq z)
+         & =\Pr(Z_i\leq z)\Pr(Z_j\leq z) \\
+         & =\exp(-1/z)\exp(-1/z)         \\
+         & =\exp(-2/z),
+    \end{align*}
+    which implies
+    \[
+        \theta_{ij}=2.
+    \]
+    Therefore
+    \[
+        1\leq \theta_{ij}\leq 2.
+    \]
+\end{proof}
+
+\subsection{F-madogram relation to the extremal coefficient}\label{app:f-madogram}
+
+We prove that, under bivariate max-stability with standard uniform margins, the F-madogram satisfies $\theta_{ij}=(1+2\nu_F)/(1-2\nu_F)$.
+
+\begin{proof}
+    Let
+    \[
+        U_i=F_i(Z_i),
+        \qquad
+        U_j=F_j(Z_j),
+    \]
+    where $U_i$ and $U_j$ have standard uniform margins.
+    The F-madogram is
+    \[
+        \nu_F(i,j)=\frac{1}{2}\mathbb{E}|U_i-U_j|.
+    \]
+    Use the identity
+    \[
+        |a-b|=a+b-2\min(a,b),
+        \qquad a,b\in[0,1].
+    \]
+    Then
+    \begin{align*}
+        \mathbb{E}|U_i-U_j|
+         & =\mathbb{E}(U_i+U_j-2\min(U_i,U_j))                    \\
+         & =\mathbb{E}U_i+\mathbb{E}U_j-2\mathbb{E}\min(U_i,U_j).
+    \end{align*}
+    Since $U_i,U_j\sim\mathrm{Uniform}(0,1)$,
+    \[
+        \mathbb{E}U_i=\frac{1}{2},
+        \qquad
+        \mathbb{E}U_j=\frac{1}{2}.
+    \]
+    Therefore
+    \begin{align*}
+        \mathbb{E}|U_i-U_j|
+         & =1-2\mathbb{E}\min(U_i,U_j).
+    \end{align*}
+    Thus
+    \begin{align*}
+        \nu_F(i,j)
+         & =\frac{1}{2}-\mathbb{E}\min(U_i,U_j).
+    \end{align*}
+    It remains to compute $\mathbb{E}\min(U_i,U_j)$.
+    For any random variable $Y\in[0,1]$,
+    \[
+        \mathbb{E}Y=\int_0^1 \Pr(Y>u)\,du.
+    \]
+    Set
+    \[
+        Y=\min(U_i,U_j).
+    \]
+    Then
+    \begin{align*}
+        \mathbb{E}\min(U_i,U_j)
+         & =\int_0^1 \Pr(\min(U_i,U_j)>u)\,du \\
+         & =\int_0^1 \Pr(U_i>u,U_j>u)\,du.
+    \end{align*}
+    By inclusion-exclusion,
+    \begin{align*}
+        \Pr(U_i>u,U_j>u)
+         & =1-\Pr(U_i\leq u)-\Pr(U_j\leq u)+\Pr(U_i\leq u,U_j\leq u) \\
+         & =1-u-u+\Pr(U_i\leq u,U_j\leq u)                           \\
+         & =1-2u+\Pr(U_i\leq u,U_j\leq u).
+    \end{align*}
+    Under bivariate max-stability with extremal coefficient $\theta_{ij}$,
+    \[
+        \Pr(U_i\leq u,U_j\leq u)=u^{\theta_{ij}}.
+    \]
+    Therefore
+    \begin{align*}
+        \mathbb{E}\min(U_i,U_j)
+         & =\int_0^1 \{1-2u+u^{\theta_{ij}}\}\,du                                                      \\
+         & =\int_0^1 1\,du-2\int_0^1 u\,du+\int_0^1 u^{\theta_{ij}}\,du                                \\
+         & =1-2\left[\frac{u^2}{2}\right]_0^1+\left[\frac{u^{\theta_{ij}+1}}{\theta_{ij}+1}\right]_0^1 \\
+         & =1-1+\frac{1}{\theta_{ij}+1}                                                                \\
+         & =\frac{1}{\theta_{ij}+1}.
+    \end{align*}
+    Hence
+    \begin{align*}
+        \nu_F(i,j)
+         & =\frac{1}{2}-\frac{1}{\theta_{ij}+1}                               \\
+         & =\frac{\theta_{ij}+1}{2(\theta_{ij}+1)}-\frac{2}{2(\theta_{ij}+1)} \\
+         & =\frac{\theta_{ij}-1}{2(\theta_{ij}+1)}.
+    \end{align*}
+    Thus
+    \[
+        2\nu_F(i,j)=\frac{\theta_{ij}-1}{\theta_{ij}+1}.
+    \]
+    Solve for $\theta_{ij}$:
+    \begin{align*}
+        2\nu_F(\theta_{ij}+1)
+         & =\theta_{ij}-1,             \\
+        2\nu_F\theta_{ij}+2\nu_F
+         & =\theta_{ij}-1,             \\
+        \theta_{ij}-2\nu_F\theta_{ij}
+         & =1+2\nu_F,                  \\
+        \theta_{ij}(1-2\nu_F)
+         & =1+2\nu_F,                  \\
+        \theta_{ij}
+         & =\frac{1+2\nu_F}{1-2\nu_F}.
+    \end{align*}
+    Hence
+    \[
+        \boxed{\theta_{ij}=\frac{1+2\nu_F(i,j)}{1-2\nu_F(i,j)}.}
+    \]
+    Replacing $\nu_F(i,j)$ by the empirical F-madogram
+    \[
+        \widehat{\nu}_F(i,j;c)
+        =
+        \frac{1}{2B^{(c)}}
+        \sum_{b=1}^{B^{(c)}}
+        \left|
+        \widehat F_i^{(c)}(M_{i,b}^{(c)})
+        -
+        \widehat F_j^{(c)}(M_{j,b}^{(c)})
+        \right|
+    \]
+    gives the estimator
+    \[
+        \widehat\theta_{ij}^{(c)}
+        =
+        \frac{1+2\widehat\nu_F(i,j;c)}{1-2\widehat\nu_F(i,j;c)}.
+    \]
+\end{proof}
+
+\subsection{Consistency of the empirical finite-level tail-dependence estimator}\label{app:chi-consistency}
+
+We prove that, under within-season stationarity and ergodicity, the empirical estimator $\widehat\chi_{ij}^{(c)}(u)$ converges to the finite-level conditional tail probability $\Pr(U_j^{(c)}>u\mid U_i^{(c)}>u)$.
+
+\begin{proof}
+    Fix a season
+    \[
+        c\in\{W,S\}.
+    \]
+    Fix a pair of stations
+    \[
+        (i,j).
+    \]
+    Let
+    \[
+        \{(U_{i,t}^{(c)},U_{j,t}^{(c)}):t\in T_c\}
+    \]
+    be the season-$c$ transformed pair process.
+    Assume this process is strictly stationary and ergodic.
+    Fix
+    \[
+        u\in(0,1).
+    \]
+    Define
+    \[
+        A_t^{(c)}(u)=\mathbf{1}\{U_{i,t}^{(c)}>u,\;U_{j,t}^{(c)}>u\},
+    \]
+    and
+    \[
+        B_t^{(c)}(u)=\mathbf{1}\{U_{i,t}^{(c)}>u\}.
+    \]
+    Since $(U_{i,t}^{(c)},U_{j,t}^{(c)})$ is strictly stationary and ergodic, any measurable transformation of it is also strictly stationary and ergodic.
+    Therefore
+    \[
+        \{A_t^{(c)}(u)
+        :
+        t\in T_c\}
+    \]
+    is strictly stationary and ergodic, and
+    \[
+        \{B_t^{(c)}(u)
+        :
+        t\in T_c\}
+    \]
+    is strictly stationary and ergodic.
+    Moreover,
+    \[
+        0\leq A_t^{(c)}(u)\leq 1,
+        \qquad
+        0\leq B_t^{(c)}(u)\leq 1.
+    \]
+    Hence
+    \[
+        \mathbb{E}|A_t^{(c)}(u)|<\infty,
+        \qquad
+        \mathbb{E}|B_t^{(c)}(u)|<\infty.
+    \]
+    By the ergodic theorem,
+    \[
+        \frac{1}{|T_c|}\sum_{t\in T_c} A_t^{(c)}(u)
+        \xrightarrow{p}
+        \mathbb{E}A_t^{(c)}(u),
+    \]
+    and
+    \[
+        \frac{1}{|T_c|}\sum_{t\in T_c} B_t^{(c)}(u)
+        \xrightarrow{p}
+        \mathbb{E}B_t^{(c)}(u).
+    \]
+    By the definition of $A_t^{(c)}(u)$,
+    \begin{align*}
+        \mathbb{E}A_t^{(c)}(u)
+         & =\mathbb{E}\mathbf{1}\{U_{i,t}^{(c)}>u,\;U_{j,t}^{(c)}>u\} \\
+         & =\Pr(U_{i,t}^{(c)}>u,\;U_{j,t}^{(c)}>u).
+    \end{align*}
+    By the definition of $B_t^{(c)}(u)$,
+    \begin{align*}
+        \mathbb{E}B_t^{(c)}(u)
+         & =\mathbb{E}\mathbf{1}\{U_{i,t}^{(c)}>u\} \\
+         & =\Pr(U_{i,t}^{(c)}>u).
+    \end{align*}
+    Since $U_{i,t}^{(c)}$ has a standard uniform margin,
+    \[
+        \Pr(U_{i,t}^{(c)}>u)=1-u.
+    \]
+    For $u\in(0,1)$,
+    \[
+        1-u>0.
+    \]
+    The empirical finite-level tail-dependence estimator is
+    \[
+        \widehat\chi_{ij}^{(c)}(u)
+        =
+        \frac{
+            \sum_{t\in T_c}\mathbf{1}\{U_{i,t}^{(c)}>u,\;U_{j,t}^{(c)}>u\}
+        }{
+            \sum_{t\in T_c}\mathbf{1}\{U_{i,t}^{(c)}>u\}
+        }.
+    \]
+    Using $A_t^{(c)}(u)$ and $B_t^{(c)}(u)$,
+    \begin{align*}
+        \widehat\chi_{ij}^{(c)}(u)
+         & =
+        \frac{\sum_{t\in T_c}A_t^{(c)}(u)}{\sum_{t\in T_c}B_t^{(c)}(u)} \\
+         & =
+        \frac{|T_c|^{-1}\sum_{t\in T_c}A_t^{(c)}(u)}{|T_c|^{-1}\sum_{t\in T_c}B_t^{(c)}(u)}.
+    \end{align*}
+    By the continuous mapping theorem,
+    \begin{align*}
+        \widehat\chi_{ij}^{(c)}(u)
+         & \xrightarrow{p}
+        \frac{\Pr(U_{i,t}^{(c)}>u,\;U_{j,t}^{(c)}>u)}{\Pr(U_{i,t}^{(c)}>u)} \\
+         & =
+        \Pr(U_{j,t}^{(c)}>u\mid U_{i,t}^{(c)}>u).
+    \end{align*}
+    Therefore
+    \[
+        \boxed{
+            \widehat\chi_{ij}^{(c)}(u)
+            \xrightarrow{p}
+            \Pr(U_{j,t}^{(c)}>u\mid U_{i,t}^{(c)}>u)
+        }
+    \]
+    for every fixed $u\in(0,1)$.
+    If the limit
+    \[
+        \chi_{ij}^{(c)}
+        =
+        \lim_{u\uparrow 1}
+        \Pr(U_{j,t}^{(c)}>u\mid U_{i,t}^{(c)}>u)
+    \]
+    exists, then the finite-level probability estimated above is the finite-$u$ approximation to the asymptotic tail-dependence coefficient.
+\end{proof}

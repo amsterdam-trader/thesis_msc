@@ -65,7 +65,7 @@
 %       not exist yet; both bib/thesis/ and bib/proposal/ are empty.
 %       Either create EORthesis.bib (preferred) or change the path.
 %       Comment out this line if running latexmk fails without it.
-\addbibresource{bib/EORthesis.bib}
+\addbibresource{bib/thesis/references.bib}
 
 %%%%%%%%%%%%%%%% start document %%%%%%%%%%%
 \begin{document}
@@ -111,8 +111,6 @@
 
 \input{thesis/introduction.tex}
 
-\input{thesis/data.tex}
-
 \newpage
 \input{thesis/literature.tex}
 
@@ -122,8 +120,11 @@
 \newpage
 \input{thesis/methodology.tex}
 
+\input{thesis/}
 \newpage
 \input{thesis/empirical_design.tex}
+
+\input{thesis/data.tex}
 
 \newpage
 \input{thesis/results.tex}
@@ -141,6 +142,8 @@
 %       \printbibliography will resolve. Until then this command
 %       prints an empty list, which is the expected behaviour.
 % =====================================================================
+\newpage
+\input{thesis/appendix_mathematical_proofs.tex}
 \newpage
 \printbibliography[heading=bibintoc,title={References}]
 

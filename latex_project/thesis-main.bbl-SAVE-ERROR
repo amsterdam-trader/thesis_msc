@@ -1,0 +1,467 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{nyt/global//global/global/global}
+    \entry{cooley2012}{article}{}{}
+      \name{author}{7}{}{%
+        {{un=0,uniquepart=base,hash=f0d3c070e26940d106aaabd7802db5a3}{%
+           family={Cooley},
+           familyi={C\bibinitperiod},
+           given={Daniel},
+           giveni={D\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=9627d886bac8caa848c73b0b0bfe74f3}{%
+           family={Cisewski},
+           familyi={C\bibinitperiod},
+           given={Jessi},
+           giveni={J\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=3813721b004d171652a66aabb0ea5518}{%
+           family={Erhardt},
+           familyi={E\bibinitperiod},
+           given={Robert\bibnamedelima J.},
+           giveni={R\bibinitperiod\bibinitdelim J\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=7625f5ab7df6735752de4e711069a6cb}{%
+           family={Jeon},
+           familyi={J\bibinitperiod},
+           given={Soyoung},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=5fad254676ad8fb593708bc5864315d1}{%
+           family={Mannshardt},
+           familyi={M\bibinitperiod},
+           given={Elizabeth},
+           giveni={E\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=0c3483a4ab9a2825674d003468485b4a}{%
+           family={Omolo},
+           familyi={O\bibinitperiod},
+           given={Bernard\bibnamedelima Oguna},
+           giveni={B\bibinitperiod\bibinitdelim O\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=6ec9054114121c22d3126abe383873b8}{%
+           family={Sun},
+           familyi={S\bibinitperiod},
+           given={Ying},
+           giveni={Y\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{70dd2b983f16c1609d6438926abea6df}
+      \strng{fullhash}{f12e9ed5717c7423c0da226d56794508}
+      \strng{fullhashraw}{f12e9ed5717c7423c0da226d56794508}
+      \strng{bibnamehash}{f12e9ed5717c7423c0da226d56794508}
+      \strng{authorbibnamehash}{f12e9ed5717c7423c0da226d56794508}
+      \strng{authornamehash}{70dd2b983f16c1609d6438926abea6df}
+      \strng{authorfullhash}{f12e9ed5717c7423c0da226d56794508}
+      \strng{authorfullhashraw}{f12e9ed5717c7423c0da226d56794508}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{REVSTAT -- Statistical Journal}
+      \field{number}{1}
+      \field{title}{A Survey of Spatial Extremes: Measuring Spatial Dependence and Modeling Spatial Effects}
+      \field{volume}{10}
+      \field{year}{2012}
+      \field{pages}{135\bibrangedash 165}
+      \range{pages}{31}
+      \verb{doi}
+      \verb 10.57805/revstat.v10i1.114
+      \endverb
+    \endentry
+    \entry{davison2012}{article}{}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=b218552bc9538d0bc933d3ae9c4575ac}{%
+           family={Davison},
+           familyi={D\bibinitperiod},
+           given={A.\bibnamedelimi C.},
+           giveni={A\bibinitperiod\bibinitdelim C\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=5187c98ba4ab429057f9c18f4eff2ecd}{%
+           family={Padoan},
+           familyi={P\bibinitperiod},
+           given={S.\bibnamedelimi A.},
+           giveni={S\bibinitperiod\bibinitdelim A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=b5c228b9ac490853ba015575f2aab340}{%
+           family={Ribatet},
+           familyi={R\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{ed063a3554c35751b0b414e66821cbd1}
+      \strng{fullhash}{a6f65b9648c965b4a3867e11418c0791}
+      \strng{fullhashraw}{a6f65b9648c965b4a3867e11418c0791}
+      \strng{bibnamehash}{a6f65b9648c965b4a3867e11418c0791}
+      \strng{authorbibnamehash}{a6f65b9648c965b4a3867e11418c0791}
+      \strng{authornamehash}{ed063a3554c35751b0b414e66821cbd1}
+      \strng{authorfullhash}{a6f65b9648c965b4a3867e11418c0791}
+      \strng{authorfullhashraw}{a6f65b9648c965b4a3867e11418c0791}
+      \field{sortinit}{D}
+      \field{sortinithash}{6f385f66841fb5e82009dc833c761848}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Statistical Science}
+      \field{number}{2}
+      \field{title}{Statistical Modeling of Spatial Extremes}
+      \field{volume}{27}
+      \field{year}{2012}
+      \field{pages}{161\bibrangedash 186}
+      \range{pages}{26}
+      \verb{doi}
+      \verb 10.1214/11-STS376
+      \endverb
+    \endentry
+    \entry{fonsecacerda2025empirical}{article}{}{}
+      \name{author}{6}{}{%
+        {{un=0,uniquepart=base,hash=4b4ebae2a63c6c29c6adb102002bacd6}{%
+           family={Fonseca\bibnamedelima Cerda},
+           familyi={F\bibinitperiod\bibinitdelim C\bibinitperiod},
+           given={M.\bibnamedelimi d.\bibnamedelimi S.},
+           giveni={M\bibinitperiod\bibinitdelim d\bibinitperiod\bibinitdelim S\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=951be08635f313d582184369448c905e}{%
+           family={Moel},
+           familyi={M\bibinitperiod},
+           given={H.},
+           giveni={H\bibinitperiod},
+           givenun=0,
+           prefix={de},
+           prefixi={d\bibinitperiod},
+           prefixun=0}}%
+        {{un=0,uniquepart=base,hash=d45eaa6d0aa27a8b5bb55299ee8cc67f}{%
+           family={Ederen},
+           familyi={E\bibinitperiod},
+           given={D.},
+           giveni={D\bibinitperiod},
+           givenun=0,
+           prefix={van},
+           prefixi={v\bibinitperiod},
+           prefixun=0}}%
+        {{un=0,uniquepart=base,hash=96c5bcac30db7b715758d434c59c0e94}{%
+           family={Aerts},
+           familyi={A\bibinitperiod},
+           given={J.\bibnamedelimi C.\bibnamedelimi J.\bibnamedelimi H.},
+           giveni={J\bibinitperiod\bibinitdelim C\bibinitperiod\bibinitdelim J\bibinitperiod\bibinitdelim H\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=7f98b71e2a4ebcb73b46c707c4ca48dc}{%
+           family={Botzen},
+           familyi={B\bibinitperiod},
+           given={W.\bibnamedelimi J.\bibnamedelimi W.},
+           giveni={W\bibinitperiod\bibinitdelim J\bibinitperiod\bibinitdelim W\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=bda0647080300f7956d0a70bc84ceab5}{%
+           family={Haer},
+           familyi={H\bibinitperiod},
+           given={T.},
+           giveni={T\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{014c0e5fe278ae8fc6bc6f6351c4e4eb}
+      \strng{fullhash}{a39266f27b7a321b82ee3b3e44f7fa76}
+      \strng{fullhashraw}{a39266f27b7a321b82ee3b3e44f7fa76}
+      \strng{bibnamehash}{a39266f27b7a321b82ee3b3e44f7fa76}
+      \strng{authorbibnamehash}{a39266f27b7a321b82ee3b3e44f7fa76}
+      \strng{authornamehash}{014c0e5fe278ae8fc6bc6f6351c4e4eb}
+      \strng{authorfullhash}{a39266f27b7a321b82ee3b3e44f7fa76}
+      \strng{authorfullhashraw}{a39266f27b7a321b82ee3b3e44f7fa76}
+      \field{sortinit}{F}
+      \field{sortinithash}{2638baaa20439f1b5a8f80c6c08a13b4}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Natural Hazards}
+      \field{number}{5}
+      \field{title}{Empirical Evaluation of Windstorm Losses and Meteorological Variables over the Netherlands}
+      \field{volume}{121}
+      \field{year}{2025}
+      \field{pages}{6085\bibrangedash 6106}
+      \range{pages}{22}
+      \verb{doi}
+      \verb 10.1007/s11069-024-07024-y
+      \endverb
+    \endentry
+    \entry{gliksman2023european}{article}{}{}
+      \true{moreauthor}
+      \true{morelabelname}
+      \name{author}{6}{}{%
+        {{un=0,uniquepart=base,hash=21323fc4ad025ef52ec1141ed57033af}{%
+           family={Gliksman},
+           familyi={G\bibinitperiod},
+           given={D.},
+           giveni={D\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=f141db7f9f99ec0f3186b9d9376b7bdb}{%
+           family={Averbeck},
+           familyi={A\bibinitperiod},
+           given={P.},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=c796d953da4c2c3948ddf58ca7e13007}{%
+           family={Becker},
+           familyi={B\bibinitperiod},
+           given={N.},
+           giveni={N\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=56165dc2e92a2e67aec8201ae08f24a6}{%
+           family={Gardiner},
+           familyi={G\bibinitperiod},
+           given={B.},
+           giveni={B\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=feb382e0224433f026eadaf2f71adbc6}{%
+           family={Goldberg},
+           familyi={G\bibinitperiod},
+           given={V.},
+           giveni={V\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=e485b8d3025971c430526e4a2b240427}{%
+           family={Grieger},
+           familyi={G\bibinitperiod},
+           given={J.},
+           giveni={J\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{5b9f5400ac53f31b9e192b6d73057a96}
+      \strng{fullhash}{d21e0511638d78fdeca843037eb88e42}
+      \strng{fullhashraw}{d21e0511638d78fdeca843037eb88e42}
+      \strng{bibnamehash}{d21e0511638d78fdeca843037eb88e42}
+      \strng{authorbibnamehash}{d21e0511638d78fdeca843037eb88e42}
+      \strng{authornamehash}{5b9f5400ac53f31b9e192b6d73057a96}
+      \strng{authorfullhash}{d21e0511638d78fdeca843037eb88e42}
+      \strng{authorfullhashraw}{d21e0511638d78fdeca843037eb88e42}
+      \field{sortinit}{G}
+      \field{sortinithash}{32d67eca0634bf53703493fb1090a2e8}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Natural Hazards and Earth System Sciences}
+      \field{title}{A European perspective on wind and storm damage: From the meteorological background to index-based approaches to assess impacts}
+      \field{volume}{23}
+      \field{year}{2023}
+      \field{pages}{2171\bibrangedash 2201}
+      \range{pages}{31}
+    \endentry
+    \entry{little2023}{article}{}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=5dbfb1fd3d1d75b521e975f1d37f0bf5}{%
+           family={Little},
+           familyi={L\bibinitperiod},
+           given={Alexander\bibnamedelima S.},
+           giveni={A\bibinitperiod\bibinitdelim S\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=c299020707e8c4e188f787b198a181b9}{%
+           family={Priestley},
+           familyi={P\bibinitperiod},
+           given={Matthew\bibnamedelimb D.\bibnamedelimi K.},
+           giveni={M\bibinitperiod\bibinitdelim D\bibinitperiod\bibinitdelim K\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=8ecba8a4d7a120932b9bf8565d3a0fbe}{%
+           family={Catto},
+           familyi={C\bibinitperiod},
+           given={Jennifer\bibnamedelima L.},
+           giveni={J\bibinitperiod\bibinitdelim L\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{24173a90d8b9c69ea57882cbdb23c793}
+      \strng{fullhash}{8a00537c726f56149536e2c1c5e70df6}
+      \strng{fullhashraw}{8a00537c726f56149536e2c1c5e70df6}
+      \strng{bibnamehash}{8a00537c726f56149536e2c1c5e70df6}
+      \strng{authorbibnamehash}{8a00537c726f56149536e2c1c5e70df6}
+      \strng{authornamehash}{24173a90d8b9c69ea57882cbdb23c793}
+      \strng{authorfullhash}{8a00537c726f56149536e2c1c5e70df6}
+      \strng{authorfullhashraw}{8a00537c726f56149536e2c1c5e70df6}
+      \field{sortinit}{L}
+      \field{sortinithash}{7c47d417cecb1f4bd38d1825c427a61a}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Nature Communications}
+      \field{title}{Future Increased Risk from Extratropical Windstorms in Northern Europe}
+      \field{volume}{14}
+      \field{year}{2023}
+      \field{pages}{4434}
+      \range{pages}{1}
+      \verb{doi}
+      \verb 10.1038/s41467-023-40102-6
+      \endverb
+    \endentry
+    \entry{mohr2017}{article}{}{}
+      \name{author}{4}{}{%
+        {{un=0,uniquepart=base,hash=4ac7019cc6521f751b3c02d794ada5bc}{%
+           family={Mohr},
+           familyi={M\bibinitperiod},
+           given={Susanna},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=b679c15eefe3d8d7baaa3724a3210fb4}{%
+           family={Kunz},
+           familyi={K\bibinitperiod},
+           given={Michael},
+           giveni={M\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=b4a2c2bf0bd28442ac583a873585f4c4}{%
+           family={Richter},
+           familyi={R\bibinitperiod},
+           given={Alexandra},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=81ffb62cde9ce9870df5c88570937425}{%
+           family={Ruck},
+           familyi={R\bibinitperiod},
+           given={Bodo},
+           giveni={B\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{5e87fa6778f39252ac2ed44da830d647}
+      \strng{fullhash}{423e166579dbb9c80d2476f250c67897}
+      \strng{fullhashraw}{423e166579dbb9c80d2476f250c67897}
+      \strng{bibnamehash}{423e166579dbb9c80d2476f250c67897}
+      \strng{authorbibnamehash}{423e166579dbb9c80d2476f250c67897}
+      \strng{authornamehash}{5e87fa6778f39252ac2ed44da830d647}
+      \strng{authorfullhash}{423e166579dbb9c80d2476f250c67897}
+      \strng{authorfullhashraw}{423e166579dbb9c80d2476f250c67897}
+      \field{sortinit}{M}
+      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Natural Hazards and Earth System Sciences}
+      \field{title}{Statistical Characteristics of Convective Wind Gusts in Germany}
+      \field{volume}{17}
+      \field{year}{2017}
+      \field{pages}{957\bibrangedash 969}
+      \range{pages}{13}
+      \verb{doi}
+      \verb 10.5194/nhess-17-957-2017
+      \endverb
+    \endentry
+    \entry{sharkey2020}{article}{}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=a4f8cf2e5b5f8caa62b6fd8b9e4eea3e}{%
+           family={Sharkey},
+           familyi={S\bibinitperiod},
+           given={Paul},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=72c869378e68a398a30bef4b31fbd22e}{%
+           family={Tawn},
+           familyi={T\bibinitperiod},
+           given={Jonathan\bibnamedelima A.},
+           giveni={J\bibinitperiod\bibinitdelim A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=080c4a5853c70efad0bd8f9c4ecd2569}{%
+           family={Brown},
+           familyi={B\bibinitperiod},
+           given={Simon\bibnamedelima J.},
+           giveni={S\bibinitperiod\bibinitdelim J\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{779257daf73ede0f9faced5cc8406f64}
+      \strng{fullhash}{c2acfb79b6aef7606e07e2730ffc3595}
+      \strng{fullhashraw}{c2acfb79b6aef7606e07e2730ffc3595}
+      \strng{bibnamehash}{c2acfb79b6aef7606e07e2730ffc3595}
+      \strng{authorbibnamehash}{c2acfb79b6aef7606e07e2730ffc3595}
+      \strng{authornamehash}{779257daf73ede0f9faced5cc8406f64}
+      \strng{authorfullhash}{c2acfb79b6aef7606e07e2730ffc3595}
+      \strng{authorfullhashraw}{c2acfb79b6aef7606e07e2730ffc3595}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of the Royal Statistical Society: Series C (Applied Statistics)}
+      \field{number}{2}
+      \field{title}{Modelling the Spatial Extent and Severity of Extreme European Windstorms}
+      \field{volume}{69}
+      \field{year}{2020}
+      \field{pages}{223\bibrangedash 250}
+      \range{pages}{28}
+      \verb{doi}
+      \verb 10.1111/rssc.12391
+      \endverb
+    \endentry
+    \entry{verbond2017hoofd}{report}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=40536fb10ebb60186bc05dca81b894c3}{%
+           family={{Verbond van Verzekeraars}},
+           familyi={V\bibinitperiod}}}%
+      }
+      \list{institution}{1}{%
+        {Verbond van Verzekeraars}%
+      }
+      \list{location}{1}{%
+        {Den Haag}%
+      }
+      \strng{namehash}{40536fb10ebb60186bc05dca81b894c3}
+      \strng{fullhash}{40536fb10ebb60186bc05dca81b894c3}
+      \strng{fullhashraw}{40536fb10ebb60186bc05dca81b894c3}
+      \strng{bibnamehash}{40536fb10ebb60186bc05dca81b894c3}
+      \strng{authorbibnamehash}{40536fb10ebb60186bc05dca81b894c3}
+      \strng{authornamehash}{40536fb10ebb60186bc05dca81b894c3}
+      \strng{authorfullhash}{40536fb10ebb60186bc05dca81b894c3}
+      \strng{authorfullhashraw}{40536fb10ebb60186bc05dca81b894c3}
+      \field{sortinit}{V}
+      \field{sortinithash}{afb52128e5b4dc4b843768c0113d673b}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Geraadpleegd op 30 mei 2026}
+      \field{title}{Hoofd boven water: Verzekeren van schade in een veranderend klimaat}
+      \field{type}{techreport}
+      \field{year}{2017}
+      \verb{urlraw}
+      \verb https://www.verzekeraars.nl/media/3643/hoofd-boven-water-verzekeren-van-schadein-een-veranderend-klimaat.pdf
+      \endverb
+      \verb{url}
+      \verb https://www.verzekeraars.nl/media/3643/hoofd-boven-water-verzekeren-van-schadein-een-veranderend-klimaat.pdf
+      \endverb
+    \endentry
+  \enddatalist
+  \missing{TODO-aas2008}
+  \missing{TODO-cooley2012}
+  \missing{TODO-davison2012}
+  \missing{TODO-dehaan2006}
+  \missing{TODO-fawcett2006}
+  \missing{TODO-ferro2003}
+  \missing{TODO-fondeville2022}
+  \missing{TODO-french2018}
+  \missing{TODO-huser-genton2016}
+  \missing{TODO-huser2020}
+  \missing{TODO-padoan2010}
+  \missing{TODO-roberts2014}
+  \missing{TODO-wadsworth2012}
+  \missing{gerritsen2005}
+  \missing{vrijling2001}
+\endrefsection
+\endinput
+
