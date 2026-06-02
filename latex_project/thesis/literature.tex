@@ -1,166 +1,78 @@
-% =====================================================================
-% Literature Review
-% Topic: seasonal variation in spatial extremal dependence of Dutch wind gusts
-
-% Literature review: methodological version
-% Topic: Seasonal variation in spatial extremal dependence of Dutch wind gusts
-% Notes:
-% - This file assumes author-year citations using natbib or biblatex-compatible
-%   commands \citet{} and \citep{}.
-% - Citation keys used below are listed at the end of this file as comments.
-% - The review is written as a methodological positioning section, not as a
-%   complete survey of all windstorm applications.
-% =====================================================================
-% =====================================================================
-
 \section{Literature Review}\label{sec:literature}
 
-This paper draws on three strands of literature: univariate extreme-value theory, spatial extremes, and empirical work on European windstorms. Section~\ref{sec:lit-evt-intro} discusses the extreme-value foundations used to define station-level extremes. Section~\ref{sec:lit-spatial-extremes} reviews spatial extremes and max-stable processes, which are properties needed for the spatial analysis. Section~\ref{sec:lit-pairwise-dependence} focuses on pairwise extremal-dependence measures, which form the main theoretical objects for this paper. Section~\ref{sec:lit-windstorms} discusses windstorm applications that motivate the seasonal comparison. Section~\ref{sec:lit-nonstationarity} positions the seasonal split as a restricted form of non-stationary extremal dependence. Section~\ref{sec:lit-finite-sample-inference} discusses the finite-sample inference problem that arises from estimating pairwise dependence for station pairs in a finite sample setting. Finally, Section~\ref{sec:lit-positioning} summarises how the literature is used in this paper and how the paper contributes to the existing corpus of literature.
-% =====================================================================
+This section reviews the literature on extreme-value theory for environmental data, spatial extremes and max-stable processes, pairwise extremal-dependence measures, data-generating processes for the simulation study, inference and uncertainty for dependence estimators, and seasonal and non-stationary extremal dependence.
 
-Since this paper studies whether extreme wind gusts observed at KNMI station locations are more spatially dependent in winter than in summer. The first part introduces the extreme-value theory, for modelling tail observations. The second part reviews max-stable processes and pairwise likelihood methods, which provide the standard framework for spatial block maxima. The third part discusses pairwise dependence summaries, in particular extremal coefficients, madogram estimators, finite-level tail probabilities, and extremograms. The final part positions the seasonal comparison as a form of non-stationary extremal dependence.
+\subsection{Extreme-value foundations for environmental data}\label{sec:lit-evt}
 
-\subsection{Extreme-value foundations}\label{sec:lit-evt-foundations}
-
-Extreme-value theory provides the asymptotic basis for modelling rare events rather than average behaviour. Let \(X_1,\ldots,X_n\) denote independent observations with common distribution function \(F\), and let \(M_n=\max\{X_1,\ldots,X_n\}\). Then
+Extreme-value theory provides the statistical framework for studying rare events in the tails of a distribution. For the canonical case of maxima, let $X_1,\ldots,X_n$ be independent observations with common distribution function $F$ and let $M_n=\max\{X_1,\ldots,X_n\}$. Then
 \[
-    \Pr(M_n \leq z)
-    =
-    \Pr(X_1\leq z,\ldots,X_n\leq z)
-    =
-    F(z)^n .
+    \Pr\{M_n \leq z\}
+    = \Pr\{X_1 \leq z,\ldots,X_n \leq z\}
+    = F(z)^n .
 \]
-The problem to tackle is that the distribution of \(M_n\) degenerates as \(n\) increases unless appropriate normalising constants are used. The results of \citet{fisher1928} and \citet{gnedenko1943} show that, if normalised maxima converge to a non-degenerate limit, the limiting distribution must belong to the generalized extreme-value family. The univariate theory is developed extensively in \citet{dehaanferreira2006}, including the connection between marginal extremes and multivariate or spatial extensions.
-In order to obtain the extreme values from the data, two main approaches are commonly used in literature. The first is the block-maxima approach, in which the sample is divided into non-overlapping blocks and only the maximum observation within each block is retained. In our paper, a block may be defined by season and year, so that the winter maximum at one station is compared with the corresponding winter maxima at the other stations. The advantage of this approach is that it is directly connected to the limiting theory for maxima: under suitable normalisation, block maxima are approximately generalized extreme-value distributed \citep{fisher1928,gnedenko1943,dehaanferreira2006}. In the spatial case, taking pointwise maxima over a random field leads to max-stable processes as the natural limiting objects \citep{dehaan1984,smith1990,dehaanferreira2006}. Extremal coefficients and related pairwise summaries are most naturally defined within the max-stable framework, which will be discussed  section~\ref{sec:lit-maxstable}. The cost of this approach is that block maxima discard information. High wind gusts that occur within the same season but are not the seasonal maximum do not enter the analysis. The block-maxima approach also requires assumptions. In the classical formulation, the observations are independent and identically distributed, or at least satisfy weak-dependence conditions that allow maxima to have the same type of limiting behaviour as in the independent case \citep{leadbetter1983,dehaanferreira2006}. Wind gusts are serially dependent, as several large observations may belong to the same storm system. Taking seasonal maxima reduces the direct influence storm clustering, but it does not remove all dependence or all forms of non-stationarity. The assumption is therefore that, after conditioning on season and after marginal standardisation, the seasonal block maxima are sufficiently close to their limiting extreme-value approximation as the number of seasons increases.
+The results of \citet{fisher1928} and \citet{gnedenko1943} show that, under normalisation, any non-degenerate limit of normalised sample maxima must belong to the generalised extreme value (GEV) family. The Gumbel, Fr\'echet, and Weibull types are special cases of the GEV distribution, whose shape parameter governs tail behaviour. This result justifies modelling tail observations directly rather than average behaviour, and it provides the theoretical basis for the block-maxima approach, in which the data are divided into non-overlapping blocks and the maximum within each block is modelled. The block-maxima method is also the entry point for spatial extremes, because spatial max-stable processes arise as the limiting objects for spatial block maxima \citep{dehaan2006}.
 
-The second approach to obtain the extreme values, is the peaks-over-threshold approach. Instead of keeping only the maximum within each block, this method retains all observations exceeding a high threshold. The asymptotic justification is given by the Pickands--Balkema--de Haan theorem, according to which exceedances above a sufficiently high threshold can be approximated by a generalized Pareto distribution \citep{balkema1974,pickands1975,coles2001}. This approach uses more tail information than block maxima. Its difficulty is that the threshold must be chosen in finite samples, while the theory concerns the limit as the threshold increases. Moreover, exceedances of wind gusts are often temporally clustered during the same storm, so declustering or an explicit treatment of temporal dependence is needed if exceedances are interpreted as separate extreme events \citep{leadbetter1983,coles2001,ferro2003}. Since the peak-over-threshold is not considering the seasonal structure in its plain vanilla form, it is less interpretable for the seasonal comparison, and requires adjustments. 
+In our paper the blocks are days: the hourly wind-gust observations are aggregated to daily maximum wind gusts at each station, and these daily maximum wind gusts are the data object on which all subsequent dependence estimation is performed. Daily maximum wind gusts are a deliberate compromise on the block length. On the one hand, raw hourly gusts are strongly serially dependent, since consecutive hours typically belong to the same passing storm system; aggregating to a daily maximum removes the most immediate within-day temporal clustering and yields blocks that are much closer to the independent-maxima setting that the GEV theory describes. On the other hand, taking the block to be a whole season would leave only one observation per station per season, that is roughly $35$ seasonal maxima over $1991$--$2025$, which is far too few to estimate pairwise spatial dependence stably for each of the many station pairs. Daily maximum wind gusts retain on the order of ninety observations per station per season, a sample large enough for the pairwise estimators below while still respecting the block-maxima logic.
 
-\subsection{Spatial max-stable models and pairwise inference}\label{sec:lit-maxstable}
+A second method is the peaks-over-threshold (POT) framework, which studies observations exceeding a high threshold rather than block maxima. Its theoretical justification is the Pickands--Balkema--de Haan theorem: exceedances above a sufficiently high threshold can be approximated by a generalised Pareto distribution \citep{balkema1974,pickands1975}. POT uses more tail information than block maxima \citep{brabson2000}, but its threshold is finite in observed data while the theory concerns an asymptotic approximation, so the threshold choice is itself an inferential decision \citep{coles2001}. A further difficulty for hourly data is that consecutive exceedances usually belong to the same storm and cannot be treated as independent tail events; correcting for this requires declustering, for instance the automatic interexceedance-time scheme of \citet{ferro2003}, or explicit temporal modelling of the exceedances, as in the Markov-chain treatment of hourly wind speeds by \citet{fawcett2006}. Because daily aggregation already addresses the most immediate form of this serial dependence, our paper treats POT and declustering as background and as a possible robustness alternative rather than as the main empirical strategy.
 
-Max-stable processes extend the block-maxima logic to spatial data. If independent replications of a spatial random field are observed and pointwise maxima are taken over blocks, then max-stable processes arise as the natural limiting objects, in the same way that generalized extreme-value distributions arise for scalar maxima. \citet{smith1990} introduced one of the earliest explicit spatial max-stable models, motivated by windstorm profiles. \citet{schlather2002} developed stationary max-stable random fields based on Gaussian processes, giving a practically useful class of models in which extremal dependence is controlled through an underlying covariance function. \citet{kabluchko2009} later developed the Brown--Resnick class through Gaussian processes with stationary increments. In this model class, dependence is governed by the variogram of the underlying Gaussian process, so that the strength of extremal dependence can be related directly to spatial separation.
+The marginal extreme-value step is only the first layer of the research cake. The second layer is spatial: conditional on one station observing an extreme daily maximum wind gust, how likely is it that another station also observes an extreme value on the same day? This shifts the focus from univariate extremes to spatial extremal dependence, whose estimands are pairwise tail-dependence measures, extremal coefficients, and dependence--distance curves, which we review in the next sections.
 
-The variogram is therefore useful in our study. In classical geostatistics, the semivariogram is written as
-[
-\gamma(h)
-=
-\frac{1}{2}\operatorname{Var}{W(s+h)-W(s)},
-]
-where (W) is a spatial process and (h) is a spatial lag \citep{matheron1963,cressie1993}. For Brown--Resnick max-stable processes, the variogram does not enter as a descriptive tool for ordinary spatial interpolation, but as a model component that controls how extremal dependence decays with distance \citep{kabluchko2009,davison2012}. A slower increase of (\gamma(h)) corresponds to stronger dependence over longer distances, while a faster increase corresponds to more localised extremes. This is relevant for the simulation part of our paper: a winter setting with stronger spatial extremal dependence can be represented by a variogram that increases more slowly with distance than the corresponding summer setting. The empirical analysis itself remains based on pairwise extremal-dependence summaries, rather than on variogram estimation as the main object of interest.
+\subsection{Spatial extremes and max-stable processes}\label{sec:lit-spatial}
 
-A practical difficulty is that max-stable processes are hard to estimate in moderate or high dimension. The full multivariate density is usually unavailable or computationally impractical once many spatial locations are observed. \citet{padoan2010} address this issue by using pairwise composite likelihood methods for max-stable processes. This establishes pairwise likelihood as a standard compromise in spatial extremes: it gives up the full likelihood, but retains enough bivariate information to estimate dependence parameters. \citet{davison2012} review this literature and compare latent variable models, copula models, and max-stable models for spatial extremes, making clear that successful modelling of marginal extremes does not by itself imply successful modelling of joint tail behaviour.
+For block maxima observed over space, max-stable processes provide the standard limiting framework. A max-stable process arises as the limit of pointwise maxima of independent replications of a spatial random field, similar to how the GEV distribution arises as the limit of scalar maxima. Within this framework extremal dependence becomes a spatial object: the joint upper tail is described as a function of location and distance. \citet{dehaan2006} give a foundational treatment of stationary max-stable models for spatial extremes, showing how spatial extremal dependence can be governed by a small number of parameters and related to the distance between locations. The limitation is that stationary max-stable models impose a homogeneous dependence structure, which may be restrictive for Dutch gusts, since winter storms and summer storms do not necessarily share the same spatial dependence pattern.
 
-Our paper uses this pairwise logic, but does not make full parametric max-stable estimation the main empirical object. The aim is more limited. Pairwise dependence summaries are estimated separately for winter and summer and then compared across inter-station distance. This keeps the empirical interpretation close to the research question: if one station observes an extreme wind gust, how likely is another station to be extreme as well?
+\citet{davison2012} review the main statistical approaches to spatial extremes, including latent-variable models, copula models, and max-stable processes. The conclusion from their comparison is that good marginal modelling is not sufficient for modelling spatial extremes: models that fit univariate extremes well may still misrepresent joint extremes across locations. This motivates our focus on extremal-dependence summaries rather than on marginal gust behaviour alone. Likelihood-based inference for max-stable processes is hard, because the full multivariate density is either unavailable or computationally infeasible once the number of locations is moderate. \citet{padoan2010} replace the full likelihood with a pairwise composite likelihood, making parametric max-stable inference feasible for spatial extremes and establishing pairwise inference as a standard methodological mitigation.
 
-\subsection{Pairwise measures of extremal spatial dependence}\label{sec:lit-pairwise-measures}
+In our paper, max-stable processes serve mainly as a theoretical reference point and as the benchmark data-generating process for the simulation study (Section~\ref{sec:lit-sim}), rather than as a model that is fully fitted to the Dutch wind-gust data. We adopt the pairwise logic of \citet{padoan2010}, but the empirical objects are nonparametric pairwise summaries computed directly from the seasonal daily maximum wind gusts, not the parameters of a fitted max-stable family. This keeps the winter--summer comparison transparent and avoids committing the empirical analysis to a single parametric dependence family across inter-station distances.
 
-The empirical analysis requires dependence measures that can be interpreted at the station-pair level. A common summary is the pairwise extremal coefficient. For a max-stable process \(Z(s)\) with unit Frechet margins, the pairwise extremal coefficient \(\theta(s_i,s_j)\) may be defined through
-\[
-    \Pr\{Z(s_i)\leq z, Z(s_j)\leq z\}
-    =
-    \exp\left\{-\frac{\theta(s_i,s_j)}{z}\right\},
-    \qquad z>0 .
-\]
-The coefficient satisfies \(1\leq \theta(s_i,s_j)\leq 2\). Values close to one correspond to strong extremal dependence, while values close to two correspond to weak extremal dependence. In the seasonal comparison considered here, stronger winter dependence corresponds to lower winter values of \(\theta(s_i,s_j)\) than summer values at comparable distances.
+\subsection{Pairwise extremal-dependence measures}\label{sec:lit-pairwise}
 
-\citet{schlather2003} study dependence measures for multivariate and spatial extremes and provide a formal basis for using extremal coefficients as dependence summaries. For the present application, the attraction of \(\theta\) is not only theoretical. It also gives a simple interpretation when plotted against distance: it describes how quickly extremal dependence weakens as station pairs are further apart.
+The empirical analysis requires dependence measures that are interpretable at the station-pair level. \citet{cooley2012} survey several tools for measuring spatial extremal dependence, including extremal coefficients, madograms, and tail-dependence summaries. These reduce the high-dimensional spatial dependence problem to interpretable pairwise quantities that can be compared across seasons and plotted against inter-station distance. In our paper all three are estimated from the seasonal daily maximum wind gusts, separately for winter (DJF) and summer (JJA), and the margins are transformed separately by station and season before estimation. Standardising margins station-by-station and season-by-season is important: coastal and inland stations have different local gust climates, and winter and summer differ in their marginal gust distributions, so transforming each station--season margin to a common empirical uniform scale ensures that the winter--summer comparison reflects differences in spatial dependence rather than differences in the marginal distributions.
 
-An empirical route to \(\theta\) is provided by the \(F\)-madogram. \citet{cooley2006} study variogram-type summaries for spatial max-stable random fields and show how the madogram can be used to estimate extremal dependence. For transformed margins, the \(F\)-madogram between two locations is
+The extremal coefficient is one of the most common summaries. For two locations $s_i$ and $s_j$, the pairwise extremal coefficient $\theta(s_i,s_j)$ lies in $[1,2]$: values close to one correspond to strong extremal dependence, and values close to two to near-independence. In a seasonal comparison, stronger winter dependence corresponds to lower winter values of $\theta(s_i,s_j)$ than summer values at comparable distances.
+
+An empirical route to the extremal coefficient is the $F$-madogram. \citet{cooley2006} study madogram-based dependence summaries for spatial max-stable random fields. For transformed margins, the $F$-madogram between two locations is
 \[
     \nu_F(s_i,s_j)
-    =
-    \frac{1}{2}
-    \mathbb{E}
-    \left[
-        \left|F_{s_i}\{X(s_i)\}-F_{s_j}\{X(s_j)\}\right|
-    \right],
+    = \tfrac{1}{2}\,
+    \mathbb{E}\!\left[
+        \bigl| F_{s_i}\{X(s_i)\} - F_{s_j}\{X(s_j)\} \bigr|
+        \right],
 \]
-where \(F_{s_i}\) and \(F_{s_j}\) are the marginal distribution functions at the two locations. Under bivariate max-stability, the corresponding extremal coefficient is
+where $F_{s_i}$ and $F_{s_j}$ are the marginal distribution functions at the two locations. Under max-stability, the $F$-madogram and the pairwise extremal coefficient are linked through
 \[
     \theta(s_i,s_j)
-    =
-    \frac{1+2\nu_F(s_i,s_j)}{1-2\nu_F(s_i,s_j)} .
+    = \frac{1 + 2\,\nu_F(s_i,s_j)}{1 - 2\,\nu_F(s_i,s_j)} .
 \]
-This estimator is especially useful in this thesis because it is nonparametric after marginal standardisation and can be computed for many station pairs. The resulting estimates can then be smoothed or grouped by distance to obtain winter and summer dependence--distance curves.
-
-A second summary is the upper-tail dependence coefficient. Let \(U(s_i)\) and \(U(s_j)\) denote marginally standardised observations on the uniform scale. The finite-level conditional tail probability is
-\[
-    \chi_u(s_i,s_j)
-    =
-    \Pr\{U(s_j)>u \mid U(s_i)>u\},
-\]
-for a high threshold \(u\). The corresponding asymptotic coefficient is
+The $F$-madogram gives a direct nonparametric estimate of a dependence measure that can be summarised as a dependence--distance curve, without fitting a parametric max-stable model. The upper-tail dependence coefficient $\chi$ provides an additional interpretation. Let $U(s_i)$ and $U(s_j)$ denote marginally standardised observations on a uniform scale. The asymptotic coefficient is
 \[
     \chi(s_i,s_j)
-    =
-    \lim_{u\uparrow 1}\chi_u(s_i,s_j),
+    = \lim_{u \uparrow 1} \Pr\{U(s_j) > u \mid U(s_i) > u\},
 \]
-provided the limit exists. The finite-level version is close to the empirical question of the thesis, because it directly asks how often one station is extreme conditional on another station being extreme. It is also more cautious in finite samples, since the number of seasonal extremes is limited and the limiting approximation may not be accurate at the thresholds observed in practice.
+provided the limit exists, and the corresponding finite-level quantity is
+\[
+    \chi_u(s_i,s_j)
+    = \Pr\{U(s_j) > u \mid U(s_i) > u\}.
+\]
+Here the standardised observations are the seasonal daily maximum wind gusts on the uniform scale, so $\chi_u$ is computed within each season from daily co-exceedances. The finite-level $\chi_u$ can be read directly off the research question: if one KNMI station records an extreme daily maximum wind gust, how likely is another station to record one on the same day? Larger values of $\chi_u$ indicate stronger finite-level co-exceedance, just as smaller values of $\theta$ indicate stronger extremal dependence. The coefficients $\chi$ and $\bar\chi$ were introduced to distinguish asymptotic dependence from asymptotic independence by \citet{coles1999}, who also discuss their estimation at finite levels. A caveat is that dependence at observed high levels need not coincide with the limiting asymptotic dependence class. \citet{wadsworth2012} show that max-stable models can be too restrictive when data exhibit dependence at observed levels but become independent in the limit, and \citet{huser2022} make the same point about classical max-stable models: they are theoretically natural for asymptotic dependence, but finite environmental data may display weakening dependence at increasingly high levels. This matters for gusts, since winter storms may be spatially extensive while some summer events are localised. Our paper therefore reports finite-level dependence on a small grid of thresholds rather than selecting a single threshold.
 
-The extremogram provides a related way to describe extremal dependence. \citet{davis2009} introduce the extremogram as an analogue of the autocorrelation function for extreme events in stationary time series. \citet{cho2016} extend this idea to the spatial setting and study the empirical spatial extremogram under lattice and continuous-domain sampling designs. Their formulation is relevant for KNMI station data because it treats extremal dependence as a function of spatial lag or distance. In this thesis, the spatial extremogram provides methodological support for estimating tail dependence across station pairs and summarising it as a distance curve, rather than focusing on isolated bivariate comparisons.
+\subsection{Data-generating processes for the simulation study}\label{sec:lit-sim}
 
-\subsection{Seasonal variation as non-stationary extremal dependence}\label{sec:lit-seasonal-nonstationary}
+To validate whether the estimators can recover a true dependence structure, recovery must be measured against a known dependence--distance relation. The pairwise extremal coefficients of max-stable processes are available in closed form, which makes these processes suitable as benchmark data-generating processes: a simulated field carries a known $\theta(s_i,s_j)$ at every distance, against which the estimated curve can be compared. The composite-likelihood machinery of \citet{padoan2010} is built on exactly these parametric families, and the same families serve here as the known dependence structure to be recovered rather than as an estimation target. The Schlather model \citep{schlather2002} provides a flexible stationary max-stable family with a tractable bivariate dependence function, while the Brown--Resnick process \citep{brown1983}, characterised through a negative-definite variogram, is a widely used family whose extremal dependence is controlled by that variogram and ranges from strong to near-independent as the variogram range is varied. \citet{dombry2016} provide exact simulation algorithms for max-stable processes, which avoid the approximation error of naive truncated constructions and ensure that the known dependence structure is the one actually simulated.
 
-The winter--summer comparison can be interpreted as a restricted form of non-stationary spatial extremal dependence. A fully stationary spatial extremes model would impose the same dependence structure throughout the year. That assumption is difficult to defend for Dutch wind gusts, since winter wind extremes are often associated with large-scale synoptic systems, while summer gust extremes may be more localised. The seasonal split is a simple way to relax annual stationarity without fitting a high-dimensional non-stationary model.
+Our paper uses the Brown--Resnick process as the main benchmark data-generating process, because its variogram gives direct and interpretable control over how extremal dependence decays with distance, which is exactly the feature the estimators are meant to recover. The null and alternative designs are implemented by choosing one such family and setting its variogram-range parameters so that the two regimes either share a dependence structure (null) or differ by a controlled amount (alternative), with the alternative calibrated so that one regime is more strongly dependent over distance than the other. We stress that the Brown--Resnick process is used only as a controlled benchmark whose true dependence is known; we do not assume that the Dutch wind-gust data are exactly Brown--Resnick. The purpose of the simulation is solely to test whether the pairwise estimators can recover a known winter-versus-summer difference in spatial extremal dependence under a data-generating process where that difference is fixed by design.
 
-\citet{huser2016} develop non-stationary dependence structures for spatial extremes in which covariates can enter the dependence model itself. Their framework is more general than the one used here, but it supports the main modelling idea: extremal dependence need not be constant over covariates or regimes. In the present thesis, season is treated as a regime variable. Instead of estimating a single annual dependence curve, the pairwise summaries are estimated separately for DJF and JJA. This sacrifices parametric efficiency, but it makes the interpretation transparent and reduces reliance on a single non-stationary max-stable specification.
+\subsection{Inference and uncertainty for dependence estimators}\label{sec:lit-inference}
 
-A separate issue is that asymptotic models may be too rigid at observed levels. \citet{wadsworth2012} discuss spatial extremes in settings where data may show dependence at observable levels while becoming independent in the limit. \citet{huser2022} provide a broader review of recent spatial-extremes methodology and emphasise that classical max-stable models can be too restrictive for finite environmental data, especially when dependence weakens at more severe levels. This is relevant for the empirical design because the seasonal comparison should not depend only on an asymptotic model class. For this reason, the thesis considers both extremal-coefficient estimates and finite-level conditional tail probabilities.
+Because our paper compares estimated dependence--distance curves, the sampling behaviour of the estimators is itself a concern: a difference between two curves is only informative once the uncertainty in each is quantified. Two sources of variability matter. First, the $F$-madogram and $\chi_u$ estimators are empirical means and conditional frequencies computed from a finite number of seasonal daily maximum wind gusts, so their variance grows as the season-split sample shrinks. Second, daily maximum wind gusts are not fully independent in time: although daily aggregation removes the within-day clustering present in hourly data, a single multi-day storm can produce extreme daily maxima on several consecutive days, so consecutive daily observations may still be dependent. Uncertainty quantification should therefore not treat all daily observations as independent.
 
-\subsection{Positioning of this thesis}\label{sec:lit-positioning}
+For this reason our paper quantifies uncertainty by resampling temporal blocks rather than individual days. A year or seasonal-block bootstrap resamples whole years, or whole seasonal segments, with replacement and recomputes the full dependence--distance curves on each resample, so that the resulting variability reflects both the finite sample size and the residual serial dependence between consecutive daily maximum wind gusts within a storm. This block-resampling logic is the daily-maxima counterpart of the cluster-based resampling used for hourly exceedances: the interexceedance-time and declustering machinery of \citet{ferro2003}, and the temporal modelling of \citet{fawcett2006}, address the same serial-dependence problem at the hourly-exceedance level and remain available as robustness checks. For the spatial estimators, the pairwise composite-likelihood framework of \citet{padoan2010} comes with asymptotic standard errors, but these rely on the parametric model being correctly specified; the nonparametric pairwise summaries used here are instead assessed by block resampling and, in the simulation, by direct Monte Carlo evaluation against the known truth. The simulation study thus plays the role that an analytic sampling distribution would play if one were available, characterising bias and variability as a function of sample size, distance, and threshold.
 
-The methodological literature gives the thesis a narrow empirical role. Extreme-value theory justifies modelling tail behaviour separately from average wind behaviour. Spatial max-stable processes provide the standard limiting framework for block maxima over space. Pairwise likelihood methods explain why bivariate information is commonly used in spatial extremes when full likelihood methods are infeasible. Madogram estimators, extremal coefficients, finite-level \(\chi_u\) probabilities, and spatial extremograms then provide interpretable station-pair summaries.
+\subsection{Seasonal and non-stationary extremal dependence}\label{sec:lit-nonstationarity}
 
-This thesis does not propose a new spatial-extremes model. It studies whether existing pairwise summaries can recover and describe seasonal differences in spatial extremal dependence of Dutch wind gusts. The simulation study evaluates the finite-sample behaviour of these summaries under controlled dependence structures. The empirical analysis applies the same procedure to KNMI wind-gust observations and compares winter and summer dependence--distance curves. The contribution is therefore methodological as well as empirical: the thesis examines whether a transparent pairwise framework can be used to detect whether winter wind-gust extremes are more spatially widespread than summer wind-gust extremes.
+The third layer of the research cake can be viewed as a restricted form of non-stationary spatial extremal dependence: instead of one dependence structure for all daily maximum wind gusts, our paper allows the dependence relation to differ between two regimes, with season treated as a simple binary covariate for the dependence structure. \citet{huser2016} develop non-stationary dependence structures for spatial extremes, showing that extremal dependence itself, not only the marginal distribution, can vary with covariates. The seasonal split is a deliberately simple version of this idea, and it also addresses a stationarity concern. Many extreme-value methods rely on stationarity, whereas pooled daily maximum wind gusts combine different meteorological regimes; estimating one dependence curve from the unstratified daily maxima would mix large-scale winter storms with more localised summer convective events. Stratifying by season does not remove all non-stationarity, but it makes the working assumption more credible and gives each estimated dependence--distance curve a clearer interpretation.
 
-% =====================================================================
-% Citation keys used in this file
-% =====================================================================
-% fisher1928              Fisher, R. A. and Tippett, L. H. C. (1928).
-%                         Limiting forms of the frequency distribution of
-%                         the largest or smallest member of a sample.
-%
-% gnedenko1943            Gnedenko, B. (1943).
-%                         Sur la distribution limite du terme maximum
-%                         d'une serie aleatoire.
-%
-% dehaanferreira2006      de Haan, L. and Ferreira, A. (2006).
-%                         Extreme Value Theory: An Introduction.
-%
-% smith1990               Smith, R. L. (1990).
-%                         Max-stable processes and spatial extremes.
-%
-% schlather2002           Schlather, M. (2002).
-%                         Models for stationary max-stable random fields.
-%
-% kabluchko2009           Kabluchko, Z., Schlather, M. and de Haan, L. (2009).
-%                         Stationary max-stable fields associated to negative
-%                         definite functions.
-%
-% padoan2010              Padoan, S. A., Ribatet, M. and Sisson, S. A. (2010).
-%                         Likelihood-based inference for max-stable processes.
-%
-% davison2012             Davison, A. C., Padoan, S. A. and Ribatet, M. (2012).
-%                         Statistical modeling of spatial extremes.
-%
-% schlather2003           Schlather, M. and Tawn, J. A. (2003).
-%                         A dependence measure for multivariate and spatial
-%                         extreme values: Properties and inference.
-%
-% cooley2006              Cooley, D., Naveau, P. and Poncet, P. (2006).
-%                         Variograms for spatial max-stable random fields.
-%
-% davis2009               Davis, R. A. and Mikosch, T. (2009).
-%                         The extremogram: A correlogram for extreme events.
-%
-% cho2016                 Cho, Y., Davis, R. A. and Ghosh, S. (2016).
-%                         Asymptotic properties of the empirical spatial
-%                         extremogram.
-%
-% huser2016               Huser, R. and Genton, M. G. (2016).
-%                         Non-stationary dependence structures for spatial extremes.
-%
-% wadsworth2012           Wadsworth, J. L. and Tawn, J. A. (2012).
-%                         Dependence modelling for spatial extremes.
-%
-% huser2022               Huser, R. and Wadsworth, J. L. (2022).
-%                         Advances in statistical modeling of spatial extremes.
+The literature above serves distinct methodological roles. The classical results of \citet{fisher1928}, \citet{gnedenko1943}, \citet{balkema1974}, and \citet{pickands1975} justify modelling tail observations and motivate the daily block-maxima choice, while \citet{ferro2003} and \citet{fawcett2006} supply the temporal-dependence corrections that would be needed if the analysis worked from hourly exceedances rather than daily maximum wind gusts. The spatial-extremes work of \citet{dehaan2006}, \citet{davison2012}, and \citet{padoan2010} provides the max-stable and pairwise-inference framework, and \citet{cooley2006} and \citet{cooley2012} motivate the pairwise estimands -- the extremal coefficient, the $F$-madogram, and dependence--distance curves -- estimated here from seasonal daily maximum wind gusts. \citet{coles1999} underpins the finite-level $\chi_u$ diagnostic, while \citet{wadsworth2012} and \citet{huser2022} caution that finite-level dependence may differ from asymptotic dependence, motivating the threshold-grid robustness check. The benchmark data-generating processes for the validation study draw on the max-stable families of \citet{padoan2010} and, in particular, the Brown--Resnick process \citep{brown1983} with exact simulation \citep{dombry2016}.
+
+The applied studies of \citet{bonazzi2012}, \citet{dellamarta2009}, \citet{roberts2014}, \citet{klawa2003}, and \citet{coles1994} supply the context: windstorms are spatial events, gust fields require local standardisation, and wind extremes may depend on storm structure and direction. \citet{huser2016} shows that extremal dependence can itself be non-stationary. The contribution of our paper is to combine these ideas in a deliberately narrow, methodologically focused setting: to establish, by simulation, when a seasonal difference in spatial extremal dependence can be recovered from finite daily maximum wind gusts on a fixed, irregular station network, and then to apply the validated estimators to Dutch wind gusts. Our paper does not build a compound-hazard model, fit a high-dimensional vine copula, or attribute changes to climate change; its object is the finite-sample comparison of winter and summer dependence--distance curves and finite-level tail-dependence probabilities across KNMI station pairs.

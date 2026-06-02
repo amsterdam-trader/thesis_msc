@@ -88,3 +88,9 @@ zm
 cd
 stationname
 NetCDF
+declustering
+estimands
+Balkema
+Pickands
+Haan
+Gumbel
