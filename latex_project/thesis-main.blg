@@ -1,17 +1,17 @@
 [0] Config.pm:328> INFO - This is Biber 2.21
 [0] Config.pm:331> INFO - Logfile is 'thesis-main.blg'
-[105] biber-MSWIN64:342> INFO - === 
-[147] Biber.pm:421> INFO - Reading 'thesis-main.bcf'
-[240] Biber.pm:1002> INFO - Found 33 citekeys in bib section 0
-[251] Biber.pm:4487> INFO - Processing section 0
-[262] Biber.pm:4678> INFO - Looking for bibtex file 'bib/thesis/references.bib' for section 0
-[324] bibtex.pm:1713> INFO - LaTeX decoding ...
-[362] bibtex.pm:1519> INFO - Found BibTeX data source 'bib/thesis/references.bib'
-[534] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
-[534] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
-[534] Biber.pm:4307> INFO - Sorting list 'nyt/global//global/global/global' of type 'entry' with template 'nyt' and locale 'en-US'
-[534] Biber.pm:4313> INFO - No sort tailoring available for locale 'en-US'
+[116] biber-MSWIN64:342> INFO - === 
+[161] Biber.pm:421> INFO - Reading 'thesis-main.bcf'
+[260] Biber.pm:1002> INFO - Found 25 citekeys in bib section 0
+[270] Biber.pm:4487> INFO - Processing section 0
+[279] Biber.pm:4678> INFO - Looking for bibtex file 'bib/thesis/references.bib' for section 0
+[349] bibtex.pm:1713> INFO - LaTeX decoding ...
+[380] bibtex.pm:1519> INFO - Found BibTeX data source 'bib/thesis/references.bib'
+[528] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[531] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[531] Biber.pm:4307> INFO - Sorting list 'nyt/global//global/global/global' of type 'entry' with template 'nyt' and locale 'en-US'
+[531] Biber.pm:4313> INFO - No sort tailoring available for locale 'en-US'
 [566] bbl.pm:676> INFO - Writing 'thesis-main.bbl' with encoding 'UTF-8'
-[590] bbl.pm:779> INFO - Output to thesis-main.bbl
-[593] Biber.pm:132> WARN - Duplicate entry key: 'gliksman2023european' in file 'bib/thesis/references.bib', skipping ...
-[593] Biber.pm:134> INFO - WARNINGS: 1
+[588] bbl.pm:779> INFO - Output to thesis-main.bbl
+[590] Biber.pm:132> WARN - Duplicate entry key: 'gliksman2023european' in file 'bib/thesis/references.bib', skipping ...
+[590] Biber.pm:134> INFO - WARNINGS: 1

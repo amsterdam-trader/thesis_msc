@@ -1,0 +1,5 @@
+scenario,season,rho,alpha,n_rep,n_obs_per_season,n_factors,n_stations,seed
+null,winter,120.0,1.0,20,3150,50,25,20260101
+null,summer,120.0,1.0,20,3150,50,25,20260101
+alternative,winter,180.0,1.0,20,3150,50,25,20260101
+alternative,summer,60.0,1.0,20,3150,50,25,20260101

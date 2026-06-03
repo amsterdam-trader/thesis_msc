@@ -1,4 +1,0 @@
-Supervisor feedback:
-The original question about temporal variation was a good starting point, but stationarity matters. The thesis should account for trends, seasonality, unit roots, and other non-stationarities. Focusing on specific seasons such as winter and summer is a practical way to reduce this issue. Sample splitting can be used to study temporal variation.
-A strong Econometrics thesis should not only apply standard libraries. It should explain the statistical properties, assumptions, reliability, limitations, and why the results occur. The thesis should have a clear econometric/statistical contribution.
-A strong thesis should be a complete thesis. We can explore a variety of approaches in solving our research question.

@@ -1,4 +1,6 @@
-data/
+data/hourly_data_validated
+data/knmi_observations_analysis
+data/parquet
 .env
 .venv/
 .venv-1/

@@ -1,33 +1,17 @@
-\documentclass[10pt,a4paper]{amsart}
-\usepackage[margin=1.65cm]{geometry}
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{hyperref}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{lmodern}
-\usepackage{xcolor}
-\usepackage{amsmath,amssymb,bm}
-\usepackage{enumitem}
-\usepackage{titlesec}
-\usepackage{hyperref}
-\usepackage{array}
-\usepackage{ragged2e}
-\usepackage{booktabs}
-\usepackage{microtype}
-\usepackage{setspace}
-\usepackage{longtable}
+\usepackage{graphicx}
 \usepackage{siunitx}
-\usepackage{parskip}
-\newcolumntype{P}[1]{>{\RaggedRight\arraybackslash}p{#1}}
-\setlength{\parskip}{0.42em}
-\setlength{\parindent}{0pt}
-\setlist[itemize]{leftmargin=1.35em,itemsep=0.18em,topsep=0.2em}
-\setlist[enumerate]{leftmargin=1.45em,itemsep=0.18em,topsep=0.2em}
-\definecolor{accent}{HTML}{1F4E79}
-\titleformat{\section}{\normalsize\bfseries\color{accent}}{}{0em}{}
-\titleformat{\subsection}{\normalsize\bfseries\color{accent}}{}{0em}{}
-\hypersetup{colorlinks=true,urlcolor=accent,linkcolor=accent}
-\linespread{1.02}
-\pagestyle{empty}
-
+\usepackage{longtable}
+\usepackage{bm}
 
 %%%%%%%%%%% mathematics %%%%%%%%%%%%%%%%%%
 \usepackage{amsmath,amsfonts,amssymb}
@@ -109,18 +93,17 @@
     }
 \end{center}
 
-\input{thesis/introduction.tex}
-
 \newpage
+\input{thesis/introduction.tex}
 \input{thesis/literature.tex}
 
 \newpage
 % \input{thesis/evt_spatial_dependence.tex}
 
-% \newpage
-% \input{thesis/methodology.tex}
-
-% \input{thesis/}
+\newpage
+\input{thesis/methodology.tex}
+\newpage
+\input{thesis/simulation.tex}
 % \newpage
 % \input{thesis/empirical_design.tex}
 
