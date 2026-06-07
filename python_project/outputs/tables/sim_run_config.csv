@@ -1,0 +1,2 @@
+n_rep,n_boot,n_obs,headline_n,n_years,alpha,rho_null,rho_winter_alt,rho_summer_alt,u_grid,ref_distances,kernel,method,boot_alpha,n_stations,seed
+6,40,500,500,35,1.0,120.0,180.0,60.0,"0.95,0.975,0.99","50.0,100.0,200.0",epanechnikov,exact,0.05,33,20260101

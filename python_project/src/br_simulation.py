@@ -1,56 +1,63 @@
-"""Brown-Resnick benchmark simulation.
+"""Brown-Resnick benchmark simulation and closed-form target curves.
 
-Generates approximate Brown-Resnick max-stable fields with a known
-power-law variogram on the empirical KNMI station geometry. The
-simulation is used to validate that the F-madogram, theta, and chi_u
-estimators recover the true dependence structure in finite samples.
+Generates Brown-Resnick max-stable fields with a known power-law
+variogram on the empirical KNMI station geometry. The simulation is the
+controlled data-generating process of the thesis Simulation Study
+(simulation.tex): it is used only to check whether the F-madogram,
+theta, and finite-level chi_u estimators recover a known
+dependence-distance structure in finite samples, NOT as an empirical
+model for Dutch wind gusts.
 
-Variogram and theoretical extremal coefficient
-----------------------------------------------
-We use the Brown-Resnick variogram
+Variogram and closed-form target curves
+---------------------------------------
+The Brown-Resnick process is governed by the power-law variogram
 
-    gamma(h) = (h / rho) ** alpha,                 h in km, 0 < alpha <= 2
+    gamma(d) = (d / rho) ** alpha,                 d in km, 0 < alpha <= 2,
 
-and the corresponding pairwise extremal coefficient
+interpreted as the full increment variance Var(W(s+h) - W(s)) of the
+underlying intrinsically stationary Gaussian process W. The three
+closed-form curves the estimators are measured against (and which match
+methodology.tex / simulation.tex exactly) are:
 
-    theta(h) = 2 * Phi( sqrt(gamma(h)) / 2 ),
+    theta_BR(d)  = 2 * Phi( sqrt(gamma(d)) / 2 )                in [1, 2]
+    chi_u_BR(d)  = ( 1 - 2u + u ** theta_BR(d) ) / ( 1 - u )    finite level u
+    chi_lim(d)   = 2 - theta_BR(d)                              limit u -> 1
 
-where Phi is the standard-normal CDF (Kabluchko, Schlather, de Haan
-2009). theta is monotone in h: 1 at h = 0 (perfect dependence) and
-approaches 2 as h grows (asymptotic independence).
+where Phi is the standard-normal CDF (Kabluchko, Schlather & de Haan
+2009). theta_BR is monotone in d: 1 at d = 0 (perfect dependence),
+approaching 2 as d grows (asymptotic independence). chi_u_BR exceeds the
+limit 2 - theta_BR for u < 1 and decreases to it as u -> 1, so the
+finite-level chi_u_BR(d) -- not the limit -- is the correct target for
+the finite-level estimator (simulation.tex, sec:sim-br).
 
-Simulation
-----------
-The exact Brown-Resnick max-stable process has the spectral
-representation
+Simulation methods
+------------------
+Two simulators are provided via ``simulate_brown_resnick_field(method=...)``:
 
-    Z(s) = max_{k >= 1}  xi_k * exp( W_k(s) - sigma_W^2(s)/2 ),
+* ``method="exact"`` (DEFAULT) -- exact simulation by the extremal-functions
+  algorithm of Dombry, Engelke & Oesting (Biometrika, 2016, Algorithm 2).
+  Each location s_k is visited in turn; the spectral functions "anchored"
+  at s_k (a log-Gaussian process with value 1 at s_k) are drawn with their
+  value at s_k following a Poisson process of intensity r^{-2} dr, and a
+  drawn function is added to the running pointwise maximum only if it is
+  not already dominated at any earlier-visited location. This yields the
+  EXACT finite-dimensional law of the Brown-Resnick process at the
+  station set, with exact unit-Frechet margins. The implementation is
+  vectorised across the n_obs independent fields. This matches the
+  "exact simulation" claim in methodology.tex / simulation.tex.
 
-where {xi_k} are points of a Poisson process with intensity xi^{-2} d xi
-and {W_k} are iid centred Gaussian processes with stationary increments
-satisfying Var(W_k(s) - W_k(t)) = gamma(s - t). We implement an
-APPROXIMATE version with two simplifications:
+* ``method="approx"`` -- the older Schlather-type truncated spectral
+  representation, kept for speed/comparison and fully documented below.
+  Z(s) = max_{k=1..n_factors} xi_k * exp(W_k(s) - gamma(s, s_0)/2) with
+  xi_k = 1 / cumsum(Exp(1)) truncated at n_factors and W_k anchored at the
+  first station. The pairwise variance Var(W(s_i) - W(s_j)) = gamma(s_i, s_j)
+  is preserved exactly, so the pairwise theta_BR(d) is preserved, but the
+  truncation makes the margins only approximately unit Frechet. This bias
+  is absorbed by the subsequent empirical rank transform in the
+  estimators; do NOT treat this method as an exact simulator.
 
-(a) Truncated Poisson points: xi_k = 1 / E_k with E_k the partial sum
-    of k iid Exp(1) random variables, truncated at k = n_factors. This
-    truncates the upper tail of the Poisson representation and the
-    resulting margins are only approximately unit Frechet. Increasing
-    n_factors reduces the bias.
-(b) Anchored Gaussian processes: W_k is simulated by anchoring at the
-    first station, W_k(s_0) = 0, with covariance
-        Cov(W(s_i), W(s_j)) = 0.5 * ( gamma(s_i, s_0)
-                                      + gamma(s_j, s_0)
-                                      - gamma(s_i, s_j) ).
-    The pairwise variance Var(W(s_i) - W(s_j)) = gamma(s_i, s_j) is
-    preserved exactly, so the THEORETICAL pairwise extremal coefficient
-    theta(h) is preserved. Marginal variances differ slightly across
-    stations, but this is absorbed by the subsequent empirical rank
-    transform used in the estimators.
-
-The approximation is sufficient for the methodological question of the
-thesis: whether finite-sample estimators can recover known pairwise
-dependence-distance curves. It should NOT be used as an exact
-Brown-Resnick simulator.
+Both methods are validated against the closed-form curves in
+``tests/test_br_simulation_recovers_curves.py``.
 """
 
 from __future__ import annotations
@@ -87,8 +94,34 @@ def br_theta(h: np.ndarray | float, rho: float, alpha: float) -> np.ndarray | fl
 
 
 def br_chi_from_theta(theta: np.ndarray | float) -> np.ndarray | float:
-    """Asymptotic chi from theta via chi = 2 - theta (max-stable case)."""
+    """Limiting chi from theta via chi = 2 - theta (level u -> 1)."""
     return 2.0 - theta
+
+
+def br_chi_u_from_theta(
+    theta: np.ndarray | float, u: float
+) -> np.ndarray | float:
+    """Finite-level tail dependence chi_u for a bivariate max-stable pair.
+
+    chi_u = (1 - 2u + u**theta) / (1 - u). This is the correct target for
+    the finite-level estimator at level u; it exceeds the limit 2 - theta
+    for u < 1 and decreases to it as u -> 1.
+    """
+    if not 0.0 < u < 1.0:
+        raise ValueError(f"Threshold u must be in (0, 1), got {u}")
+    theta = np.asarray(theta, dtype=float)
+    return (1.0 - 2.0 * u + np.power(u, theta)) / (1.0 - u)
+
+
+def br_chi_u(
+    h: np.ndarray | float, rho: float, alpha: float, u: float
+) -> np.ndarray | float:
+    """Closed-form finite-level chi_u_BR(h) for the Brown-Resnick process.
+
+    chi_u_BR(h) = (1 - 2u + u**theta_BR(h)) / (1 - u), with
+    theta_BR(h) = 2 Phi(sqrt(gamma(h))/2) and gamma(h) = (h/rho)**alpha.
+    """
+    return br_chi_u_from_theta(br_theta(h, rho, alpha), u)
 
 
 # ---------------------------------------------------------------------------
@@ -162,7 +195,18 @@ def _anchored_gaussian_covariance(D: np.ndarray, rho: float, alpha: float) -> tu
     return Sigma, drift
 
 
-def simulate_brown_resnick_field(
+def _resolve_distance_matrix(panel_or_distances: StationPanel | np.ndarray) -> np.ndarray:
+    """Return a validated (n, n) distance matrix from a panel or an array."""
+    if isinstance(panel_or_distances, StationPanel):
+        D = pairwise_distance_matrix(panel_or_distances)
+    else:
+        D = np.asarray(panel_or_distances, dtype=float)
+    if D.ndim != 2 or D.shape[0] != D.shape[1]:
+        raise ValueError(f"Distance matrix must be square 2D, got {D.shape}")
+    return D
+
+
+def simulate_brown_resnick_approx(
     panel_or_distances: StationPanel | np.ndarray,
     rho: float,
     alpha: float,
@@ -170,35 +214,33 @@ def simulate_brown_resnick_field(
     n_factors: int = 50,
     rng: np.random.Generator | int | None = None,
 ) -> np.ndarray:
-    """Simulate an approximate Brown-Resnick max-stable field.
+    """Approximate Brown-Resnick field (truncated Schlather representation).
+
+    Z(s) = max_{k=1..n_factors} xi_k exp(W_k(s) - gamma(s, s_0)/2), with
+    xi_k = 1 / cumsum(Exp(1)) and W_k anchored at the first station. The
+    pairwise variance Var(W(s_i) - W(s_j)) = gamma(s_i, s_j) is preserved
+    exactly so theta_BR(d) is preserved; the truncation leaves the margins
+    only approximately unit Frechet (absorbed by the rank transform). Use
+    ``simulate_brown_resnick_exact`` for an exact draw.
 
     Parameters
     ----------
     panel_or_distances
-        Either a StationPanel (from which the haversine distance matrix
-        is computed) or an explicit (n, n) distance matrix in km.
+        A StationPanel or an explicit (n, n) distance matrix in km.
     rho, alpha
-        Variogram parameters: gamma(h) = (h / rho) ** alpha.
+        Variogram parameters: gamma(d) = (d / rho) ** alpha.
     n_obs
-        Number of independent realisations (seasonal block maxima).
+        Number of independent realisations (daily-max fields).
     n_factors
-        Truncation of the Poisson-point spectral representation. With
-        n_factors = 50 the truncation is conservative for the distances
-        seen in the Dutch panel.
+        Truncation of the Poisson-point spectral representation.
     rng
         Random generator or seed.
 
     Returns
     -------
-    Z : (n_obs, n_stations) array of simulated values with approximately
-        unit-Frechet margins.
+    Z : (n_obs, n_stations) array with approximately unit-Frechet margins.
     """
-    if isinstance(panel_or_distances, StationPanel):
-        D = pairwise_distance_matrix(panel_or_distances)
-    else:
-        D = np.asarray(panel_or_distances, dtype=float)
-    if D.ndim != 2 or D.shape[0] != D.shape[1]:
-        raise ValueError(f"Distance matrix must be square 2D, got {D.shape}")
+    D = _resolve_distance_matrix(panel_or_distances)
     n = D.shape[0]
 
     rng = np.random.default_rng(rng)
@@ -219,22 +261,159 @@ def simulate_brown_resnick_field(
     return Z
 
 
+def _extremal_function_factors(
+    D: np.ndarray, rho: float, alpha: float
+) -> tuple[list[np.ndarray], np.ndarray]:
+    """Precompute, for each anchor location k, the spectral-function law.
+
+    The spectral function "anchored at s_k" is the size-biased (Esscher
+    tilted) log-Gaussian spectral function: Y(s_k) = 1 and log Y = V is
+    Gaussian with
+        mean(V_l)     = -gamma(s_l, s_k) / 2
+        Cov(V_l, V_m) = 0.5 * ( gamma(s_l, s_k) + gamma(s_m, s_k)
+                                - gamma(s_l, s_m) ),
+    equivalently V_l = W(s_l) - W(s_k) - gamma(s_l, s_k)/2 for the
+    intrinsically stationary Gaussian W with variogram gamma (Dombry,
+    Engelke & Oesting 2016). Then Var(V_l) = gamma(s_l, s_k) so
+    E[exp(V_l)] = 1 (exact unit-Frechet margins), and row/column k of the
+    covariance and the mean vanish, so V_k = 0 exactly and Y(s_k) = 1.
+
+    Returns
+    -------
+    factors : list of (n, n) lower-rank square roots L_k with L_k L_k^T = Sigma_k.
+    means   : (n, n) array whose row k is the mean vector -gamma(., s_k)/2.
+    """
+    G = np.power(D / rho, alpha)             # full variogram matrix gamma(d_lm)
+    n = G.shape[0]
+    factors: list[np.ndarray] = []
+    means = np.empty((n, n), dtype=float)
+    for k in range(n):
+        gk = G[k, :]
+        Sigma = 0.5 * (gk[:, None] + gk[None, :] - G)
+        factors.append(_psd_square_root(Sigma))
+        means[k] = -0.5 * gk
+    return factors, means
+
+
+def simulate_brown_resnick_exact(
+    panel_or_distances: StationPanel | np.ndarray,
+    rho: float,
+    alpha: float,
+    n_obs: int,
+    rng: np.random.Generator | int | None = None,
+) -> np.ndarray:
+    """Exact Brown-Resnick field via the extremal-functions algorithm.
+
+    Implements Algorithm 2 of Dombry, Engelke & Oesting (Biometrika 2016).
+    Each station s_k is visited once; spectral functions anchored at s_k
+    are generated with their value at s_k following a Poisson process of
+    intensity r^{-2} dr (decreasing), and a drawn function is merged into
+    the running pointwise maximum only if it is not already dominated at
+    any earlier-visited location s_l (l < k). The result is an EXACT draw
+    of the Brown-Resnick max-stable process at the station set, with exact
+    unit-Frechet margins. The loop over Poisson points is vectorised
+    across the ``n_obs`` independent fields.
+
+    Parameters
+    ----------
+    panel_or_distances
+        A StationPanel or an explicit (n, n) distance matrix in km.
+    rho, alpha
+        Variogram parameters: gamma(d) = (d / rho) ** alpha.
+    n_obs
+        Number of independent realisations (daily-max fields).
+    rng
+        Random generator or seed.
+
+    Returns
+    -------
+    Z : (n_obs, n_stations) array of exact Brown-Resnick values
+        (unit-Frechet margins).
+    """
+    D = _resolve_distance_matrix(panel_or_distances)
+    n = D.shape[0]
+    rng = np.random.default_rng(rng)
+
+    factors, means = _extremal_function_factors(D, rho=rho, alpha=alpha)
+    Z = np.zeros((n_obs, n), dtype=float)
+
+    for k in range(n):
+        L = factors[k]
+        m = means[k][None, :]
+        # Poisson arrival times on (0, inf): T accumulates Exp(1); zeta = 1/T.
+        T = rng.exponential(size=n_obs)
+        while True:
+            zeta = 1.0 / T
+            cont = zeta > Z[:, k]                  # fields still generating at s_k
+            idx = np.nonzero(cont)[0]
+            if idx.size == 0:
+                break
+            nc = idx.size
+            zz = rng.standard_normal((nc, n))
+            V = zz @ L.T + m
+            V[:, k] = 0.0                          # enforce Y(s_k) = 1 exactly
+            cand = zeta[idx, None] * np.exp(V)     # candidate function values
+            if k > 0:
+                accept = np.all(cand[:, :k] < Z[idx][:, :k], axis=1)
+            else:
+                accept = np.ones(nc, dtype=bool)
+            if accept.any():
+                aidx = idx[accept]
+                Z[aidx] = np.maximum(Z[aidx], cand[accept])
+            # Advance the Poisson clock only for fields still generating.
+            T[idx] += rng.exponential(size=nc)
+    return Z
+
+
+def simulate_brown_resnick_field(
+    panel_or_distances: StationPanel | np.ndarray,
+    rho: float,
+    alpha: float,
+    n_obs: int,
+    method: Literal["exact", "approx"] = "exact",
+    n_factors: int = 50,
+    rng: np.random.Generator | int | None = None,
+) -> np.ndarray:
+    """Simulate a Brown-Resnick max-stable field (dispatcher).
+
+    method="exact" (default) uses the exact extremal-functions algorithm
+    (Dombry, Engelke & Oesting 2016); method="approx" uses the truncated
+    spectral representation (``n_factors`` Poisson points). See module
+    docstring for the trade-offs.
+    """
+    if method == "exact":
+        return simulate_brown_resnick_exact(
+            panel_or_distances, rho=rho, alpha=alpha, n_obs=n_obs, rng=rng
+        )
+    if method == "approx":
+        return simulate_brown_resnick_approx(
+            panel_or_distances, rho=rho, alpha=alpha, n_obs=n_obs,
+            n_factors=n_factors, rng=rng,
+        )
+    raise ValueError(f"Unknown method {method!r}; use 'exact' or 'approx'.")
+
+
 def simulate_scenario_pair(
     panel: StationPanel,
     scenario: ScenarioPair,
     n_obs_per_season: int,
+    method: Literal["exact", "approx"] = "exact",
     n_factors: int = 50,
     rng: np.random.Generator | int | None = None,
 ) -> dict[str, np.ndarray]:
-    """Simulate one winter and one summer field under a scenario pair."""
+    """Simulate one winter and one summer field under a scenario pair.
+
+    The same RNG is threaded through both regimes so a single seed fixes
+    the whole pair reproducibly. Distances are computed once from the panel.
+    """
     rng = np.random.default_rng(rng)
     D = pairwise_distance_matrix(panel)
     winter = simulate_brown_resnick_field(
         D, rho=scenario.winter.rho, alpha=scenario.winter.alpha,
-        n_obs=n_obs_per_season, n_factors=n_factors, rng=rng,
+        n_obs=n_obs_per_season, method=method, n_factors=n_factors, rng=rng,
     )
     summer = simulate_brown_resnick_field(
         D, rho=scenario.summer.rho, alpha=scenario.summer.alpha,
-        n_obs=n_obs_per_season, n_factors=n_factors, rng=rng,
+        n_obs=n_obs_per_season, method=method, n_factors=n_factors, rng=rng,
     )
     return {"winter": winter, "summer": summer}

@@ -9,8 +9,16 @@ description = "An example Python project for a thesis template"
 license = {file = "LICENSE"}
 readme = {file = "README.txt", content-type = "text/markdown"}
 dependencies = [
-    # Add your dependencies here, e.g., "pandas", "numpy", they will be installed automatically by pip
+    "numpy",
+    "scipy",
+    "pandas",
+    "matplotlib",
+    "joblib",          # parallel Monte Carlo replications in the simulation study
+    "pyarrow",         # parquet intermediates
 ]
+
+[project.optional-dependencies]
+test = ["pytest"]
 
 [tool.setuptools.packages.find]
 where = ["src"]

@@ -1,371 +1,571 @@
-@article{gliksman2023european,
-  title   = {A European perspective on wind and storm damage: From the meteorological background to index-based approaches to assess impacts},
-  author  = {Gliksman, D. and Averbeck, P. and Becker, N. and Gardiner, B. and Goldberg, V. and Grieger, J. and others},
-  journal = {Natural Hazards and Earth System Sciences},
-  volume  = {23},
-  pages   = {2171--2201},
-  year    = {2023}
-}
+### 3.2 `simulation.tex`
 
-@article{davison2012,
-  title   = {Statistical Modeling of Spatial Extremes},
-  author  = {Davison, A. C. and Padoan, S. A. and Ribatet, M.},
-  journal = {Statistical Science},
-  volume  = {27},
-  number  = {2},
-  pages   = {161--186},
-  year    = {2012},
-  doi     = {10.1214/11-STS376}
-}
+*What changed:* the Monte Carlo now targets recovery of $(\rho,\alpha)$ and the size/power of the $\rho$-test, with exact BR fields and the *same* pairwise CL + bootstrap as the application. The kernel-smoother machinery and the curve-recovery framing are gone; nonparametric coefficients are a secondary check.
 
-@article{cooley2012,
-  title   = {A Survey of Spatial Extremes: Measuring Spatial Dependence and Modeling Spatial Effects},
-  author  = {Cooley, Daniel and Cisewski, Jessi and Erhardt, Robert J. and Jeon, Soyoung and Mannshardt, Elizabeth and Omolo, Bernard Oguna and Sun, Ying},
-  journal = {REVSTAT -- Statistical Journal},
-  volume  = {10},
-  number  = {1},
-  pages   = {135--165},
-  year    = {2012},
-  doi     = {10.57805/revstat.v10i1.114}
-}
+```latex
+% =====================================================================
+% Simulation Study
+% Validates the PRIMARY estimator: season-specific Brown--Resnick
+% (rho, alpha) by pairwise composite likelihood, and the test of
+% H0: rho_W = rho_S against H1: rho_W > rho_S.
+%
+% CONVENTION (must match methodology.tex):
+%   gamma_c(d) = (d/rho_c)^alpha_c (variance-of-increments variogram);
+%   theta_c(d) = 2*Phi( 0.5 * sqrt(gamma_c(d)) ).
+%
+% CROSS-REFERENCES (methodology labels):
+%   sec:meth-marginals sec:meth-variogram sec:meth-cl
+%   sec:meth-inference sec:meth-diagnostics
+%
+% CITATION KEYS USED: brown1977 kabluchko2009 dombry2016 padoan2010
+%   huser2013 cooley2006.  PACKAGES: algorithm, algpseudocode, graphicx.
+% =====================================================================
+\section{Simulation Study}\label{sec:simulation}
 
-@techreport{verbond2017hoofd,
-  author      = {{Verbond van Verzekeraars}},
-  title       = {Hoofd boven water: Verzekeren van schade in een veranderend klimaat},
-  institution = {Verbond van Verzekeraars},
-  year        = {2017},
-  address     = {Den Haag},
-  url         = {https://www.verzekeraars.nl/media/3643/hoofd-boven-water-verzekeren-van-schadein-een-veranderend-klimaat.pdf},
-  note        = {Geraadpleegd op 30 mei 2026}
-}
+\subsection{Purpose}\label{sec:sim-purpose}
 
-@article{sharkey2020,
-  author  = {Sharkey, Paul and Tawn, Jonathan A. and Brown, Simon J.},
-  title   = {Modelling the Spatial Extent and Severity of Extreme European Windstorms},
-  journal = {Journal of the Royal Statistical Society: Series C (Applied Statistics)},
-  year    = {2020},
-  volume  = {69},
-  number  = {2},
-  pages   = {223--250},
-  doi     = {10.1111/rssc.12391}
-}
+The empirical analysis estimates \(\vartheta_{\mathrm W}=(\rho_{\mathrm W},\alpha_{\mathrm W})\) and \(\vartheta_{\mathrm S}=(\rho_{\mathrm S},\alpha_{\mathrm S})\) from a single, seasonally split sample of daily maxima on an irregular station network, and reads the winter--summer comparison from \(\widehat\Delta_\rho=\widehat\rho_{\mathrm W}-\widehat\rho_{\mathrm S}\). The simulation asks whether the estimator of Section~\ref{sec:meth-cl} recovers the parameters, and whether the test of \(H_0:\rho_{\mathrm W}=\rho_{\mathrm S}\) against \(H_1:\rho_{\mathrm W}>\rho_{\mathrm S}\) has the intended size and power, at a sample size and geometry matching the application. The data are generated from Brown--Resnick processes for which \(\vartheta_c\) and the implied curves \(\theta_c(d)\) are known; this is a controlled truth, not a claim that Dutch gusts are Brown--Resnick. Three quantities are evaluated: bias and root mean squared error of \(\widehat\rho_c\) and \(\widehat\alpha_c\), coverage of the bootstrap intervals, and the size and power of the test of \(H_0\).
 
-@article{mohr2017,
-  author  = {Mohr, Susanna and Kunz, Michael and Richter, Alexandra and Ruck, Bodo},
-  title   = {Statistical Characteristics of Convective Wind Gusts in Germany},
-  journal = {Natural Hazards and Earth System Sciences},
-  year    = {2017},
-  volume  = {17},
-  pages   = {957--969},
-  doi     = {10.5194/nhess-17-957-2017}
-}
+\subsection{Spatial design}\label{sec:sim-spatial}
 
-@article{little2023,
-  author  = {Little, Alexander S. and Priestley, Matthew D. K. and Catto, Jennifer L.},
-  title   = {Future Increased Risk from Extratropical Windstorms in Northern Europe},
-  journal = {Nature Communications},
-  year    = {2023},
+Fields are simulated on the empirical station set, so the simulated and observed inter-station distances coincide. Let \(s_1,\dots,s_N\) be the \(N=33\) retained station locations and \(d_{ij}=\lVert s_i-s_j\rVert\) the great-circle distance in kilometres. Each simulated field is one realisation of the spatial process, the analogue of one day; \(n\) fields are drawn per season, with \(n\) matching the per-season count of daily maxima in the data. Sample size is treated as a design factor, with \(n\) reduced below its empirical value to trace how the estimator degrades as the number of fields shrinks.
+
+\subsection{Brown--Resnick data-generating process}\label{sec:sim-dgp}
+
+The data-generating process is the Brown--Resnick max-stable process \citep{brown1977,kabluchko2009} with unit-Fr\'echet margins and variogram
+\[
+      \gamma_c(d)=\Bigl(\frac{d}{\rho_c}\Bigr)^{\alpha_c},
+      \qquad \rho_c>0,\ \alpha_c\in(0,2],
+\]
+matching the model of Section~\ref{sec:meth-variogram}. Fields are drawn by the exact algorithm of \citet{dombry2016}, so the realised dependence equals the target rather than an approximation to it. The implied extremal coefficient is \(\theta_c(d)=2\Phi\!\bigl(\tfrac12\sqrt{\gamma_c(d)}\bigr)\), with \(\Phi\) the standard normal distribution function, and the implied finite-level coefficient at level \(u\) is \(\chi_u^{(c)}(d)=(1-2u+u^{\theta_c(d)})/(1-u)\); both serve as known targets for the diagnostics of Section~\ref{sec:meth-diagnostics}.
+
+\subsection{Null and alternative designs}\label{sec:sim-designs}
+
+Two regimes, labelled winter and summer, mirror the empirical comparison. Under the null the regimes share the variogram, \(\rho_{\mathrm W}=\rho_{\mathrm S}\) and \(\alpha_{\mathrm W}=\alpha_{\mathrm S}\), so there is no seasonal difference. Under the alternative the winter range exceeds the summer range, \(\rho_{\mathrm W}>\rho_{\mathrm S}\), which implies \(\theta_{\mathrm W}(d)<\theta_{\mathrm S}(d)\) for \(d>0\): winter extremes are more strongly dependent and remain so over longer distances. The smoothness \(\alpha\) is held common across regimes in the headline design and estimated freely in each; whether \(\alpha\) is fixed or estimated is varied. Parameter values are chosen so that the two curves are distinguishable over the distances the network spans, and are reported with the results; they are not empirical estimates.
+% TODO: fix the exact (rho_W, rho_S, alpha) grid once the station-distance
+%       range [d_min, d_max] is read off the data, so the curves separate.
+
+\subsection{Estimation in each replication}\label{sec:sim-estimation}
+
+Each Monte Carlo replication applies the empirical pipeline unchanged. One winter and one summer sample of \(n\) fields are drawn. Within each regime the margins are transformed as in Section~\ref{sec:meth-marginals}; on exact unit-Fr\'echet fields this step is close to the identity, so applying it keeps the marginal estimation error of the empirical procedure in the simulation rather than removing it. The parameters are estimated by the pairwise composite likelihood of Section~\ref{sec:meth-cl}, giving \(\widehat\vartheta_{\mathrm W}\), \(\widehat\vartheta_{\mathrm S}\) and \(\widehat\Delta_\rho\), and the seasonal-year block bootstrap of Section~\ref{sec:meth-inference} is run within the replication by arranging the \(n\) fields into pseudo-season-years and resampling them. Pointwise targets and the test decision use the same rules as the application. The nonparametric \(F\)-madogram and \(\chi_u\) coefficients \citep{cooley2006} are also computed and compared to their known curves, as a secondary check on the diagnostics. Algorithm~\ref{alg:sim} collects the per-replication procedure.
+
+\begin{algorithm}[t]
+      \caption{Monte Carlo evaluation of the seasonal Brown--Resnick estimator}
+      \label{alg:sim}
+      \begin{algorithmic}[1]
+            \Require locations \(\{s_i\}_{i=1}^N\); per-season size \(n\); ranges \(\rho_{\mathrm W},\rho_{\mathrm S}\) and smoothness \(\alpha\); replications \(R\); bootstrap size \(B\); parameter space \(\Theta\)
+            \For{\(r=1,\dots,R\)}
+            \For{\(c\in\{\mathrm W,\mathrm S\}\)}
+            \State draw \(n\) exact unit-Fr\'echet Brown--Resnick fields with variogram \(\gamma_c(d)=(d/\rho_c)^{\alpha}\)
+            \State transform margins by station to the unit-Fr\'echet scale (Section~\ref{sec:meth-marginals})
+            \State \(\widehat\vartheta_c\gets\arg\max_{\vartheta\in\Theta}\ell_c(\vartheta)\) by pairwise composite likelihood (Section~\ref{sec:meth-cl})
+            \EndFor
+            \State \(\widehat\Delta_\rho\gets\widehat\rho_{\mathrm W}-\widehat\rho_{\mathrm S}\)
+            \For{\(b=1,\dots,B\)}
+            \State arrange each regime's \(n\) fields into pseudo-season-years; resample within regime
+            \State recompute \(\widehat\vartheta_{\mathrm W}^{*},\widehat\vartheta_{\mathrm S}^{*},\widehat\Delta_\rho^{*}\)
+            \EndFor
+            \State store \(\widehat\vartheta_{\mathrm W},\widehat\vartheta_{\mathrm S},\widehat\Delta_\rho\), their percentile intervals, and the one-sided test decision for \(H_0\)
+            \EndFor
+            \Ensure across \(r\): bias and RMSE of \(\widehat\rho_c,\widehat\alpha_c,\widehat\Delta_\rho\); interval coverage; size (null) and power (alternative)
+      \end{algorithmic}
+\end{algorithm}
+
+\subsection{Performance measures}\label{sec:sim-performance}
+
+Let \(\mathbb E_{\mathrm{MC}}\) denote the average over the \(R\) replications. For each season-specific parameter \(\beta\in\{\rho_c,\alpha_c\}\) and for \(\Delta_\rho\) the simulation reports
+\[
+      \operatorname{Bias}(\beta)=\mathbb E_{\mathrm{MC}}[\widehat\beta]-\beta,
+      \qquad
+      \operatorname{RMSE}(\beta)=\bigl\{\mathbb E_{\mathrm{MC}}[(\widehat\beta-\beta)^2]\bigr\}^{1/2}.
+\]
+Interval coverage is the proportion of replications whose bootstrap percentile interval for \(\beta\) contains the true value. For the test of \(H_0:\rho_{\mathrm W}=\rho_{\mathrm S}\) against \(H_1:\rho_{\mathrm W}>\rho_{\mathrm S}\), size is the rejection rate under the null design and should sit near the nominal level, and power is the rejection rate under the alternative. Curve recovery is summarised by the bias and RMSE of the implied extremal coefficient \(\widehat\theta_c(d_0)\) at reference distances \(d_0\), evaluated against \(\theta_c(d_0)\). Because the fields are drawn independently across days, the coverage and size figures are for the favourable case of no residual temporal dependence; this is restated in Section~\ref{sec:sim-interpretation}. Table~\ref{tab:sim-results} collects the parameter results and Table~\ref{tab:sim-test} the size and power.
+
+\begin{table}[t]
+      \centering
+      \caption{Simulation results, to be completed after estimation. Monte Carlo bias and RMSE of the Brown--Resnick estimates and of \(\widehat\Delta_\rho\), and bootstrap interval coverage, under the null and alternative designs at per-season size \(n\).}
+      \label{tab:sim-results}
+      \begin{tabular}{llcccc}
+            \hline
+            Design & Parameter            & True & Bias & RMSE & Coverage \\
+            \hline
+            Null   & \(\rho_{\mathrm W}\) & --   & --   & --   & --       \\
+                   & \(\rho_{\mathrm S}\) & --   & --   & --   & --       \\
+                   & \(\alpha_{\mathrm W}\) & -- & --   & --   & --       \\
+                   & \(\alpha_{\mathrm S}\) & -- & --   & --   & --       \\
+                   & \(\Delta_\rho\)      & 0    & --   & --   & --       \\
+            \hline
+            Alt.   & \(\rho_{\mathrm W}\) & --   & --   & --   & --       \\
+                   & \(\rho_{\mathrm S}\) & --   & --   & --   & --       \\
+                   & \(\alpha_{\mathrm W}\) & -- & --   & --   & --       \\
+                   & \(\alpha_{\mathrm S}\) & -- & --   & --   & --       \\
+                   & \(\Delta_\rho\)      & --   & --   & --   & --       \\
+            \hline
+      \end{tabular}
+\end{table}
+
+\begin{table}[t]
+      \centering
+      \caption{Size and power of the one-sided test of \(H_0:\rho_{\mathrm W}=\rho_{\mathrm S}\) against \(H_1:\rho_{\mathrm W}>\rho_{\mathrm S}\), to be completed after estimation, by per-season size \(n\) and nominal level. Size is the rejection rate under the null design; power under the alternative.}
+      \label{tab:sim-test}
+      \begin{tabular}{lccc}
+            \hline
+            \(n\) & Nominal level & Size (null) & Power (alt.) \\
+            \hline
+            --    & 0.05          & --          & --           \\
+            --    & 0.05          & --          & --           \\
+            --    & 0.05          & --          & --           \\
+            \hline
+      \end{tabular}
+\end{table}
+
+% \begin{figure}[t]
+%       \centering
+%       \includegraphics[width=0.7\textwidth]{./figures/sim_delta_rho.pdf}
+%       \caption{Monte Carlo sampling distribution of \(\widehat\Delta_\rho\)
+%                under the null and the alternative. Generated separately.}
+%       \label{fig:sim-delta-rho}
+% \end{figure}
+
+\subsection{Interpretation}\label{sec:sim-interpretation}
+
+The simulation fixes what the empirical comparison can support. Small bias and near-nominal coverage at the empirical sample size would mean \(\widehat\Delta_\rho\) and its interval can be read directly; the power results map the smallest difference in dependence range that is detectable at this sample size and geometry, which is the relevant quantity for an irregular network with a short tail sample. Two limits are expected in the numbers. The range \(\rho\) is typically estimated less precisely than \(\alpha\), and precision in \(\rho\) deteriorates once the network's maximum distance is small relative to \(\rho\), since the extremal coefficient is then close to its small-distance values across all pairs and carries little information about the range. And because the simulated fields are independent across days, the coverage and size figures are an upper bound on what the seasonal-year bootstrap attains on the data, where consecutive daily maxima within a storm remain dependent; closing that gap would require simulating temporally dependent daily maxima, which is not needed to evaluate recovery of a known spatial difference and is left as an extension.
+```
+
+### 3.3 `literature.tex`
+
+*What changed:* re-centred on the chain EVT → max-stable → Brown–Resnick/variogram → composite likelihood → Godambe/bootstrap → diagnostics → seasonal. Smith/Schlather positioned briefly against BR. Nonparametrics reframed as diagnostics. POT/declustering paragraphs removed.
+
+```latex
+\section{Literature Review}\label{sec:literature}
+
+This review sets out the components the thesis combines: extreme-value theory and max-stability, max-stable process models for spatial extremes, the Brown--Resnick process and its variogram parametrisation, pairwise composite likelihood, inference for composite-likelihood estimators, and the nonparametric dependence summaries used here as diagnostics. Each is discussed in terms of what it contributes to estimating and comparing season-specific extremal dependence.
+
+\subsection{Extreme-value theory and spatial extremes}\label{sec:lit-evt}
+
+Extreme-value theory describes the tail rather than the bulk of a distribution. For scalar maxima, the Fisher--Tippett--Gnedenko theorem \citep{fisher1928,gnedenko1943} states that any non-degenerate limit of affinely normalised sample maxima is generalised extreme value (GEV); \citet{dehaan2006} give the modern treatment, including the related peaks-over-threshold limit. This justifies modelling marginal extremes by a GEV or generalised Pareto law and motivates transforming each station's margin to a common extreme-value scale before any dependence is modelled, so that dependence is separated from marginal differences.
+
+The marginal limit is silent on how extremes at different sites occur together. For maxima observed over space, the limiting objects are max-stable processes, which arise as pointwise maxima of independent replications of a random field and extend the GEV limit from a scalar to a field \citep{dehaan2006}. Extremal dependence then becomes a spatial object, a function of location and distance. \citet{davison2012} review the area and stress that a model fitting marginal extremes well may still misrepresent joint extremes; this is the reason the thesis models the dependence directly rather than inferring it from marginal fits. Ordinary covariance is not the relevant summary, because it is dominated by the bulk and need not describe the joint tail.
+
+\subsection{Max-stable process models}\label{sec:lit-maxstable}
+
+Several stationary max-stable families are available. \citet{smith1990} introduced a max-stable model with a deterministic storm profile, and \citet{schlather2002} proposed a more flexible construction based on a stationary parent process. Both are limited as models of how dependence decays: the Smith model implies overly smooth, near-deterministic extremal surfaces, and the Schlather model cannot approach independence at long range. The Brown--Resnick process \citep{brown1977,kabluchko2009} avoids both limitations: its extremal dependence is governed by the variogram of an underlying Gaussian process with stationary increments, ranges from complete dependence at zero distance to independence at long range, and is determined by a small number of interpretable parameters. \citet{davison2012} use it as the leading stationary model for spatial extremes, which is why it is the model estimated here.
+
+\subsection{The Brown--Resnick process and its variogram}\label{sec:lit-br}
+
+\citet{kabluchko2009} characterise stationary Brown--Resnick fields through negative-definite functions, equivalently through the variogram of the underlying process. With an isotropic powered-exponential variogram
+\[
+      \gamma(d)=\Bigl(\frac{d}{\rho}\Bigr)^{\alpha},
+      \qquad \rho>0,\ \alpha\in(0,2],
+\]
+the range \(\rho\) sets how slowly extremal dependence decays with distance --- a larger \(\rho\) is a larger spatial footprint of extremes --- and \(\alpha\) sets the smoothness of that decay; isotropy means dependence depends on distance alone. The implied bivariate distribution is of H\"usler--Reiss type and gives the extremal coefficient in closed form, which makes \(\rho\) directly comparable across groups. For the thesis this is the operative point: a seasonal difference in spatial footprint becomes a difference in \(\rho\), so winter storms with broad footprints and summer convective events with narrow ones correspond to \(\rho_{\mathrm W}>\rho_{\mathrm S}\). \citet{davison2013} delimit the scope of such models: Brown--Resnick fields are asymptotically dependent at all finite distances, whereas environmental extremes can be asymptotically independent, so the model may overstate dependence at the highest levels. This is why the thesis reports nonparametric tail diagnostics alongside the fit.
+
+\subsection{Pairwise composite likelihood}\label{sec:lit-cl}
+
+Full-likelihood inference for max-stable processes is generally infeasible: the joint density of the field at \(N\) sites is a sum over all partitions of the sites, which grows super-exponentially in \(N\) \citep{padoan2010}. \citet{padoan2010} replace the full likelihood by a pairwise composite likelihood,
+\[
+      \ell(\vartheta)=\sum_{i<j}\sum_{t}\log f_{ij}\bigl(z_{i,t},z_{j,t};\vartheta\bigr),
+\]
+where \(f_{ij}\) is the bivariate density implied by the model and \(\vartheta=(\rho,\alpha)\); maximising \(\ell\) gives a consistent and asymptotically normal estimator. This is the composite- or pseudo-likelihood idea familiar in econometrics, replacing an intractable joint objective by a tractable sum of low-dimensional ones. \citet{huser2013} study composite likelihood specifically for the Brown--Resnick process, including the bivariate density and the option of censoring contributions below a high threshold so that the fit targets the joint tail. The thesis uses the pairwise estimator of \citet{padoan2010} with the Brown--Resnick bivariate density, estimated separately by season.
+
+\subsection{Inference for composite-likelihood estimators}\label{sec:lit-inference}
+
+Because \(\ell\) is composite, ordinary likelihood standard errors are invalid. The asymptotic covariance is instead the inverse Godambe (sandwich) information \(H J^{-1} H\), with \(H\) the sensitivity and \(J\) the variability of the composite score \citep{padoan2010}. This requires estimating \(J\) and assumes independent replicates. For the present data the replicates are daily maxima, which remain dependent within a multi-day storm, so the thesis uses a seasonal-year block bootstrap for the reported uncertainty and for the winter--summer comparison: resampling whole season-years preserves both the within-storm serial dependence and the cross-station dependence among pairs sharing a station. The Godambe form is used as a theoretical reference and as a cross-check under the independence assumption, not as the basis for the reported intervals.
+
+\subsection{Nonparametric extremal-dependence diagnostics}\label{sec:lit-diagnostics}
+
+Three nonparametric pairwise summaries are used to check the fit. The extremal coefficient \(\theta(s_i,s_j)\in[1,2]\) measures the effective number of independent sites in a pair; the \(F\)-madogram of \citet{cooley2006} estimates it from transformed margins without a parametric model. The finite-level tail-dependence coefficient \(\chi_u(s_i,s_j)\) is the probability of joint exceedance of a high level, and \citet{coles1999} introduce \(\chi\) and \(\bar\chi\) to separate asymptotic dependence from asymptotic independence. These are standard descriptive tools for extremal dependence; here they are diagnostics, used to check whether the fitted Brown--Resnick curve is consistent with the pairwise estimates across distance and whether dependence weakens at the highest levels in a way the model cannot represent. \citet{davison2013} and \citet{huser2020} survey the asymptotic-independence alternatives that these diagnostics would point to if the fit failed.
+
+\subsection{Seasonal and non-stationary extremal dependence}\label{sec:lit-seasonal}
+
+Allowing dependence to differ between winter and summer is a restricted form of non-stationary extremal dependence, with season as a binary covariate. Rather than fit a single covariate-dependent max-stable process, the thesis estimates one Brown--Resnick model per season and compares their parameters. This is a simple device, but it addresses a concrete concern: a single model fitted to all daily maxima would mix large-scale winter storms with localised summer convection, blurring exactly the contrast of interest. Anisotropic and space-time Brown--Resnick extensions exist --- \citet{buhl2016} estimate an anisotropic space-time version --- and are noted as directions the isotropic, season-by-season design here does not pursue. In what follows, \citet{padoan2010} and \citet{huser2013} supply the estimator, \citet{kabluchko2009} the model, \citet{dombry2016} the exact simulation used to validate the estimator, and \citet{cooley2006} and \citet{coles1999} the diagnostics.
+```
+
+### 3.4 `introduction.tex`
+
+*What changed:* dropped the flood/disaster opening and broad climate-risk framing; built directly to the BR parameter comparison; added the one-sided hypothesis and a short roadmap. Kept only the winter/summer storm-scale motivation (with your existing met-lit keys).
+
+```latex
+% =====================================================================
+% Introduction
+% Reframed for season-specific Brown--Resnick estimation by pairwise
+% composite likelihood. Margins -> unit Frechet, then a parametric
+% spatial extremes model per season.
+% RESOLVE: sample period / station count consistency with data.tex
+% (33 stations, >95% completeness, 1991-01-01 to 2026-01-01).
+% CITATION KEYS: mohr2017 gliksman2023european (your existing met-lit
+%   keys -- retain), dehaan2006 davison2012 brown1977 kabluchko2009
+%   padoan2010.
+% =====================================================================
+\section{Introduction}\label{sec:introduction}
+
+Damaging wind in the Netherlands arrives in two distinct forms. Winter gusts are produced by extratropical cyclones, whose mature wind fields can cover large parts of the country within a few hours, so that many places are extreme at once. Summer gusts are more often produced by convective storms and local downbursts, which are intense but spatially confined, so that one station can record a severe gust while nearby stations do not \citep{mohr2017,gliksman2023european}. For the magnitude of the gust at a single site these may look alike; for the spatial extent of the event they differ, and that extent determines how much of a network is stressed at the same time. The object of this thesis is the spatial extent of wind-gust extremes, and whether it differs between the two seasons.
+
+Spatial extent is a question about dependence in the joint tail, not about marginal magnitudes, and ordinary correlation does not answer it: correlation is dominated by ordinary days and need not describe how the most extreme gusts co-occur. The relevant quantity is extremal dependence --- how the probability that two sites are jointly extreme behaves as the level rises and as the distance between them grows. Estimating it requires extreme-value methods rather than second-moment summaries, and estimating it as a function of distance requires a spatial model for the tail.
+
+Max-stable processes provide such a model: they are the limiting fields for spatial maxima, just as the generalised extreme value law is the limit for scalar maxima \citep{dehaan2006,davison2012}. Within this class the Brown--Resnick process \citep{brown1977,kabluchko2009} is the model used here. Its extremal dependence is set by the variogram of an underlying Gaussian process, taken as \(\gamma_c(d)=(d/\rho_c)^{\alpha_c}\), in which the range \(\rho_c\) controls how slowly dependence decays with distance --- a larger \(\rho_c\) is a larger spatial footprint of extremes --- and \(\alpha_c\) controls the smoothness of that decay. The process is used as a parametric approximation to the season-specific dependence structure, not as a claim that daily wind gusts are exactly max-stable. Formulating the question through \(\rho\) turns a comparison of spatial footprints into a comparison of one interpretable parameter between seasons.
+
+The model cannot be fitted by full likelihood once more than a few stations are involved, because the joint density of a max-stable field is intractable in moderate dimension \citep{padoan2010}. The estimator is therefore the pairwise composite likelihood of \citet{padoan2010}: the intractable joint density is replaced by a sum of bivariate densities over station pairs, which is estimable on the KNMI network and is the same composite-likelihood device used elsewhere in econometrics to replace an infeasible likelihood by a tractable objective. Daily maxima are treated as repeated spatial fields, their margins are standardised to a common unit-Fr\'echet scale by station and season, and the Brown--Resnick parameters are estimated separately for winter and summer.
+
+\subsection{Research question}\label{sec:intro-rq}
+
+\begin{quote}\itshape
+      Does the spatial range of extremal dependence in Dutch daily maximum wind gusts differ between winter and summer?
+\end{quote}
+
+Writing \(\vartheta_c=(\rho_c,\alpha_c)\) for the season-specific Brown--Resnick parameters, the comparison is of the dependence ranges. The expectation that winter storms have broader footprints than summer convection is the one-sided hypothesis
+\[
+      H_0:\ \rho_{\mathrm W}=\rho_{\mathrm S}
+      \qquad\text{against}\qquad
+      H_1:\ \rho_{\mathrm W}>\rho_{\mathrm S}.
+\]
+The comparison is thus of estimated parameters and their uncertainty, not only of empirical curves; the implied extremal-coefficient curves \(\theta_c(d)\) are reported to place the parameter difference on the dependence-versus-distance scale.
+
+\subsection{Contribution and outline}\label{sec:intro-contribution}
+
+The contribution is to estimate and validate a season-specific parametric spatial extremes model for Dutch wind gusts. Brown--Resnick dependence parameters are estimated separately for winter and summer by pairwise composite likelihood, the range difference \(\rho_{\mathrm W}-\rho_{\mathrm S}\) is tested by a seasonal-year block bootstrap, and a Monte Carlo study under the observed station geometry establishes whether the estimator and the test recover a known seasonal difference before the same procedure is applied to the data. The nonparametric tail-dependence coefficient, \(F\)-madogram and empirical extremal coefficient, which are standard nonparametric summaries of extremal dependence, are retained as diagnostics for the fitted model.
+
+Section~\ref{sec:literature} reviews extreme-value theory, the Brown--Resnick model and composite-likelihood inference. Section~\ref{sec:methodology} defines the estimator and the seasonal comparison. Section~\ref{sec:simulation} reports the simulation. Section~\ref{sec:data} describes the data and Section~\ref{sec:results} the empirical estimates, and Section~\ref{sec:conclusion} concludes.
+```
+
+### 3.5 `data.tex`
+
+*What changed:* kept short; fixed the broken inline math (literal `(X_{i,t})` → `\(X_{i,t}\)`); replaced the 99th-percentile-exceedance framing with the spatial-field / BR framing; pointed marginal standardisation to the methodology.
+
+```latex
+% =====================================================================
+% Data
+% Short by design. Marginal standardisation is defined in the
+% methodology, not here.
+% RESOLVE: station count (33) and >95% completeness must match
+% methodology.tex and the introduction.
+% =====================================================================
+\section{Data}\label{sec:data}
+
+The empirical analysis uses daily maximum wind gusts recorded at KNMI weather stations in the Netherlands. The sample runs from 1 January 1991 to 1 January 2026 and contains \(N=33\) stations, each with more than \(95\%\) non-missing daily observations over the period. This rule gives a nearly balanced spatial panel while retaining the geographical coverage needed to estimate how extremal dependence varies with distance.
+
+Let \(X_{i,t}\) be the daily maximum wind gust at station \(i=1,\dots,N\) on day \(t\). Station \(i\) has location \(s_i\in\mathbb R^2\), and \(d_{ij}=\lVert s_i-s_j\rVert\) is the great-circle distance between stations \(i\) and \(j\). On each day the network forms one spatial field
+\[
+      X_t=(X_{1,t},\dots,X_{N,t}),
+\]
+and the season-specific collection of these fields is the input to the Brown--Resnick estimation of Section~\ref{sec:methodology}. The spatial coverage is summarised by the inter-station distances \(d_{ij}\), whose range determines the distances over which the dependence parameters can be identified.
+
+The analysis is run separately for winter (December--February) and summer (June--August); spring and autumn are not used. December of year \(y\) is assigned to winter \(y+1\), so each winter is one contiguous block, and incomplete boundary seasons are dropped. Coastal and inland stations differ in their gust distributions, and the two seasons differ as well; to keep the comparison about spatial dependence rather than these marginal differences, the margins are standardised separately by station and season before any dependence is estimated. The standardisation is defined in Section~\ref{sec:meth-marginals}.
+
+\begin{table}[htbp]
+      \centering
+      \caption{Summary of the empirical sample.}
+      \label{tab:data-summary}
+      \begin{tabular}{ll}
+            \hline
+            Variable               & Daily maximum wind gust                                          \\
+            Sample period          & 1 January 1991 -- 1 January 2026                                 \\
+            Number of stations     & 33                                                               \\
+            Station inclusion rule & More than 95\% non-missing observations                          \\
+            Seasons                & Winter (DJF) and summer (JJA)                                    \\
+            Spatial unit           & KNMI weather station                                             \\
+            Marginal scale         & Unit Fr\'echet (standardised in Section~\ref{sec:meth-marginals}) \\
+            \hline
+      \end{tabular}
+\end{table}
+```
+
+### 3.6 `results.tex`
+
+*What changed:* rebuilt the skeleton around BR estimates / range comparison / fitted curves / diagnostics / robustness, with explicit `TODO` placeholders and no numbers. Removed references to the non-existent `sec:emp-*` and `sec:meth-distance` labels.
+
+```latex
+% =====================================================================
+% Results
+% Status: placeholder. No empirical numbers until the estimation has
+% been run. Each subsection fixes what will be reported and leaves
+% explicit TODOs for figures, tables and numbers.
+% CROSS-REFERENCES: sec:methodology, sec:meth-marginals, sec:meth-cl,
+%   sec:meth-variogram, sec:meth-inference, sec:meth-diagnostics,
+%   sec:simulation, sec:data.
+% =====================================================================
+\section{Results}\label{sec:results}
+
+This section reports the empirical estimates from the procedure of Section~\ref{sec:methodology} on the sample of Section~\ref{sec:data}. The simulation of Section~\ref{sec:simulation} establishes the conditions under which the estimates below can be read directly; the empirical results are interpreted in that light.
+
+% TODO: every numerical claim below is inserted only after estimation.
+%       Do not pre-write conclusions.
+
+\subsection{Estimation sample and marginal checks}\label{sec:results-marginals}
+
+\paragraph{What is reported.} The number of station pairs and the per-season counts of daily maxima entering \(\ell_c\); the inter-station distance range; and a check that the per-station, per-season standardisation of Section~\ref{sec:meth-marginals} is well behaved (uniformity of \(\widehat U_{i,t}^{(c)}\), and agreement between the empirical and GEV transforms used as the robustness margin).
+
+% TODO: insert Table \ref{tab:est-sample} and the marginal-check figure.
+
+\subsection{Brown--Resnick parameter estimates}\label{sec:results-estimates}
+
+\paragraph{What is reported.} The season-specific estimates \(\widehat\vartheta_{\mathrm W}=(\widehat\rho_{\mathrm W},\widehat\alpha_{\mathrm W})\) and \(\widehat\vartheta_{\mathrm S}=(\widehat\rho_{\mathrm S},\widehat\alpha_{\mathrm S})\) from the pairwise composite likelihood of Section~\ref{sec:meth-cl}, with seasonal-year bootstrap intervals and, as a cross-check, Godambe standard errors.
+
+\begin{table}[htbp]
+      \centering
+      \caption{Brown--Resnick parameter estimates by season, to be completed after estimation. Point estimates with seasonal-year bootstrap percentile intervals; Godambe standard errors as a cross-check under the independence assumption.}
+      \label{tab:br-estimates}
+      \begin{tabular}{llccc}
+            \hline
+            Season & Parameter            & Estimate & Bootstrap 95\% interval & Godambe s.e. \\
+            \hline
+            Winter & \(\rho_{\mathrm W}\)   & TODO     & TODO                    & TODO         \\
+                   & \(\alpha_{\mathrm W}\) & TODO     & TODO                    & TODO         \\
+            Summer & \(\rho_{\mathrm S}\)   & TODO     & TODO                    & TODO         \\
+                   & \(\alpha_{\mathrm S}\) & TODO     & TODO                    & TODO         \\
+            \hline
+      \end{tabular}
+\end{table}
+
+\paragraph{Interpretation template.} The text will report the estimated ranges and smoothness parameters and their precision, and will note whether \(\rho\) is estimated precisely enough at this network's distance range for the seasonal comparison to be informative, drawing on the precision results of Section~\ref{sec:simulation}.
+% TODO: insert estimated rho and alpha values.
+
+\subsection{Winter--summer range comparison}\label{sec:results-comparison}
+
+\paragraph{What is reported.} The range difference \(\widehat\Delta_\rho=\widehat\rho_{\mathrm W}-\widehat\rho_{\mathrm S}\) with its seasonal-year bootstrap distribution; the one-sided bootstrap interval and \(p\)-value for \(H_0:\rho_{\mathrm W}=\rho_{\mathrm S}\) against \(H_1:\rho_{\mathrm W}>\rho_{\mathrm S}\) (Section~\ref{sec:meth-inference}); and, secondarily, \(\widehat\alpha_{\mathrm W}-\widehat\alpha_{\mathrm S}\).
+
+% TODO: insert Figure \ref{fig:delta-rho-bootstrap} and Table \ref{tab:range-test}.
+
+\paragraph{Interpretation template.} The text will state, in careful language, the sign and approximate size of \(\widehat\Delta_\rho\), whether the one-sided test rejects \(H_0\) at the chosen level, and how this should be read given the simulated power at this sample size. If \(\widehat\rho_{\mathrm W}\le\widehat\rho_{\mathrm S}\) the result is reported as found, without forcing the expected ordering. Statements are model-based --- they hold under the Brown--Resnick specification --- and no climate-change interpretation is drawn.
+% TODO: insert Delta_rho estimate, interval and p-value.
+
+\subsection{Implied extremal-coefficient curves}\label{sec:results-curves}
+
+\paragraph{What is reported.} The fitted curves \(\widehat\theta_{\mathrm W}(d)\) and \(\widehat\theta_{\mathrm S}(d)\) (Section~\ref{sec:meth-variogram}) on one panel with bootstrap bands, and the difference \(\widehat\theta_{\mathrm W}(d)-\widehat\theta_{\mathrm S}(d)\) against distance, which expresses the range comparison on the dependence scale.
+
+% TODO: insert Figure \ref{fig:fitted-theta-curves}.
+
+\subsection{Nonparametric diagnostics}\label{sec:results-diagnostics}
+
+\paragraph{What is reported.} The pairwise \(F\)-madogram extremal coefficient \(\widehat\theta_{ij}^{(c)}\) and finite-level \(\widehat\chi_{u,ij}^{(c)}\) (Section~\ref{sec:meth-diagnostics}) plotted against distance, overlaid with the fitted Brown--Resnick \(\widehat\theta_c(\cdot)\) and the implied \(\chi_u^{\mathrm{BR}}(\cdot)\), separately by season; and the behaviour of \(\widehat\chi_{u,ij}^{(c)}\) across \(u\in\{0.95,0.975,0.99\}\) for representative pairs.
+
+% TODO: insert Figure \ref{fig:diagnostics-overlay}.
+
+\paragraph{Interpretation template.} The text will state whether the fitted curve is consistent with the pairwise estimates across distance, and whether \(\widehat\chi_{u,ij}^{(c)}\) shows the weakening at the highest level that would indicate asymptotic independence the model cannot represent. A poor match is reported as a limitation of the specification, not concealed by the fit.
+
+\subsection{Robustness checks}\label{sec:results-robustness}
+
+\paragraph{What is reported.} Sensitivity of \(\widehat\vartheta_c\) and \(\widehat\Delta_\rho\) to: the GEV rather than empirical marginal transform (Section~\ref{sec:meth-marginals}); the pair-distance cut-off \(r\) in the composite likelihood (Section~\ref{sec:meth-cl}); censoring the pairwise likelihood below a high threshold so the fit targets the joint tail; and a check for anisotropy by allowing dependence to differ with orientation. Each is reported as a deviation from the headline estimates.
+
+% TODO: insert Table \ref{tab:robustness}.
+```
+
+### 3.7 `conclusion.tex`
+
+*What changed:* summary now states what was estimated (BR by season, $\rho$-comparison, bootstrap test); limitations rewritten to match the model/data (asymptotic dependence, isotropy, serial dependence, marginal error, network); future work uses real keys; broken `TODO-*` citations removed; the simulation is framed as a validation step, not "optional."
+
+```latex
+% =====================================================================
+% Conclusion
+% Status: careful placeholder. Findings inserted only after estimation
+% and simulation have run. No empirical numbers, no climate-change
+% claims, are pre-written.
+% CROSS-REFERENCES: sec:simulation, sec:results, sec:meth-cl,
+%   sec:meth-inference, sec:meth-diagnostics.
+% CITATION KEYS: buhl2016 schlather2002 davison2013 huser2020.
+% =====================================================================
+\section{Conclusion}\label{sec:conclusion}
+
+This thesis estimated season-specific Brown--Resnick spatial extremes models for daily maximum wind gusts at KNMI stations, to compare the spatial range of extremal dependence between winter and summer. After standardising each station--season margin to a common unit-Fr\'echet scale, the dependence parameters \(\vartheta_c=(\rho_c,\alpha_c)\) were estimated separately by season using pairwise composite likelihood (Section~\ref{sec:meth-cl}), and the range difference \(\rho_{\mathrm W}-\rho_{\mathrm S}\) was tested by a seasonal-year block bootstrap (Section~\ref{sec:meth-inference}). The Brown--Resnick process is used as a parametric approximation to the season-specific dependence, not as a verified data-generating mechanism.
+
+\subsection{Summary of findings}\label{sec:conclusion-summary}
+
+% TODO: 1--2 short paragraphs answering the research question after the
+%        pipeline has run. State the simulation finding first (whether
+%        the estimator and the one-sided test recover a known seasonal
+%        difference at the empirical sample size and geometry), then the
+%        empirical finding: estimated rho_W and rho_S, the sign and size
+%        of Delta_rho, and whether H0: rho_W = rho_S is rejected against
+%        H1: rho_W > rho_S. Use "the estimates suggest" rather than
+%        "proves". Note whether the diagnostics of Section
+%        \ref{sec:meth-diagnostics} support the fitted model. Do not draw
+%        climate-change conclusions.
+
+\subsection{Limitations}\label{sec:conclusion-limitations}
+
+The main limitations follow from the model and the data. The Brown--Resnick process is asymptotically dependent at all finite distances, whereas the daily maxima may be asymptotically independent; if the diagnostics of Section~\ref{sec:meth-diagnostics} show dependence weakening at the highest levels, the fitted range overstates dependence in the extreme tail. The variogram is isotropic, so dependence is a function of distance alone; prevailing storm direction could make it anisotropic, and this is examined only as a robustness check. Daily maxima within a multi-day storm remain serially dependent, which does not bias \(\widehat\vartheta_c\) but inflates its variance; the seasonal-year bootstrap is used precisely to reflect this in the reported uncertainty, but with on the order of \(35\) season-years per season the intervals are wide. The marginal standardisation introduces estimation error that the fully parametric inference ignores and the bootstrap absorbs. Finally, the estimates are conditional on the observed, irregular station network, and \(\rho\) is identified only over the distances that network spans.
+
+\subsection{Future work}\label{sec:conclusion-future}
+
+Several extensions follow directly. An anisotropic or space-time Brown--Resnick model \citep{buhl2016} would relax the isotropy assumption and use the temporal structure of storms rather than treating daily fields as exchangeable within a season. A single covariate-dependent model with season as a covariate would replace the estimate-separately-by-season design and let the seasonal contrast be tested within one fit. Comparison with the Schlather \citep{schlather2002} or extremal-\(t\) classes, and with asymptotically independent alternatives \citep{davison2013,huser2020}, would test how far the conclusion depends on the Brown--Resnick specification. Extending the network with additional stations or gridded reanalysis fields would improve identification of \(\rho\) at longer distances.
+```
+
+---
+
+## 4. Citation keys / BibTeX to add
+
+`bib/thesis/references.bib` is currently empty (the `\addbibresource` TODO in `thesis-main.tex`), so **every** key the revised files cite must be added. Keys used across the seven files:
+
+`fisher1928 gnedenko1943 dehaan2006 brown1977 kabluchko2009 smith1990 schlather2002 davison2012 davison2013 padoan2010 huser2013 dombry2016 cooley2006 coles1999 buhl2016 huser2020` — plus your existing meteorology keys `mohr2017 gliksman2023european` (intro).
+
+`brown1983` from the old drafts should be **renamed to `brown1977`** (the foundational paper is 1977).
+
+Ready-to-paste BibTeX for the core spatial-extremes set (verify the four `% verify` fields):
+
+```bibtex
+@article{brown1977,
+  author  = {Brown, Bruce M. and Resnick, Sidney I.},
+  title   = {Extreme Values of Independent Stochastic Processes},
+  journal = {Journal of Applied Probability},
+  year    = {1977},
   volume  = {14},
-  pages   = {4434},
-  doi     = {10.1038/s41467-023-40102-6}
+  number  = {4},
+  pages   = {732--739}
 }
-
-@article{gliksman2023european,
-  author  = {Gliksman, Daniel and Averbeck, Paul and Becker, Nico and Gardiner, Barry and Goldberg, Valeri and Grieger, Jens and Handorf, D{\"o}rthe and Haustein, Karsten and Karwat, Alexia and Knutzen, Florian and Lentink, Hilke S. and Lorenz, Rike and Niermann, Deborah and Pinto, Joaquim G. and Queck, Ronald and Ziemann, Astrid and Franzke, Christian L. E.},
-  title   = {Review Article: A European Perspective on Wind and Storm Damage -- From the Meteorological Background to Index-Based Approaches to Assess Impacts},
-  journal = {Natural Hazards and Earth System Sciences},
-  year    = {2023},
-  volume  = {23},
-  pages   = {2171--2201},
-  doi     = {10.5194/nhess-23-2171-2023}
-}
-
-@article{fonsecacerda2025empirical,
-  author  = {Fonseca Cerda, M. d. S. and de Moel, H. and van Ederen, D. and Aerts, J. C. J. H. and Botzen, W. J. W. and Haer, T.},
-  title   = {Empirical Evaluation of Windstorm Losses and Meteorological Variables over the Netherlands},
-  journal = {Natural Hazards},
-  year    = {2025},
-  volume  = {121},
-  number  = {5},
-  pages   = {6085--6106},
-  doi     = {10.1007/s11069-024-07024-y}
-}
-
-@article{fisher1928,
-  author  = {Fisher, R. A. and Tippett, L. H. C.},
-  title   = {Limiting Forms of the Frequency Distribution of the Largest or Smallest Member of a Sample},
-  journal = {Mathematical Proceedings of the Cambridge Philosophical Society},
-  year    = {1928},
-  volume  = {24},
-  number  = {2},
-  pages   = {180--190},
-  doi     = {10.1017/S0305004100015681}
-}
-
-@article{gnedenko1943,
-  author  = {Gnedenko, B. V.},
-  title   = {Sur la distribution limite du terme maximum d'une s{\'e}rie al{\'e}atoire},
-  journal = {Annals of Mathematics},
-  year    = {1943},
-  volume  = {44},
-  number  = {3},
-  pages   = {423--453},
-  doi     = {10.2307/1968974}
-}
-
-@article{balkema1974,
-  author  = {Balkema, A. A. and de Haan, L.},
-  title   = {Residual Life Time at Great Age},
+@article{kabluchko2009,
+  author  = {Kabluchko, Zakhar and Schlather, Martin and de Haan, Laurens},
+  title   = {Stationary Max-Stable Fields Associated to Negative Definite Functions},
   journal = {The Annals of Probability},
-  year    = {1974},
-  volume  = {2},
+  year    = {2009},
+  volume  = {37},
   number  = {5},
-  pages   = {792--804},
-  doi     = {10.1214/aop/1176996548}
+  pages   = {2042--2065}
 }
-
-@article{pickands1975,
-  author  = {Pickands, James},
-  title   = {Statistical Inference Using Extreme Order Statistics},
-  journal = {The Annals of Statistics},
-  year    = {1975},
-  volume  = {3},
-  number  = {1},
-  pages   = {119--131},
-  doi     = {10.1214/aos/1176343003}
-}
-
-@article{dehaan2006,
-  author  = {de Haan, Laurens and Pereira, Teresa T.},
-  title   = {Spatial Extremes: Models for the Stationary Case},
-  journal = {The Annals of Statistics},
-  year    = {2006},
-  volume  = {34},
-  number  = {1},
-  pages   = {146--168},
-  doi     = {10.1214/009053605000000886}
-}
-
 @article{padoan2010,
-  author  = {Padoan, S. A. and Ribatet, M. and Sisson, S. A.},
+  author  = {Padoan, Simone A. and Ribatet, Mathieu and Sisson, Scott A.},
   title   = {Likelihood-Based Inference for Max-Stable Processes},
   journal = {Journal of the American Statistical Association},
   year    = {2010},
   volume  = {105},
   number  = {489},
-  pages   = {263--277},
-  doi     = {10.1198/jasa.2009.tm08577}
+  pages   = {263--277}
 }
-
-@incollection{cooley2006,
-  author    = {Cooley, Daniel and Naveau, Philippe and Poncet, Philippe},
-  title     = {Variograms for Spatial Max-Stable Random Fields},
-  booktitle = {Dependence in Probability and Statistics},
-  editor    = {Bertail, Patrice and Doukhan, Paul and Soulier, Philippe},
-  series    = {Lecture Notes in Statistics},
-  volume    = {187},
+@article{huser2013,
+  author  = {Huser, Rapha{\"e}l and Davison, Anthony C.},
+  title   = {Composite Likelihood Estimation for the {Brown--Resnick} Process},
+  journal = {Biometrika},
+  year    = {2013},
+  volume  = {100},
+  number  = {2},
+  pages   = {511--518}
+}
+@article{davison2012,
+  author  = {Davison, Anthony C. and Padoan, Simone A. and Ribatet, Mathieu},
+  title   = {Statistical Modeling of Spatial Extremes},
+  journal = {Statistical Science},
+  year    = {2012},
+  volume  = {27},
+  number  = {2},
+  pages   = {161--186}
+}
+@article{davison2013,
+  author  = {Davison, Anthony C. and Huser, Rapha{\"e}l and Thibaud, Emeric},
+  title   = {Geostatistics of Dependent and Asymptotically Independent Extremes},
+  journal = {Mathematical Geosciences},
+  year    = {2013},
+  volume  = {45},
+  number  = {5},
+  pages   = {511--529}
+}
+@book{dehaan2006,
+  author    = {de Haan, Laurens and Ferreira, Ana},
+  title     = {Extreme Value Theory: An Introduction},
   publisher = {Springer},
   address   = {New York},
-  year      = {2006},
-  pages     = {373--390},
-  doi       = {10.1007/0-387-36062-X_17}
+  year      = {2006}
 }
-
-@article{wadsworth2012,
-  author  = {Wadsworth, Jennifer L. and Tawn, Jonathan A.},
-  title   = {Dependence Modelling for Spatial Extremes},
-  journal = {Biometrika},
-  year    = {2012},
-  volume  = {99},
-  number  = {2},
-  pages   = {253--272},
-  doi     = {10.1093/biomet/asr080}
-}
-
-@article{huser2022,
-  author  = {Huser, Rapha{\"e}l and Wadsworth, Jennifer L.},
-  title   = {Advances in Statistical Modeling of Spatial Extremes},
-  journal = {WIREs Computational Statistics},
-  year    = {2022},
-  volume  = {14},
-  number  = {1},
-  pages   = {e1537},
-  doi     = {10.1002/wics.1537}
-}
-
-@article{bonazzi2012,
-  author  = {Bonazzi, A. and Cusack, S. and Mitas, C. and Jewson, S.},
-  title   = {The Spatial Structure of European Wind Storms as Characterized by Bivariate Extreme-Value Copulas},
-  journal = {Natural Hazards and Earth System Sciences},
-  year    = {2012},
-  volume  = {12},
-  pages   = {1769--1782},
-  doi     = {10.5194/nhess-12-1769-2012}
-}
-
-@article{dellamarta2009,
-  author  = {Della-Marta, Paul M. and Mathis, Hubert and Frei, Christoph and Liniger, Mark A. and Kleinn, Jan and Appenzeller, Christof},
-  title   = {The Return Period of Wind Storms over Europe},
-  journal = {International Journal of Climatology},
-  year    = {2009},
-  volume  = {29},
-  number  = {3},
-  pages   = {437--459},
-  doi     = {10.1002/joc.1794}
-}
-
-@article{roberts2014,
-  author  = {Roberts, J. F. and Champion, A. J. and Dawkins, L. C. and Hodges, K. I. and Shaffrey, L. C. and Stephenson, D. B. and Stringer, M. A. and Thornton, H. E. and Youngman, B. D.},
-  title   = {The XWS Open Access Catalogue of Extreme European Windstorms from 1979 to 2012},
-  journal = {Natural Hazards and Earth System Sciences},
-  year    = {2014},
-  volume  = {14},
-  pages   = {2487--2501},
-  doi     = {10.5194/nhess-14-2487-2014}
-}
-
-@article{klawa2003,
-  author  = {Klawa, M. and Ulbrich, U.},
-  title   = {A Model for the Estimation of Storm Losses and the Identification of Severe Winter Storms in Germany},
-  journal = {Natural Hazards and Earth System Sciences},
-  year    = {2003},
-  volume  = {3},
-  pages   = {725--732},
-  doi     = {10.5194/nhess-3-725-2003}
-}
-
-@article{coles1994,
-  author  = {Coles, Stuart G. and Walshaw, David},
-  title   = {Directional Modelling of Extreme Wind Speeds},
-  journal = {Journal of the Royal Statistical Society: Series C (Applied Statistics)},
-  year    = {1994},
-  volume  = {43},
-  number  = {1},
-  pages   = {139--157},
-  doi     = {10.2307/2986118}
-}
-
-@article{huser2016,
-  author  = {Huser, Rapha{\"e}l and Genton, Marc G.},
-  title   = {Non-Stationary Dependence Structures for Spatial Extremes},
-  journal = {Journal of Agricultural, Biological, and Environmental Statistics},
-  year    = {2016},
-  volume  = {21},
-  pages   = {470--491},
-  doi     = {10.1007/s13253-016-0247-4}
-}
-
-@article{gerritsen2005,
-  author  = {Gerritsen, Herman},
-  title   = {What happened in 1953? The Big Flood in the Netherlands in retrospect},
-  journal = {Philosophical Transactions of the Royal Society A: Mathematical, Physical and Engineering Sciences},
-  year    = {2005},
-  volume  = {363},
-  number  = {1831},
-  pages   = {1271--1291},
-  doi     = {10.1098/rsta.2005.1568}
-}
-
-@book{deltacommissie1960,
-  author    = {{Deltacommissie}},
-  title     = {Rapport Deltacommissie: Eindverslag en interimadviezen (Report of the Delta Committee: Final report and interim advices)},
-  publisher = {Staatsdrukkerij- en Uitgeverijbedrijf},
-  year      = {1960},
-  address   = {The Hague, The Netherlands}
-}
-
-@article{ferro2003,
-  author  = {Ferro, Christopher A. T. and Segers, Johan},
-  title   = {Inference for clusters of extreme values},
-  journal = {Journal of the Royal Statistical Society: Series B (Statistical Methodology)},
-  year    = {2003},
-  volume  = {65},
-  number  = {2},
-  pages   = {545--556},
-  doi     = {10.1111/1467-9868.00401}
-}
-
-@article{fawcett2006,
-  author  = {Fawcett, Lee and Walshaw, David},
-  title   = {Markov chain models for spatial extremes},
-  journal = {Environmetrics},
-  year    = {2006},
-  volume  = {17},
-  number  = {2},
-  pages   = {199--216},
-  doi     = {10.1002/env.754}
-}
-
-@article{brabson2000,
-  author  = {Brabson, B. B. and Palutikof, J. P.},
-  title   = {An analysis of extreme wind speeds in the UK using generalized Pareto distributions},
-  journal = {Journal of Applied Meteorology},
-  year    = {2000},
-  volume  = {39},
-  number  = {11},
-  pages   = {2044--2053},
-  doi     = {10.1175/1520-0450(2000)039<2044:AAOEWS>2.0.CO;2}
-}
-
-@article{coles1999,
-  author  = {Coles, Stuart and Heffernan, Janet and Tawn, Jonathan},
-  title   = {Dependence measures for extreme value analyses},
-  journal = {Extremes},
-  year    = {1999},
-  volume  = {2},
-  number  = {4},
-  pages   = {339--365},
-  doi     = {10.1023/A:1009963131610}
-}
-
-@article{schlather2002,
-  author  = {Schlather, Martin},
-  title   = {Models for stationary max-stable random fields},
-  journal = {Extremes},
-  year    = {2002},
-  volume  = {5},
-  number  = {1},
-  pages   = {33--44},
-  doi     = {10.1023/A:1020977924878}
-}
-
-@article{kabluchko2009,
-  author  = {Kabluchko, Zakhar and Schlather, Martin and de Haan, Laurens},
-  title   = {Stationary max-stable fields associated with stationary Gaussian processes},
-  journal = {The Annals of Probability},
-  year    = {2009},
-  volume  = {37},
-  number  = {5},
-  pages   = {2042--2065},
-  doi     = {10.1214/09-AOP455}
-}
-
 @article{dombry2016,
   author  = {Dombry, Cl{\'e}ment and Engelke, Sebastian and Oesting, Marco},
-  title   = {Exact simulation of max-stable processes},
+  title   = {Exact Simulation of Max-Stable Processes},
   journal = {Biometrika},
   year    = {2016},
   volume  = {103},
   number  = {2},
-  pages   = {303--317},
-  doi     = {10.1093/biomet/asw008}
+  pages   = {303--317}
+}
+@incollection{cooley2006,
+  author    = {Cooley, Daniel and Naveau, Philippe and Poncet, Paul},
+  title     = {Variograms for Spatial Max-Stable Random Fields},
+  booktitle = {Dependence in Probability and Statistics},
+  series    = {Lecture Notes in Statistics},
+  volume    = {187},
+  publisher = {Springer},
+  year      = {2006},
+  pages     = {373--390}
+}
+@article{coles1999,
+  author  = {Coles, Stuart and Heffernan, Janet and Tawn, Jonathan},
+  title   = {Dependence Measures for Extreme Value Analyses},
+  journal = {Extremes},
+  year    = {1999},
+  volume  = {2},
+  number  = {4},
+  pages   = {339--365}
+}
+@article{schlather2002,
+  author  = {Schlather, Martin},
+  title   = {Models for Stationary Max-Stable Random Fields},
+  journal = {Extremes},
+  year    = {2002},
+  volume  = {5},
+  number  = {1},
+  pages   = {33--44}
+}
+@unpublished{smith1990,
+  author = {Smith, Richard L.},
+  title  = {Max-Stable Processes and Spatial Extremes},
+  note   = {Unpublished manuscript},
+  year   = {1990}
+}
+@article{buhl2016,
+  author  = {Buhl, Sven and Kl{\"u}ppelberg, Claudia},
+  title   = {Anisotropic {Brown--Resnick} Space-Time Processes: Estimation and Model Assessment},
+  journal = {Extremes},
+  year    = {2016},
+  volume  = {19},
+  number  = {4},
+  pages   = {627--660}
+}
+@article{huser2020,
+  author  = {Huser, Rapha{\"e}l and Wadsworth, Jennifer L.},
+  title   = {Advances in Statistical Modeling of Spatial Extremes},
+  journal = {WIREs Computational Statistics},
+  year    = {2020},
+  volume  = {13},
+  number  = {1},
+  pages   = {e1537}
+}
+@article{fisher1928,
+  author  = {Fisher, Ronald A. and Tippett, Leonard H. C.},
+  title   = {Limiting Forms of the Frequency Distribution of the Largest or Smallest Member of a Sample},
+  journal = {Mathematical Proceedings of the Cambridge Philosophical Society},
+  year    = {1928},
+  volume  = {24},
+  number  = {2},
+  pages   = {180--190}
+}
+@article{gnedenko1943,
+  author  = {Gnedenko, Boris},
+  title   = {Sur la distribution limite du terme maximum d'une s{\'e}rie al{\'e}atoire},
+  journal = {Annals of Mathematics},
+  year    = {1943},
+  volume  = {44},
+  number  = {3},
+  pages   = {423--453}
 }
 
-@book{coles2001,
-  author    = {Coles, Stuart},
-  title     = {An Introduction to Statistical Modeling of Extreme Values},
-  publisher = {Springer-Verlag},
-  address   = {London},
-  year      = {2001},
-  doi       = {10.1007/978-1-4471-3675-0}
-}
-@article{brown1983,
-  author  = {Brown, Bruce M. and Resnick, Sidney I.},
-  title   = {Extreme values of independent stochastic processes},
-  journal = {Journal of Applied Probability},
-  year    = {1977},
-  volume  = {14},
-  number  = {4},
-  pages   = {732--739},
-  doi     = {10.2307/3213322}
-}
+
+
+```
+
+**Keys I did not supply (you must provide them):** `mohr2017`, `gliksman2023european` — these are your own meteorology references; I will not fabricate their details.
+
+**Keys now unused by the revised files** (drop unless cited in `appendix.tex` / `evt_spatial_dependence.tex`): `balkema1974`, `pickands1975`, `ferro2003`, `fawcett2006`, `DickeyFuller1979`, `cooley2012`, `wadsworth2012`, `huser2022`, `huser2016`, `gerritsen2005`, `deltacommissie1960`, `verbond2017hoofd`, `sharkey2020`, `little2023`, `fonsecacerda2025empirical`.
+
+---
+
+## 5. Unresolved issues / assumptions to check
+
+1. **Station count and completeness.** The brief and `data.tex` say 33 stations at >95% over 1991–2026, but the `methodology.tex` header and the old introduction suggested the 1991-balanced network was closer to 25. I used 33 everywhere; confirm against the actual panel and fix once. A genuinely >95%-complete 33-station set from 1991 is in tension with "only ~25 stations existed near 1991" — verify which is true.
+2. **Endpoint and season-years.** I wrote 1991-01-01 to 2026-01-01 with December→winter($y$+1), dropping incomplete boundary winters. Confirm the exact count of usable season-years per season (I wrote "on the order of 35"); the bootstrap's coarseness and the simulation's $n$ depend on it.
+3. **Variogram convention (critical).** Confirm the implementation uses $\gamma(d)=(d/\rho)^\alpha$ as the *variance-of-increments* variogram with $\theta(d)=2\Phi(\tfrac12\sqrt{\gamma(d)})$ (equivalently the semivariogram with $\theta=2\Phi(\sqrt{\tilde\gamma/2})$). The entire $\rho$-comparison is meaningless if methodology, simulation and code disagree by the factor of 2.
+4. **Estimator must match across methodology / simulation / code.** Same bivariate Hüsler–Reiss density, same pair cut-off $r$, same bounds $\Theta=[\rho_L,\rho_U]\times[\alpha_L,2]$, same margin transform, same bootstrap. If you adopt **censored** pairwise likelihood empirically (a robustness option I included), you must re-run the simulation with the same censoring or the validation no longer applies.
+5. **Block-maxima vs daily-maxima approximation.** Max-stability is the *block-maxima* limit; fitting BR to daily maxima is an approximation. Decide and state which you intend: (a) daily maxima as approximate replicates (what the current text assumes), (b) seasonal/weekly maxima, or (c) censored fit to the joint tail. This affects how hard you can lean on the model and how $n$ is set in the simulation.
+6. **Identifiability of $\rho$.** $\rho$ is identified only over $[d_{\min},d_{\max}]$. Read these off the data; if $d_{\max}$ is small relative to plausible $\rho$, $\rho$ is weakly identified and the simulation should display this. Set the simulation's $(\rho_{\mathrm W},\rho_{\mathrm S})$ grid so the curves separate over the actual distance range (the `TODO` in `simulation.tex`).
+7. **$\alpha$: fixed or free.** $\alpha\in(0,2]$; near 2 the field is very smooth. The headline design estimates $\alpha$ freely and the simulation varies fix-vs-free. Decide whether the cleanest test of $\rho$ holds $\alpha$ common across seasons.
+8. **Godambe vs bootstrap.** Bootstrap is primary. If you report Godambe SEs, $J$ is estimated under working independence and will understate variance under within-storm serial dependence — keep them labelled as a cross-check only (as written).
+9. **Main-file wiring.** In `thesis-main.tex`, `data.tex`, `results.tex` and `conclusion.tex` are currently commented out, and `evt_spatial_dependence.tex` is too. Uncomment the `\input` lines (and either integrate or drop `evt_spatial_dependence.tex`) so the cross-references resolve; confirm the `thesis/…` paths.
+10. **Untouched files.** `appendix_mathematical_proofs.tex`, `appendix.tex`, `evt_spatial_dependence.tex`, `introduction_myself.tex` were not revised this pass. If any still presents the nonparametric design as primary (or still derives the old smoother), it will contradict the pivot — flag for the next pass.
+11. **Meteorology citations.** The winter/summer storm-scale claim in the introduction rests on `mohr2017` and `gliksman2023european`; make sure those entries exist and actually support a *spatial-extent* contrast (synoptic vs convective), not just intensity.
+
+I can bundle these seven files as downloadable `.tex` files matching your `thesis/` paths if that's easier than copying each block — say the word. Next step on your list is the Python implementation, which should be written to the conventions fixed in §4 above.

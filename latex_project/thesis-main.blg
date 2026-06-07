@@ -1,17 +1,29 @@
 [0] Config.pm:328> INFO - This is Biber 2.21
 [0] Config.pm:331> INFO - Logfile is 'thesis-main.blg'
-[116] biber-MSWIN64:342> INFO - === 
-[161] Biber.pm:421> INFO - Reading 'thesis-main.bcf'
-[260] Biber.pm:1002> INFO - Found 25 citekeys in bib section 0
-[270] Biber.pm:4487> INFO - Processing section 0
-[279] Biber.pm:4678> INFO - Looking for bibtex file 'bib/thesis/references.bib' for section 0
-[349] bibtex.pm:1713> INFO - LaTeX decoding ...
-[380] bibtex.pm:1519> INFO - Found BibTeX data source 'bib/thesis/references.bib'
-[528] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
-[531] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
-[531] Biber.pm:4307> INFO - Sorting list 'nyt/global//global/global/global' of type 'entry' with template 'nyt' and locale 'en-US'
-[531] Biber.pm:4313> INFO - No sort tailoring available for locale 'en-US'
-[566] bbl.pm:676> INFO - Writing 'thesis-main.bbl' with encoding 'UTF-8'
-[588] bbl.pm:779> INFO - Output to thesis-main.bbl
-[590] Biber.pm:132> WARN - Duplicate entry key: 'gliksman2023european' in file 'bib/thesis/references.bib', skipping ...
-[590] Biber.pm:134> INFO - WARNINGS: 1
+[102] biber-MSWIN64:342> INFO - === 
+[144] Biber.pm:421> INFO - Reading 'thesis-main.bcf'
+[268] Biber.pm:1002> INFO - Found 24 citekeys in bib section 0
+[278] Biber.pm:4487> INFO - Processing section 0
+[290] Biber.pm:4678> INFO - Looking for bibtex file 'bib/thesis/references.bib' for section 0
+[351] bibtex.pm:1713> INFO - LaTeX decoding ...
+[369] bibtex.pm:1519> INFO - Found BibTeX data source 'bib/thesis/references.bib'
+[452] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[452] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[452] Biber.pm:4307> INFO - Sorting list 'nyt/global//global/global/global' of type 'entry' with template 'nyt' and locale 'en-US'
+[452] Biber.pm:4313> INFO - No sort tailoring available for locale 'en-US'
+[465] bbl.pm:676> INFO - Writing 'thesis-main.bbl' with encoding 'UTF-8'
+[475] bbl.pm:779> INFO - Output to thesis-main.bbl
+[476] Biber.pm:132> WARN - BibTeX subsystem: C:\Users\floris\AppData\Local\Temp\biber_tmp_WmRD\33e59b5ca9ec342068223d604c3f8d55_61216.utf8, line 406, warning: 32225 characters of junk seen at toplevel
+[476] Biber.pm:132> WARN - I didn't find a database entry for 'mohr2017' (section 0)
+[476] Biber.pm:132> WARN - I didn't find a database entry for 'gliksman2023european' (section 0)
+[476] Biber.pm:132> WARN - I didn't find a database entry for 'balkema1974' (section 0)
+[476] Biber.pm:132> WARN - I didn't find a database entry for 'pickands1975' (section 0)
+[476] Biber.pm:132> WARN - I didn't find a database entry for 'ferro2003' (section 0)
+[476] Biber.pm:132> WARN - I didn't find a database entry for 'fawcett2006' (section 0)
+[476] Biber.pm:132> WARN - I didn't find a database entry for 'DickeyFuller1979' (section 0)
+[476] Biber.pm:132> WARN - I didn't find a database entry for 'cooley2012' (section 0)
+[476] Biber.pm:132> WARN - I didn't find a database entry for 'wadsworth2012' (section 0)
+[477] Biber.pm:132> WARN - I didn't find a database entry for 'huser2022' (section 0)
+[477] Biber.pm:132> WARN - I didn't find a database entry for 'brown1983' (section 0)
+[477] Biber.pm:132> WARN - I didn't find a database entry for 'huser2016' (section 0)
+[477] Biber.pm:134> INFO - WARNINGS: 13

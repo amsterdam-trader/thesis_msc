@@ -35,10 +35,8 @@ def empirical_uniform_ranks(X: np.ndarray) -> np.ndarray:
     if X.ndim != 2:
         raise ValueError(f"Expected 2D input, got shape {X.shape}")
     n = X.shape[0]
-    U = np.empty_like(X, dtype=float)
-    for k in range(X.shape[1]):
-        U[:, k] = rankdata(X[:, k], method="average") / (n + 1.0)
-    return U
+    # Vectorised over columns; identical to per-column rankdata(method="average").
+    return rankdata(X, method="average", axis=0) / (n + 1.0)
 
 
 def fmadogram_pairwise(U: np.ndarray) -> np.ndarray:
@@ -68,6 +66,10 @@ def theta_from_fmadogram(nu: np.ndarray, eps: float = 1e-6) -> np.ndarray:
     """
     nu_c = np.clip(nu, eps, 0.5 - eps)
     theta = (1.0 + 2.0 * nu_c) / (1.0 - 2.0 * nu_c)
+    # Methodology: extremal-coefficient estimates are clipped to [1, 2]
+    # (sec:meth-madogram). Finite-sample F-madograms can exceed the
+    # independence value 1/6, which would push theta past 2.
+    theta = np.clip(theta, 1.0, 2.0)
     np.fill_diagonal(theta, 1.0)
     return theta
 

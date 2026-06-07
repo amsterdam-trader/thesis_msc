@@ -1,238 +1,32 @@
 % =====================================================================
 % Data
-% Status: first full draft, rewritten under the hourly FX framing.
-% The previous draft was written for the 10-minute KNMI archive in
-% an intraday-curve framing and described "wind speed and wind
-% gusts"; that text has been replaced by the description of the
-% hourly product, with FX as the sole primary variable.
-% Every quantitative statement that depends on data inspection is
-% marked with a precise % TODO referring to notebook 01.
-% The station map figure and the two appendix tables (station list,
-% variable list) are retained.
+% Short by design. Marginal standardisation is defined in the
+% methodology (Section sec:meth-marginals), not here.
 % =====================================================================
-\section{Data description}\label{sec:data-description}
+\section{Data}\label{sec:data}
 
-We consider hourly observations from the network of automatic
-weather stations operated by the Royal Netherlands Meteorological
-Institute (KNMI). The empirical analysis uses one variable only,
-the hourly maximum wind gust \(\mathrm{FX}\), defined as the
-maximum gust speed (in metres per second) recorded by the
-station in the hour preceding the timestamp. The remainder of this
-section documents the source files, the variable definitions, the
-station network, the missingness structure, the seasonal split, and
-the analysis sample.
+The empirical analysis uses daily maximum wind gusts recorded at KNMI weather stations in the Netherlands. The sample runs from 1 January 1991 to 1 February 2026 and contains \(N=33\) stations, each with more than \(95\%\) non-missing daily observations over the period. This rule gives a nearly balanced spatial panel while retaining the geographical coverage needed to estimate how extremal dependence varies with distance.
 
-\subsection{Source and file structure}\label{sec:data-source}
+Let \(X_{i,t}\) be the daily maximum wind gust at station \(i=1,\dots,N\) on day \(t\). Station \(i\) has location \(s_i\in\mathbb R^2\), and \(d_{ij}=\lVert s_i-s_j\rVert\) is the great-circle distance between stations \(i\) and \(j\). On each day the network forms one spatial field
+\[
+      X_t=(X_{1,t},\dots,X_{N,t}),
+\]
+and the season-specific collection of these fields is the input to the Brown--Resnick estimation of Section~\ref{sec:methodology}. The spatial coverage is summarised by the inter-station distances \(d_{ij}\), whose range determines the distances over which the dependence parameters can be identified.
 
-The hourly observations used in this thesis are stored locally in
-the directory
-\texttt{data/yearly\_aggregated\_FH\_FX/}, with one parquet file
-per (year, month) combination at the path
-\begin{center}
-\texttt{data/yearly\_aggregated\_FH\_FX/year=YYYY/month=MM/knmi\_fh\_YYYY\_MM.parquet}.
-\end{center}
-Each parquet file is a long-format table whose rows are
-(\texttt{time}, \texttt{station}) hour-station observations. The
-schema is the same for every month: \texttt{time, station,
-stationname, lat, lon, height, FH, FX}. Of these, only
-\(\mathrm{FX}\) enters the dependence estimators of
-Section~\ref{sec:methodology}; the hourly mean wind speed
-\(\mathrm{FH}\) is read alongside but is not the thesis variable,
-and the metadata columns are used only for filtering and for
-distance computation. The list of all available KNMI variables in
-the underlying 10-minute archive is recorded in
-Appendix~\ref{app:knmi-vars} for completeness; only the wind-gust
-column is used here.
+The analysis is run separately for winter (December--February) and summer (June--August); spring and autumn are not used. December of year \(y\) is assigned to winter \(y+1\), so each winter is one contiguous block, and incomplete boundary seasons are dropped. Coastal and inland stations differ in their gust distributions, and the two seasons differ as well; to keep the comparison about spatial dependence rather than these marginal differences, the margins are standardised separately by station and season before any dependence is estimated. The standardisation is defined in Section~\ref{sec:meth-marginals}.
 
-\subsection{Primary variable and units}\label{sec:data-variable}
-
-The primary variable is
-
-\begin{quote}
-\(\mathrm{FX}\): hourly maximum wind gust, in m/s,
-representative for a reference height of 10\,m above the surface.
-\end{quote}
-
-Throughout the thesis we write \(X_{i,t}\) (equivalently
-\(X_{s_i,t}\)) for the value of \(\mathrm{FX}\) at station \(s_i\)
-in hour \(t\). The time index \(t = 1,\dots,T\) is a discrete
-hourly index. The spatial location \(s_i \in \mathbb{R}^2\) is the
-WGS84 latitude/longitude pair of station \(i\); the network
-contains \(N\) stations, with \(i, j = 1, \dots, N\) reserved for
-station indices throughout the thesis.
-
-The mean wind speed column \(\mathrm{FH}\) is also reported at the
-hourly level and at the 10\,m reference height. It is recorded only
-to keep the parquet schema stable across files; it is not used in
-the empirical analysis.
-% TODO: confirm in notebook 01 that FX is indeed defined as a
-%       past-hour maximum gust (and not as a past-10-minute maximum
-%       carried over from the underlying archive). The KNMI
-%       documentation for the 10-minute product uses
-%       "representative for 10 meter" for both ff (= mean) and gff
-%       (= 10-min max gust); the hourly product is derived from
-%       these, so the convention should be verified.
-
-\subsection{Station network and metadata}\label{sec:data-stations}
-
-The station metadata table is stored at
-\texttt{data/station\_metadata.csv} and contains, for each station,
-the columns \texttt{station\_id, stationname, lat, lon, height}.
-Stations are identified throughout this thesis by their numeric
-\texttt{station\_id}; the name is used only for figure legends and
-for the station-list appendix. The full inventory of stations is
-provided in Appendix~\ref{app:knmi-stations}.
-
-Figure~\ref{fig:knmi-stations} displays the locations of the
-stations on the Dutch land area. The mapped network covers
-coastal, inland and offshore positions. The empirical analysis is
-restricted to Dutch land and coastal stations
-(Section~\ref{sec:emp-stations}); offshore platforms in the North
-Sea are recorded in the metadata file but are excluded from the
-main analysis on the grounds of differing measurement environment
-and intermittent record availability.
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.8\textwidth]{./figures/knmi_stations_map.png}
-    \caption{Locations of the KNMI automatic weather stations
-    recorded in the station metadata. The numbering in the map
-    corresponds to the \texttt{map\_id} variable in the metadata
-    table, assigned in ascending order of station name. The
-    accompanying list of station names is in
-    Appendix~\ref{app:knmi-stations}.}
-    \label{fig:knmi-stations}
-\end{figure}
-
-\subsection{Sample period and changing
-network}\label{sec:data-period}
-
-The local archive contains hourly partitions for 1951--2026 (911 of
-912 expected (year, month) partitions are present; the June 2003
-partition is missing on disk).
-% Data audit (2026-05-26), see outputs/data_audit_report.md.
-% Although the archive begins in 1951, FX is effectively
-% unobserved in the early decades: in 1951 only 14 stations report
-% non-null FX in at least 0.5\% of their hours, and the overall FX
-% missing share for 1951 is 92.5\%. FX coverage rises sharply
-% around 1971 (12.8\% missing) and is operationally complete after
-% 1981. The sample start year used in the empirical analysis must
-% therefore be picked from {1971, 1981, 1991, 2001}, not from 1951. The
-station network has changed substantially over this period:
-several stations have been opened or closed, and a number of
-historic stations have been relocated, renamed or replaced by an
-automated successor. We treat the resulting panel as
-\emph{unbalanced} and address this directly through the station-
-inclusion rules of Section~\ref{sec:emp-stations}. In particular,
-the headline empirical analysis uses a balanced subset of stations
-that are present in every winter and every summer of the chosen
-sample window; the larger unbalanced panel is used only as a
-robustness check (Section~\ref{sec:rob-stations}).
-
-\subsection{Missingness and quality
-control}\label{sec:data-missing}
-
-The hourly archive inherits the missingness and quality-control
-structure of the underlying 10-minute KNMI product. Two types of
-missingness are relevant:
-
-\begin{enumerate}
-    \item \emph{Hourly missingness.} An individual hour may have no
-          recorded \(\mathrm{FX}\) value, either because the
-          station was inactive or because the 10-minute
-          observations from which the hourly maximum is derived
-          failed quality control.
-    \item \emph{Station-year missingness.} A station may be
-          inactive for an entire winter or summer, in which case
-          all hours in that station-season-year are missing.
-\end{enumerate}
-
-Both forms are addressed by the missingness rules in
-Section~\ref{sec:emp-missing}: a minimum within-season completeness
-threshold for station-year inclusion, and a maximum within-block
-missing-fraction threshold for block-maxima inclusion. Pairwise
-estimators of dependence are computed on pairwise-complete hours,
-so a missing observation at one station does not invalidate the
-pair at hours where both stations report.
-
-% TODO: report the share of missing hourly FX observations on the
-%       analysis panel after the inclusion rules are applied.
-%       Compute in notebook 01 and insert a single sentence here
-%       with the number.
-
-\subsection{Seasonal definitions}\label{sec:data-seasons}
-
-We use the standard climatological seasons restricted to winter
-and summer:
-
-\begin{itemize}
-    \item Winter \(c = \mathrm{W}\): December, January and February
-          (DJF).
-    \item Summer \(c = \mathrm{S}\): June, July and August (JJA).
-\end{itemize}
-
-December of calendar year \(y\) is attached to winter year
-\(y+1\); so winter 1967 consists of December 1966, January 1967
-and February 1967. This convention keeps each winter contiguous in
-calendar time and is implemented in
-\texttt{python\_project/src/seasons.py}. Spring (MAM) and autumn
-(SON) hours are dropped from the main analysis.
-
-\subsection{Analysis sample}\label{sec:data-sample}
-
-The construction of the analysis sample is summarised here and made
-operational in Section~\ref{sec:empirical-design}. The steps are:
-
-\begin{enumerate}
-    \item Restrict to Dutch land and coastal KNMI stations whose
-          sensor is documented as representative for the 10\,m
-          reference height.
-    \item Keep only hours where \(\mathrm{FX}\) is reported and is
-          not flagged as invalid by KNMI quality control.
-    \item Discard station-season-years that fail the within-season
-          completeness threshold of
-          Section~\ref{sec:emp-missing}.
-    \item Restrict to the balanced station panel: stations present
-          in every winter and every summer of the chosen sample
-          window.
-    \item Stratify the resulting panel by season into a winter
-          subsample \(\{X_{i,t}: t \in \mathcal{T}_{\mathrm{W}}\}\)
-          and a summer subsample
-          \(\{X_{i,t}: t \in \mathcal{T}_{\mathrm{S}}\}\).
-\end{enumerate}
-
-% TODO: after the sample is fixed, fill in the resulting (N, sample
-%       window, hours per season, number of station-years) at the
-%       end of this paragraph. Compute in notebook 01.
-
-\subsection{Planned descriptive
-outputs}\label{sec:data-descriptives}
-
-The data section is supported by the following descriptive
-outputs, all generated from
-\texttt{python\_project/notebooks/01\_data\_exploration.ipynb} and
-saved to \texttt{python\_project/output/figures/} or
-\texttt{python\_project/output/tables/}:
-
-\begin{enumerate}
-    \item Station map (Figure~\ref{fig:knmi-stations}, already
-          shown; will be regenerated from the metadata table on the
-          balanced panel).
-    \item Station-by-year coverage heatmap
-          (\texttt{station\_coverage\_heatmap.pdf}), showing for
-          each station which years of \(\mathrm{FX}\) are observed.
-    \item Station-level descriptive statistics of
-          \(\mathrm{FX}\), winter and summer separately
-          (\texttt{station\_descriptives.tex}): number of hourly
-          observations, mean, median, 95\%, 99\% empirical
-          quantiles, number of exceedances above the chosen
-          threshold.
-    \item Seasonal-maxima boxplot per station
-          (\texttt{seasonal\_maxima\_boxplot.pdf}), used to
-          motivate the marginal modelling step of
-          Section~\ref{sec:meth-marginals}.
-\end{enumerate}
-
-A full inventory of the meteorological variables available in the
-underlying 10-minute KNMI archive (only \(\mathrm{FX}\) is used
-here) is provided in Appendix~\ref{app:knmi-vars}.
+\begin{table}[htbp]
+      \centering
+      \caption{Summary of the empirical sample.}
+      \label{tab:data-summary}
+      \begin{tabular}{ll}
+            \hline
+            Variable           & Daily maximum wind gust                                           \\
+            Sample period      & 1 January 1991 -- 1 February 2026                                 \\
+            Number of stations & 33                                                                \\
+            Seasons            & Winter (DJF) and summer (JJA)                                     \\
+            Spatial unit       & KNMI weather station                                              \\
+            Marginal scale     & Unit Fr\'echet (standardised in Section~\ref{sec:meth-marginals}) \\
+            \hline
+      \end{tabular}
+\end{table}

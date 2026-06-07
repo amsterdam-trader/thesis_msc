@@ -21,6 +21,9 @@ REPO_ROOT: Path = Path(__file__).resolve().parents[2]
 DATA_DIR: Path = REPO_ROOT / "data"
 HOURLY_PARQUET_DIR: Path = DATA_DIR / "yearly_aggregated_FH_FX"
 STATION_METADATA_CSV: Path = DATA_DIR / "station_metadata.csv"
+# Daily-maximum gust panel used in the empirical analysis (33 stations,
+# 1991-2026). Its embedded lat/lon define the simulation station geometry.
+DAILY_MAX_CSV: Path = DATA_DIR / "knmi_daily_max_1991_2026.csv"
 
 PYTHON_PROJECT_DIR: Path = REPO_ROOT / "python_project"
 SRC_DIR: Path = PYTHON_PROJECT_DIR / "src"

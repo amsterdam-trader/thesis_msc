@@ -13,7 +13,7 @@ from typing import Iterable, Sequence
 import numpy as np
 import pandas as pd
 
-from config import STATION_METADATA_CSV, TABLES_DIR
+from config import DAILY_MAX_CSV, STATION_METADATA_CSV, TABLES_DIR
 
 EARTH_RADIUS_KM: float = 6371.0088
 
@@ -107,6 +107,56 @@ def select_panel(
         names=tuple(sub["stationname"].astype(str).tolist()),
         lat=sub["lat"].to_numpy(dtype=float),
         lon=sub["lon"].to_numpy(dtype=float),
+    )
+
+
+def load_empirical_panel(
+    path: Path | str = DAILY_MAX_CSV,
+    expected_n: int | None = 33,
+) -> StationPanel:
+    """Build the empirical station panel directly from the daily-max file.
+
+    This is the authoritative geometry for the simulation study: it is the
+    exact set of stations (and their lat/lon) used in the empirical
+    analysis, so the simulated and observed inter-station distances
+    coincide (simulation.tex, sec:sim-spatial). Station ids in the daily-max
+    file are WMO strings like "0-20000-0-06225"; the trailing five digits
+    are the KNMI id. lat/lon are read from the file itself (constant per
+    station), so no metadata join is needed.
+
+    Parameters
+    ----------
+    path
+        Daily-max CSV with columns ``station, stationname, lat, lon``.
+    expected_n
+        If given, assert the panel has exactly this many stations (the
+        thesis uses N = 33). Pass ``None`` to skip the check.
+    """
+    path = Path(path)
+    if not path.exists():
+        raise FileNotFoundError(
+            f"Daily-max panel file not found: {path}. "
+            f"Expected data/knmi_daily_max_1991_2026.csv."
+        )
+    df = pd.read_csv(path, usecols=["station", "stationname", "lat", "lon"])
+    df["station_id_str"] = df["station"].astype(str).str[-5:].apply(normalise_station_id)
+    grouped = (
+        df.groupby("station_id_str", as_index=False)
+        .agg(stationname=("stationname", "first"),
+             lat=("lat", "first"), lon=("lon", "first"))
+        .sort_values("station_id_str")
+        .reset_index(drop=True)
+    )
+    if expected_n is not None and len(grouped) != expected_n:
+        raise ValueError(
+            f"Expected {expected_n} stations in {path.name}, found {len(grouped)}. "
+            f"Set expected_n=None to override."
+        )
+    return StationPanel(
+        ids=tuple(grouped["station_id_str"]),
+        names=tuple(grouped["stationname"].astype(str)),
+        lat=grouped["lat"].to_numpy(dtype=float),
+        lon=grouped["lon"].to_numpy(dtype=float),
     )
 
 

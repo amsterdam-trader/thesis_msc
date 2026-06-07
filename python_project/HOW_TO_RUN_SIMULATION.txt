@@ -1,0 +1,134 @@
+============================================================================
+HOW TO RUN THE SIMULATION STUDY
+Brown-Resnick benchmark for seasonal spatial extremal dependence
+============================================================================
+
+WHAT IT DOES
+------------
+Simulates Brown-Resnick max-stable fields on the empirical 33-station KNMI
+geometry under two designs (null: equal winter/summer dependence;
+alternative: winter more dependent than summer) and checks whether the
+F-madogram / extremal-coefficient and the finite-level chi_u estimators,
+smoothed into dependence-distance curves with a seasonal-block bootstrap,
+recover the known winter-summer difference. It produces the figures and
+tables used in the thesis Simulation Study (simulation.tex).
+
+
+0. PREREQUISITES (one-time)
+---------------------------
+- Python 3.11+ (tested on 3.13).
+- The data file must exist: data/knmi_daily_max_1991_2026.csv
+  (this is the 33-station daily-max panel; its lat/lon define the geometry).
+- Install the dependencies (numpy, scipy, pandas, matplotlib, joblib,
+  pyarrow). From the repository root:
+
+      python -m pip install numpy scipy pandas matplotlib joblib pyarrow
+
+  To also run the tests, add pytest:
+
+      python -m pip install pytest
+
+NOTE on paths: every path is resolved automatically from the project root
+(see src/config.py). You can run the commands below from ANY directory as
+long as you give the full path to the script. The examples assume you start
+in the repository root:
+
+      C:\Users\floris\Desktop\MSC\thesis_msc
+
+
+1. QUICK SMOKE TEST  (~30 seconds, verifies everything works)
+-------------------------------------------------------------
+PowerShell / cmd:
+
+      python python_project\scripts\run_simulation_study.py --quick
+
+This runs R=6 replications, B=40 bootstrap, n=500 on a coarse grid and
+writes all outputs. Use it to confirm the pipeline runs before a full run.
+
+
+2. FULL HEADLINE RUN  (the thesis numbers; ~1 hour on this machine)
+------------------------------------------------------------------
+      python python_project\scripts\run_simulation_study.py `
+          --n-rep 200 --n-boot 999 --n-obs 500 1500 3150 --jobs -1 --seed 20260101
+
+  (In PowerShell the backtick ` continues the line; on one line, drop it.)
+
+  - R = 200 Monte Carlo replications
+  - B = 999 bootstrap replications (the thesis value)
+  - n in {500, 1500, 3150} per regime (sample-size design factor;
+    headline = the largest, 3150)
+  - --jobs -1 uses all CPU cores (the run is parallelised across replications)
+
+A faster but still solid run (~40 min):
+
+      python python_project\scripts\run_simulation_study.py --n-rep 150 --n-boot 499
+
+
+3. KEY OPTIONS (run with -h for the full list)
+----------------------------------------------
+  --n-rep N          Monte Carlo replications R               (default 200)
+  --n-boot N         Bootstrap replications B (0 = skip)      (default 999)
+  --n-obs N [N ...]  Sample size(s) per regime               (default 3150)
+  --n-years N        Pseudo-season-years per regime          (default 35)
+  --alpha A          Variogram exponent                       (default 1.0)
+  --rho-null R       Null range (km)                          (default 120)
+  --rho-winter-alt R Alternative winter range (km)            (default 180)
+  --rho-summer-alt R Alternative summer range (km)            (default 60)
+  --u-grid U [U ...] Tail levels                              (default 0.95 0.975 0.99)
+  --kernel K         Smoother kernel: epanechnikov | gaussian (default epanechnikov)
+                     (simulation.tex uses Epanechnikov; methodology.tex
+                      uses Gaussian -- both supported, results ~identical)
+  --method M         BR simulator: exact | approx             (default exact)
+                     'exact' = Dombry-Engelke-Oesting 2016 algorithm.
+  --jobs N           Parallel workers (-1 = all cores)        (default -1)
+  --seed N           Master random seed                       (default 20260101)
+  --headline-n N     Which n drives the headline table/figs   (default: largest)
+
+
+4. WHERE THE OUTPUTS GO
+-----------------------
+Figures  -> python_project\outputs\figures\
+    sim_true_curves.pdf                 (closed-form targets; expected by simulation.tex)
+    sim_estimated_curves_theta.pdf      (estimated vs true theta, null & alt)
+    sim_estimated_curves_chi0.99.pdf    (estimated vs true chi_0.99, null & alt)
+    sim_difference_curves.pdf           (winter-summer difference curves)
+
+Tables   -> python_project\outputs\tables\
+    sim_results.csv / sim_results.tex   (headline table, tab:sim-results shape)
+    sim_results_detailed.csv            (every design/season/d0/n)
+    sim_bandwidths.csv                  (selected LOOCV bandwidths)
+    sim_run_config.csv                  (exact configuration of the run)
+    sim_station_geometry.csv, sim_pair_distances.csv
+
+Report   -> python_project\outputs\simulation_study_report.md
+    (run summary, selected bandwidths, approximations, and flagged thesis
+     mismatches)
+
+The .tex table can be copied into / \input into the thesis to fill
+Table tab:sim-results in simulation.tex.
+
+
+5. RUN THE TESTS
+----------------
+      python -m pytest python_project\tests\ -q
+
+Covers: the closed-form theta and chi_u formulas, the rank transform,
+the F-madogram / extremal-coefficient and symmetric chi_u estimators,
+the local-linear smoother, the bootstrap blocks, exact-simulator
+recovery of the closed-form curves, and seed reproducibility.
+
+
+6. SOURCE LAYOUT (python_project\src)
+-------------------------------------
+    config.py                 paths and constants
+    spatial_utils.py          station geometry, haversine distances,
+                              load_empirical_panel() (the 33 stations)
+    br_simulation.py          exact + approximate BR simulators and the
+                              closed-form curves (br_theta, br_chi_u)
+    dependence_estimators.py  rank transform, F-madogram, theta, chi_u
+    distance_smoothing.py     local-linear smoother + LOOCV bandwidth
+    bootstrap.py              pseudo-season-year blocks + percentile bands
+    simulation_pipeline.py    per-replication pipeline + MC aggregation
+    scripts\run_simulation_study.py   the runnable entry point
+
+============================================================================
