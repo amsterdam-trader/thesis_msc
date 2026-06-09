@@ -19,6 +19,46 @@
 
 \refsection{0}
   \datalist[entry]{nyt/global//global/global/global}
+    \entry{balkema1974}{article}{}{}
+      \name{author}{2}{}{%
+        {{un=0,uniquepart=base,hash=55fa7d47530e2e9bafa8ece966c53e06}{%
+           family={Balkema},
+           familyi={B\bibinitperiod},
+           given={A.\bibnamedelimi A.},
+           giveni={A\bibinitperiod\bibinitdelim A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=bbda4744adb5a56012642f11d8aca3eb}{%
+           family={Haan},
+           familyi={H\bibinitperiod},
+           given={Laurens},
+           giveni={L\bibinitperiod},
+           givenun=0,
+           prefix={de},
+           prefixi={d\bibinitperiod},
+           prefixun=0}}%
+      }
+      \strng{namehash}{c352db71831f23420a5c0c21d6d6308a}
+      \strng{fullhash}{c352db71831f23420a5c0c21d6d6308a}
+      \strng{fullhashraw}{c352db71831f23420a5c0c21d6d6308a}
+      \strng{bibnamehash}{c352db71831f23420a5c0c21d6d6308a}
+      \strng{authorbibnamehash}{c352db71831f23420a5c0c21d6d6308a}
+      \strng{authornamehash}{c352db71831f23420a5c0c21d6d6308a}
+      \strng{authorfullhash}{c352db71831f23420a5c0c21d6d6308a}
+      \strng{authorfullhashraw}{c352db71831f23420a5c0c21d6d6308a}
+      \field{sortinit}{B}
+      \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{The Annals of Probability}
+      \field{number}{5}
+      \field{title}{Residual Life Time at Great Age}
+      \field{volume}{2}
+      \field{year}{1974}
+      \field{pages}{792\bibrangedash 804}
+      \range{pages}{13}
+    \endentry
     \entry{brown1977}{article}{}{}
       \name{author}{2}{}{%
         {{un=0,uniquepart=base,hash=c77e696344aae6aa5a0db2185be0b245}{%
@@ -55,6 +95,43 @@
       \field{year}{1977}
       \field{pages}{732\bibrangedash 739}
       \range{pages}{8}
+    \endentry
+    \entry{buhl2016}{article}{}{}
+      \name{author}{2}{}{%
+        {{un=0,uniquepart=base,hash=97c7133c8a6780315192799ee7fbf4b3}{%
+           family={Buhl},
+           familyi={B\bibinitperiod},
+           given={Sven},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=28ef64f1a0f06ed03cec3653d4221027}{%
+           family={Klüppelberg},
+           familyi={K\bibinitperiod},
+           given={Claudia},
+           giveni={C\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{717215093173620c5cba1489b10f94d0}
+      \strng{fullhash}{717215093173620c5cba1489b10f94d0}
+      \strng{fullhashraw}{717215093173620c5cba1489b10f94d0}
+      \strng{bibnamehash}{717215093173620c5cba1489b10f94d0}
+      \strng{authorbibnamehash}{717215093173620c5cba1489b10f94d0}
+      \strng{authornamehash}{717215093173620c5cba1489b10f94d0}
+      \strng{authorfullhash}{717215093173620c5cba1489b10f94d0}
+      \strng{authorfullhashraw}{717215093173620c5cba1489b10f94d0}
+      \field{sortinit}{B}
+      \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Extremes}
+      \field{number}{4}
+      \field{title}{Anisotropic {Brown--Resnick} Space-Time Processes: Estimation and Model Assessment}
+      \field{volume}{19}
+      \field{year}{2016}
+      \field{pages}{627\bibrangedash 660}
+      \range{pages}{34}
     \endentry
     \entry{coles1999}{article}{}{}
       \name{author}{3}{}{%
@@ -311,6 +388,135 @@
       \field{pages}{180\bibrangedash 190}
       \range{pages}{11}
     \endentry
+    \entry{gliksman2023european}{article}{}{}
+      \name{author}{17}{}{%
+        {{un=0,uniquepart=base,hash=04057cc2b60210b4cf039047e681af10}{%
+           family={Gliksman},
+           familyi={G\bibinitperiod},
+           given={Daniel},
+           giveni={D\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=631a7c01550f0bc0a6e666b710c4fa08}{%
+           family={Averbeck},
+           familyi={A\bibinitperiod},
+           given={Paul},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=027e6fdcade950eea1912371b1519b05}{%
+           family={Becker},
+           familyi={B\bibinitperiod},
+           given={Nico},
+           giveni={N\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=31a942c646afe7d28c7a2a4988ce647d}{%
+           family={Gardiner},
+           familyi={G\bibinitperiod},
+           given={Barry},
+           giveni={B\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=7593aee465cfd7e55b1655e705bf2466}{%
+           family={Goldberg},
+           familyi={G\bibinitperiod},
+           given={Valeri},
+           giveni={V\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=94533ac1369951877a116d3bb0c59214}{%
+           family={Grieger},
+           familyi={G\bibinitperiod},
+           given={Jens},
+           giveni={J\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=8f3ac409e2a116e3242add9aa202d8d7}{%
+           family={Handorf},
+           familyi={H\bibinitperiod},
+           given={Dörthe},
+           giveni={D\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=960c4712df511cce8eec31e2b8e470ea}{%
+           family={Haustein},
+           familyi={H\bibinitperiod},
+           given={Karsten},
+           giveni={K\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=e95b2b5ffa857f82f4aef655b746ff6a}{%
+           family={Karwat},
+           familyi={K\bibinitperiod},
+           given={Alexia},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=9c1b28f8c93cdf855c2d14e6032ce375}{%
+           family={Knutzen},
+           familyi={K\bibinitperiod},
+           given={Florian},
+           giveni={F\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=7d3202d2b0c43bc22251bfdd66e530cb}{%
+           family={Lentink},
+           familyi={L\bibinitperiod},
+           given={Hilke\bibnamedelima S.},
+           giveni={H\bibinitperiod\bibinitdelim S\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=086e5ef115ceb1e8887e97efad41c48e}{%
+           family={Lorenz},
+           familyi={L\bibinitperiod},
+           given={Rike},
+           giveni={R\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=4c03e8389023b8d01fc1ba30f9fd5a77}{%
+           family={Niermann},
+           familyi={N\bibinitperiod},
+           given={Deborah},
+           giveni={D\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=3c46da47fe66f3ad8794e5c3efe3cfc6}{%
+           family={Pinto},
+           familyi={P\bibinitperiod},
+           given={Joaquim\bibnamedelima G.},
+           giveni={J\bibinitperiod\bibinitdelim G\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=47603309826a2d073b62a3ceac6ad668}{%
+           family={Queck},
+           familyi={Q\bibinitperiod},
+           given={Ronald},
+           giveni={R\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=8724750cb7ad397d1783b1b827538c79}{%
+           family={Ziemann},
+           familyi={Z\bibinitperiod},
+           given={Astrid},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=2790405cf6a6d0fa137a8713477cbe50}{%
+           family={Franzke},
+           familyi={F\bibinitperiod},
+           given={Christian\bibnamedelimb L.\bibnamedelimi E.},
+           giveni={C\bibinitperiod\bibinitdelim L\bibinitperiod\bibinitdelim E\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{d6f040b31f4575bc784de6925aeed994}
+      \strng{fullhash}{283ba0366dffa109e6c217e815d60f0f}
+      \strng{fullhashraw}{283ba0366dffa109e6c217e815d60f0f}
+      \strng{bibnamehash}{283ba0366dffa109e6c217e815d60f0f}
+      \strng{authorbibnamehash}{283ba0366dffa109e6c217e815d60f0f}
+      \strng{authornamehash}{d6f040b31f4575bc784de6925aeed994}
+      \strng{authorfullhash}{283ba0366dffa109e6c217e815d60f0f}
+      \strng{authorfullhashraw}{283ba0366dffa109e6c217e815d60f0f}
+      \field{sortinit}{G}
+      \field{sortinithash}{32d67eca0634bf53703493fb1090a2e8}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Natural Hazards and Earth System Sciences}
+      \field{title}{Review Article: A European Perspective on Wind and Storm Damage -- From the Meteorological Background to Index-Based Approaches to Assess Impacts}
+      \field{volume}{23}
+      \field{year}{2023}
+      \field{pages}{2171\bibrangedash 2201}
+      \range{pages}{31}
+      \verb{doi}
+      \verb 10.5194/nhess-23-2171-2023
+      \endverb
+    \endentry
     \entry{gnedenko1943}{article}{}{}
       \name{author}{1}{}{%
         {{un=0,uniquepart=base,hash=175c0869035f00b48eb2268510baada5}{%
@@ -420,6 +626,43 @@
       \field{pages}{511\bibrangedash 518}
       \range{pages}{8}
     \endentry
+    \entry{huser2020}{article}{}{}
+      \name{author}{2}{}{%
+        {{un=0,uniquepart=base,hash=a999799dce6a407edc1ae0c3148fc8c8}{%
+           family={Huser},
+           familyi={H\bibinitperiod},
+           given={Raphaël},
+           giveni={R\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=d5943e6bde8a0bcedc815b6e29b7f71a}{%
+           family={Wadsworth},
+           familyi={W\bibinitperiod},
+           given={Jennifer\bibnamedelima L.},
+           giveni={J\bibinitperiod\bibinitdelim L\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{9200deb49c3b8247c9bd92fe19f959c5}
+      \strng{fullhash}{9200deb49c3b8247c9bd92fe19f959c5}
+      \strng{fullhashraw}{9200deb49c3b8247c9bd92fe19f959c5}
+      \strng{bibnamehash}{9200deb49c3b8247c9bd92fe19f959c5}
+      \strng{authorbibnamehash}{9200deb49c3b8247c9bd92fe19f959c5}
+      \strng{authornamehash}{9200deb49c3b8247c9bd92fe19f959c5}
+      \strng{authorfullhash}{9200deb49c3b8247c9bd92fe19f959c5}
+      \strng{authorfullhashraw}{9200deb49c3b8247c9bd92fe19f959c5}
+      \field{sortinit}{H}
+      \field{sortinithash}{23a3aa7c24e56cfa16945d55545109b5}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{WIREs Computational Statistics}
+      \field{number}{1}
+      \field{title}{Advances in Statistical Modeling of Spatial Extremes}
+      \field{volume}{13}
+      \field{year}{2020}
+      \field{pages}{e1537}
+      \range{pages}{-1}
+    \endentry
     \entry{kabluchko2009}{article}{}{}
       \name{author}{3}{}{%
         {{un=0,uniquepart=base,hash=f03b61221e5644214cbf0cf61f70933d}{%
@@ -509,19 +752,96 @@
       \field{pages}{263\bibrangedash 277}
       \range{pages}{15}
     \endentry
+    \entry{pickands1975}{article}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=a44bf3e0aec92b51426e7cc38b77a139}{%
+           family={Pickands},
+           familyi={P\bibinitperiod},
+           given={James},
+           giveni={J\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{a44bf3e0aec92b51426e7cc38b77a139}
+      \strng{fullhash}{a44bf3e0aec92b51426e7cc38b77a139}
+      \strng{fullhashraw}{a44bf3e0aec92b51426e7cc38b77a139}
+      \strng{bibnamehash}{a44bf3e0aec92b51426e7cc38b77a139}
+      \strng{authorbibnamehash}{a44bf3e0aec92b51426e7cc38b77a139}
+      \strng{authornamehash}{a44bf3e0aec92b51426e7cc38b77a139}
+      \strng{authorfullhash}{a44bf3e0aec92b51426e7cc38b77a139}
+      \strng{authorfullhashraw}{a44bf3e0aec92b51426e7cc38b77a139}
+      \field{sortinit}{P}
+      \field{sortinithash}{ff3bcf24f47321b42cb156c2cc8a8422}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{The Annals of Statistics}
+      \field{number}{1}
+      \field{title}{Statistical Inference Using Extreme Order Statistics}
+      \field{volume}{3}
+      \field{year}{1975}
+      \field{pages}{119\bibrangedash 131}
+      \range{pages}{13}
+    \endentry
+    \entry{schlather2002}{article}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=51b06ae3722af166b5794bf90647b007}{%
+           family={Schlather},
+           familyi={S\bibinitperiod},
+           given={Martin},
+           giveni={M\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{51b06ae3722af166b5794bf90647b007}
+      \strng{fullhash}{51b06ae3722af166b5794bf90647b007}
+      \strng{fullhashraw}{51b06ae3722af166b5794bf90647b007}
+      \strng{bibnamehash}{51b06ae3722af166b5794bf90647b007}
+      \strng{authorbibnamehash}{51b06ae3722af166b5794bf90647b007}
+      \strng{authornamehash}{51b06ae3722af166b5794bf90647b007}
+      \strng{authorfullhash}{51b06ae3722af166b5794bf90647b007}
+      \strng{authorfullhashraw}{51b06ae3722af166b5794bf90647b007}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Extremes}
+      \field{number}{1}
+      \field{title}{Models for Stationary Max-Stable Random Fields}
+      \field{volume}{5}
+      \field{year}{2002}
+      \field{pages}{33\bibrangedash 44}
+      \range{pages}{12}
+    \endentry
+    \entry{smith1990}{unpublished}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=0c818f45bf40219cfaea4afb4073a410}{%
+           family={Smith},
+           familyi={S\bibinitperiod},
+           given={Richard\bibnamedelima L.},
+           giveni={R\bibinitperiod\bibinitdelim L\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{0c818f45bf40219cfaea4afb4073a410}
+      \strng{fullhash}{0c818f45bf40219cfaea4afb4073a410}
+      \strng{fullhashraw}{0c818f45bf40219cfaea4afb4073a410}
+      \strng{bibnamehash}{0c818f45bf40219cfaea4afb4073a410}
+      \strng{authorbibnamehash}{0c818f45bf40219cfaea4afb4073a410}
+      \strng{authornamehash}{0c818f45bf40219cfaea4afb4073a410}
+      \strng{authorfullhash}{0c818f45bf40219cfaea4afb4073a410}
+      \strng{authorfullhashraw}{0c818f45bf40219cfaea4afb4073a410}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Unpublished manuscript}
+      \field{title}{Max-Stable Processes and Spatial Extremes}
+      \field{year}{1990}
+    \endentry
   \enddatalist
-  \missing{DickeyFuller1979}
-  \missing{balkema1974}
-  \missing{brown1983}
-  \missing{cooley2012}
-  \missing{fawcett2006}
-  \missing{ferro2003}
-  \missing{gliksman2023european}
-  \missing{huser2016}
-  \missing{huser2022}
-  \missing{mohr2017}
-  \missing{pickands1975}
-  \missing{wadsworth2012}
 \endrefsection
 \endinput
 

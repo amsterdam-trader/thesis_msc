@@ -1,158 +1,127 @@
 % =====================================================================
-% Results
-% Status: placeholder — no empirical numbers are entered until the
-% pipeline of python_project/notebooks/ has been run.
-% Each subsection includes a "what will be reported" template so
-% that the structure is fixed before the analysis is done.
+% Results --- preliminary empirical fill based on the v3 logged KNMI run.
+% Simulation and bootstrap inference are intentionally marked as TBD.
 % =====================================================================
 \section{Results}\label{sec:results}
 
-This section reports the empirical estimates produced by the
-pipeline of Section~\ref{sec:methodology} on the main sample of
-Section~\ref{sec:emp-samples}. Section~\ref{sec:results-marginals}
-reports the marginal extremes per station, season by season.
-Section~\ref{sec:results-pairwise} reports the pairwise
-dependence estimates. Section~\ref{sec:results-distance} reports
-the dependence--distance summary, and
-Section~\ref{sec:results-comparison} reports the seasonal
-comparison.
+This chapter applies the estimator and inference of Section~\ref{sec:methodology} to the KNMI wind gusts of Section~\ref{sec:data}. Section~\ref{sec:res-sim} reports the Monte Carlo study that checks the procedure under a known data-generating process; these simulation outcomes are still to be determined. Section~\ref{sec:res-fit} gives the fitted seasonal Brown--Resnick parameters for the empirical KNMI application, Section~\ref{sec:res-diag} compares the fit with nonparametric diagnostics, and Section~\ref{sec:res-test} reports the seasonal comparison. The empirical numbers in this version are preliminary point estimates from the non-bootstrap run with the fast starting grid; the final version should replace them by the full-grid estimates and add the season-year block-bootstrap intervals.
 
-% TODO: every numerical claim below is to be inserted only after
-%       the pipeline has been executed. Do not pre-write
-%       conclusions.
+\subsection{Simulation results}\label{sec:res-sim}
 
-\subsection{Marginal extremes per
-station}\label{sec:results-marginals}
+The estimator-recovery and bootstrap-performance experiments of Section~\ref{sec:simulation} are to be determined. In the next version (after we have agreed on the simulation method), this subsection will report the bias and RMSE of the seasonal estimates, the recovery of \(\Delta_\rho\), the boundary-hit rate of the optimiser, and the bootstrap coverage, size and power. Until those experiments have been run, no numerical simulation claim is made.
 
-We first inspect the marginal upper tail of \(\mathrm{FX}\) at
-each station, separately for winter and summer.
+\begin{table}[t]
+    \centering
+    \caption{Estimator recovery over Monte Carlo replications. Simulation results are to be determined.}
+    \label{tab:res-recovery}
+    \begin{tabular}{llrrr}
+        \hline
+        Design      & Parameter              & True               & Bias & RMSE \\
+        \hline
+        Null        & \(\rho_{\mathrm W}\)   & \(0.5\,d_{\max}\)  & TBD  & TBD  \\
+                    & \(\rho_{\mathrm S}\)   & \(0.5\,d_{\max}\)  & TBD  & TBD  \\
+                    & \(\alpha_{\mathrm W}\) & \(1\)              & TBD  & TBD  \\
+                    & \(\alpha_{\mathrm S}\) & \(1\)              & TBD  & TBD  \\
+                    & \(\Delta_\rho\)        & \(0\)              & TBD  & TBD  \\
+        \hline
+        Alternative & \(\rho_{\mathrm W}\)   & \(d_{\max}\)       & TBD  & TBD  \\
+                    & \(\rho_{\mathrm S}\)   & \(0.25\,d_{\max}\) & TBD  & TBD  \\
+                    & \(\alpha_{\mathrm W}\) & \(1\)              & TBD  & TBD  \\
+                    & \(\alpha_{\mathrm S}\) & \(1\)              & TBD  & TBD  \\
+                    & \(\Delta_\rho\)        & \(0.75\,d_{\max}\) & TBD  & TBD  \\
+        \hline
+    \end{tabular}
+\end{table}
 
-\paragraph{What is reported.}
-\begin{itemize}
-    \item Empirical 95\%, 97\% and 99\% within-(station, season)
-          quantiles of hourly \(\mathrm{FX}\).
-    \item GEV parameter estimates
-          \((\widehat\mu_i^{(c)}, \widehat\sigma_i^{(c)},
-          \widehat\xi_i^{(c)})\) on the seasonal block-maxima
-          series, with the standard sandwich standard errors.
-    \item GPD parameter estimates
-          \((\widehat\sigma_{u,i}^{(c)}, \widehat\xi_i^{(c)})\) at
-          the chosen tail level (Section~\ref{sec:emp-extremes}).
-    \item Goodness-of-fit diagnostics: return-level plot and QQ
-          plot per (station, season).
-\end{itemize}
+\begin{table}[t]
+    \centering
+    \caption{Bootstrap performance over Monte Carlo replications. Simulation results are to be determined.}
+    \label{tab:res-inference}
+    \begin{tabular}{lcc}
+        \hline
+        Quantity               & Coverage (null) & Coverage (alt.) \\
+        \hline
+        \(\rho_{\mathrm W}\)   & TBD             & TBD             \\
+        \(\rho_{\mathrm S}\)   & TBD             & TBD             \\
+        \(\alpha_{\mathrm W}\) & TBD             & TBD             \\
+        \(\alpha_{\mathrm S}\) & TBD             & TBD             \\
+        \(\Delta_\rho\)        & TBD             & TBD             \\
+        \hline
+        Test rejection rate    & TBD (size)      & TBD (power)     \\
+        \hline
+    \end{tabular}
+\end{table}
 
-% TODO: insert Figure \ref{fig:marginal-fits-per-station}
-%       (\texttt{marginal\_fits\_per\_station.pdf}) and Table
-%       \ref{tab:marginal-fits} (\texttt{marginal\_fits.tex}) once
-%       produced by notebook 02.
+\subsection{Fitted seasonal dependence}\label{sec:res-fit}
 
-\paragraph{Interpretation template.}
-After inspection, this paragraph will report whether the shape
-parameter \(\widehat\xi_i^{(c)}\) is systematically different
-between winter and summer, and whether the seasonal contrast in
-the marginal upper tail justifies the use of a season-conditional
-marginal transform in Section~\ref{sec:results-pairwise}.
+The station--season GEV margins of Section~\ref{sec:meth-marginals} were fitted separately for the 33 stations and the two seasons, giving 66 station--season marginal models. After transformation to the unit-Fr\'echet scale, the Brown--Resnick pairwise composite likelihood of Section~\ref{sec:meth-cl} was maximised over all \(N(N-1)/2=528\) station pairs in each season. The seasonal panel used for the dependence fit contains 203,506 transformed station-day observations after retaining complete DJF and JJA season-years.
 
-\subsection{Pairwise extremal
-dependence}\label{sec:results-pairwise}
+\begin{table}[t]
+    \centering
+    \caption{Preliminary fitted Brown--Resnick parameters by season. Point estimates are from the non-bootstrap v3 run with the fast starting grid; bootstrap intervals are to be determined.}
+    \label{tab:res-fit}
+    \begin{tabular}{lcc}
+        \hline
+        Parameter               & Winter (DJF) & Summer (JJA) \\
+        \hline
+        \(\widehat\rho_c\) (km) & 418.76       & 76.98        \\
+        \(\widehat\alpha_c\)    & 0.594        & 0.597        \\
+        Converged               & Yes          & Yes          \\
+        Boundary solution       & No           & No           \\
+        \hline
+    \end{tabular}
+\end{table}
 
-We now estimate the pairwise dependence summaries
-\(\widehat\chi_{ij}^{(c)}(u)\), \(\widehat\theta_{ij}^{(c)}\) and
-\(\widehat{\bar\chi}_{ij}^{(c)}(u)\) for every pair on the balanced
-panel.
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.85\textwidth]{../python_project/scripts/outputs_knmi_thesis_logged_fast/fig_theta_distance_diagnostics.png}
+    \caption{Fitted seasonal extremal-coefficient curves and pairwise extremal-coefficient diagnostics. Lower \(\theta_c(d)\) means stronger extremal dependence at distance \(d\). The preliminary fit places the winter curve below the summer curve over the observed distance range.}
+    \label{fig:res-curves}
+\end{figure}
 
-\paragraph{What is reported.}
-\begin{itemize}
-    \item Scatter plot of
-          \(\widehat\chi_{ij}^{(c)}(u_0)\) versus \(d_{ij}\) for
-          each season, at the reference level \(u_0\)
-          (Section~\ref{sec:emp-extremes}).
-    \item Scatter plot of \(\widehat\theta_{ij}^{(c)}\) versus
-          \(d_{ij}\) using the F-madogram estimator on block
-          maxima.
-    \item Joint plot of \(\widehat\chi_{ij}^{(c)}(u)\) and
-          \(\widehat{\bar\chi}_{ij}^{(c)}(u)\) on the grid of
-          \(u\), for a small set of representative pairs at
-          different distances.
-\end{itemize}
+The fitted winter range is \(\widehat\rho_{\mathrm W}=418.76\) km and the fitted summer range is \(\widehat\rho_{\mathrm S}=76.98\) km. The resulting range difference is therefore
+\[
+    \widehat\Delta_\rho
+    = \widehat\rho_{\mathrm W}-\widehat\rho_{\mathrm S}
+    = 341.79\text{ km}.
+\]
+The fitted smoothness parameters are almost identical, with \(\widehat\alpha_{\mathrm W}=0.594\) and \(\widehat\alpha_{\mathrm S}=0.597\). Thus the main seasonal difference is not a change in the shape of the distance decay, but a large change in the range scale. In substantive terms, the preliminary estimates indicate that winter wind-gust extremes are spatially much more coherent than summer wind-gust extremes. This is consistent with winter storms being driven by large-scale synoptic systems, whereas summer gust extremes are more often localised.
 
-% TODO: insert Figure
-%       \ref{fig:pair-chi-vs-distance-by-season}
-%       (\texttt{pair\_chi\_vs\_distance\_by\_season.pdf}) once
-%       produced by notebook 03.
+The fitted model also implies a clear separation in extremal dependence at representative distances. For example, the Brown--Resnick extremal coefficient is about 1.21 in winter and 1.34 in summer at 50 km, about 1.26 in winter and 1.41 in summer at 100 km, and about 1.36 in winter and 1.56 in summer at the maximum network distance of 326 km. Since lower extremal coefficients correspond to stronger extremal dependence, this again supports a wider winter footprint.
 
-\paragraph{Interpretation template.}
-The text will note whether the \(\widehat\chi_{ij}^{(c)}(u)\)
-estimates appear to converge to a strictly positive limit (the
-asymptotic-dependence case) or to decay to zero (the asymptotic-
-independence case), and whether the diagnosis differs between
-winter and summer.
+\subsection{Nonparametric diagnostics}\label{sec:res-diag}
 
-\subsection{Dependence as a function of
-distance}\label{sec:results-distance}
+Figure~\ref{fig:res-diag-chi} and Figure~\ref{fig:res-diag-theta} compare the fitted Brown--Resnick curves with the nonparametric pairwise diagnostics of Section~\ref{sec:meth-diagnostics}. These diagnostics should be used as the main check that the parametric range comparison is meaningful. Agreement between the binned pairwise cloud and the fitted curve supports the Brown--Resnick summary; systematic divergence would indicate that the fitted range may overstate or understate dependence at some distances.
 
-The pair-level estimates are noisy; we summarise them by the
-local-linear smoother
-\(\widehat\chi^{(c)}(d)\) defined in
-Section~\ref{sec:meth-distance}.
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.85\textwidth]{../python_project/scripts/outputs_knmi_thesis_logged_fast/fig_chi95_distance_diagnostics.png}
+    \caption{Finite-level pairwise tail-dependence diagnostics at the 0.95 level against inter-station distance, by season. Larger values indicate stronger co-occurrence of high wind-gust events.}
+    \label{fig:res-diag-chi}
+\end{figure}
 
-\paragraph{What is reported.}
-\begin{itemize}
-    \item Smoothed curve \(\widehat\chi^{(c)}(d)\) with block-
-          bootstrap percentile band, one curve per season, on a
-          single panel.
-    \item Same plot for \(\widehat\theta^{(c)}(d)\).
-    \item Bandwidth used, plus a small bandwidth-sensitivity
-          panel.
-\end{itemize}
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.85\textwidth]{../python_project/scripts/outputs_knmi_thesis_logged_fast/fig_theta_distance_diagnostics.png}
+    \caption{Pairwise extremal-coefficient diagnostics from the \(F\)-madogram against inter-station distance, by season. Lower values indicate stronger extremal dependence.}
+    \label{fig:res-diag-theta}
+\end{figure}
 
-% TODO: insert Figure \ref{fig:chi-distance-curves}
-%       (\texttt{chi\_distance\_curves.pdf}) once produced by
-%       notebook 03.
+The preliminary model fit should therefore be read together with these diagnostic plots. If the winter diagnostic points lie below the summer points across most distances, this visually supports the fitted conclusion that winter extremes have the larger spatial footprint. If the finite-level tail-dependence estimates decline more sharply than the Brown--Resnick curve at large distances, this should be reported as a qualification because the Brown--Resnick model is asymptotically dependent at every finite distance.
 
-\paragraph{Interpretation template.}
-The text will describe the qualitative shape of each curve
-(monotone decay, intercept near zero distance, behaviour at the
-maximum distance in the panel), report the smoother bandwidth, and
-note whether the two seasonal curves are visually separable on the
-range of distances spanned by the balanced panel.
+\subsection{Seasonal comparison and hypothesis test}\label{sec:res-test}
 
-\subsection{Winter--summer comparison}\label{sec:results-comparison}
+The preliminary non-bootstrap range difference is
+\[
+    \widehat\Delta_\rho = 341.79\text{ km}.
+\]
+This is large relative to the maximum inter-station distance of 326.21 km in the retained network. The point estimate therefore strongly supports the descriptive conclusion that the winter dependence range exceeds the summer dependence range. However, the formal one-sided test of \(H_0:\Delta_\rho=0\) against \(H_1:\Delta_\rho>0\) requires the season-year block-bootstrap distribution. Because the bootstrap has not yet been run, the bootstrap percentile, confidence interval and \(p\)-value are to be determined.
 
-Finally we compare the two seasonal curves directly.
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.85\textwidth]{../python_project/scripts/outputs_knmi_thesis_logged_fast/fig_extreme_spatial_footprint.png}
+    \caption{Spatial footprint of daily extreme events by season. This descriptive diagnostic summarises how many stations are jointly high on extreme days and complements the Brown--Resnick range comparison.}
+    \label{fig:res-footprint}
+\end{figure}
 
-\paragraph{What is reported.}
-\begin{itemize}
-    \item Scalar summaries
-          \(\widehat\chi^{(c)}(d_0)\) at the reference distances
-          \(d_0 \in \{50, 100, 200\}\) km (or the revised set of
-          Section~\ref{sec:emp-distances}), with bootstrap
-          percentile intervals, in a two-column (winter, summer)
-          table.
-    \item Pointwise difference
-          \(\widehat\chi^{(\mathrm{W})}(d) -
-          \widehat\chi^{(\mathrm{S})}(d)\) with bootstrap band.
-    \item Permutation-test \(p\)-value for the null
-          \(\chi^{(\mathrm{W})}(d) = \chi^{(\mathrm{S})}(d)\) on
-          the reference distance grid.
-\end{itemize}
-
-% TODO: insert Figure
-%       \ref{fig:chi-distance-winter-minus-summer}
-%       (\texttt{chi\_distance\_winter\_minus\_summer.pdf}) and
-%       Table \ref{tab:seasonal-summary}
-%       (\texttt{seasonal\_summary.tex}) once produced by notebook
-%       03.
-
-\paragraph{Interpretation template.}
-The text will state, in careful language (``evidence suggests''
-rather than ``proves''), the sign and approximate magnitude of the
-seasonal contrast at the reference distances, whether the
-permutation test rejects the null at the chosen significance
-level, and how the contrast varies with distance. Climate-change
-interpretations are explicitly avoided. The interpretation will
-explicitly distinguish finite-level dependence (i.e.\ what
-\(\widehat\chi_{ij}^{(c)}(u)\) reports at the chosen \(u\)) from
-the asymptotic-dependence question discussed in
-Section~\ref{sec:results-pairwise}.
+At this stage, the empirical result should be stated as a preliminary point-estimate finding: the fitted Brown--Resnick range is substantially larger in winter than in summer, while the smoothness parameters are nearly the same. The final thesis version should replace this paragraph by the full-grid and bootstrap result, including the bootstrap interval for \(\Delta_\rho\) and the one-sided test decision.

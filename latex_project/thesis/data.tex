@@ -1,19 +1,41 @@
 % =====================================================================
 % Data
-% Short by design. Marginal standardisation is defined in the
-% methodology (Section sec:meth-marginals), not here.
+% Short by design. Reports the empirical design quantities used later:
+% N, the inter-station distances and d_max, the season-year count n_y,
+% and the per-season day count m_c. Marginal standardisation, the
+% Brown--Resnick model, estimation, the bootstrap and the diagnostics
+% live in methodology.tex and are only cross-referenced here.
 % =====================================================================
 \section{Data}\label{sec:data}
 
-The empirical analysis uses daily maximum wind gusts recorded at KNMI weather stations in the Netherlands. The sample runs from 1 January 1991 to 1 February 2026 and contains \(N=33\) stations, each with more than \(95\%\) non-missing daily observations over the period. This rule gives a nearly balanced spatial panel while retaining the geographical coverage needed to estimate how extremal dependence varies with distance.
+The empirical analysis uses daily maximum wind gusts recorded by the automatic weather stations of the Royal Netherlands Meteorological Institute (KNMI). The raw dataset contains hourly validated observations. The dataset is currently operational and ongoing. The first recorded observations is from 1 January 1951. There are 23 unique weather parameters reported in the dataset. The station network has changed over the years, where stations were added, decommissioned, or relocated. Also, there are missing observations, because stations may be temporarily out of service or have gaps in their records. For our paper, we have chosen for a set of deterministic stations, using only the wind gust observations. For each station and day the record gives the highest wind gust observed that day, and this daily maximum is the quantity modelled throughout. Figure~\ref{fig:knmi-daily-max-mosaic} shows the data of the daily maximum wind gusts for the 33 stations.
 
-Let \(X_{i,t}\) be the daily maximum wind gust at station \(i=1,\dots,N\) on day \(t\). Station \(i\) has location \(s_i\in\mathbb R^2\), and \(d_{ij}=\lVert s_i-s_j\rVert\) is the great-circle distance between stations \(i\) and \(j\). On each day the network forms one spatial field
+\begin{figure}[p]
+      \centering
+      \includegraphics[width=\textwidth, height=0.9\textheight, keepaspectratio]{figures/knmi_daily_max_mosaic.png}
+      \caption{Daily maximum wind gusts at the 33 KNMI stations.}
+      \label{fig:knmi-daily-max-mosaic}
+\end{figure}
+
+Over the sample period, 1 January 1991 to 1 February 2026, we retain the \(N=33\) stations with more than \(95\%\) non-missing daily gust values; this keeps a nearly balanced spatial panel while preserving the geographical spread needed to estimate how extremal dependence changes with distance. Days on which a retained station does not report are left in the panel, and each station and each station pair contribute only on the days they are observed, as set out in Section~\ref{sec:methodology}.
+
+Each retained station \(i\) has a fixed location \(s_i\), given by its longitude and latitude. Figure~\ref{fig:knmi-stations-map} plots
+\begin{figure}[t]
+      \centering
+      \includegraphics[width=0.85\textwidth]{figures/knmi_stations_map.png}
+      \caption{Locations of the retained KNMI stations with the station names in the legend}
+      \label{fig:knmi-stations-map}
+\end{figure}
+
+The analysis is restricted to two seasons. Winter is December--January--February (DJF) and summer is June--July--August (JJA); the transitional seasons, spring and autumn, are not used. So that each winter is one contiguous block, the December of calendar year \(y\) is grouped with the January and February of year \(y+1\) and labelled winter \(y+1\). Season-years left incomplete at the ends of the record --- a winter whose December precedes the start of the sample, and any season truncated by the 1 February 2026 cut-off --- are dropped. Writing \(c\in\{\mathrm W,\mathrm S\}\) for the season and \(\mathcal T_c\) for the set of days assigned to season \(c\), winter and summer are treated separately at every stage. Each season yields a number of usable season-years \(n_y\), and a season-year of season \(c\) contains \(m_c\) daily fields; the winter and summer values of \(n_y\) and \(m_c\) are reported in Table~\ref{tab:data-summary} and are the counts used by the simulation of Section~\ref{sec:simulation}.
+
+On each day \(t\), the retained stations yield one spatial field \(X_t=(X_{1,t},\dots,X_{N,t})\) over the network, where \(X_{i,t}\) is the daily maximum gust at station \(i\). Spatial separation enters the analysis only through distance: \(d_{ij}\) denotes the inter-station distance in kilometres between stations \(i\) and \(j\), and the largest separation in the network,
 \[
-      X_t=(X_{1,t},\dots,X_{N,t}),
+      d_{\max}=\max_{i<j} d_{ij},
 \]
-and the season-specific collection of these fields is the input to the Brown--Resnick estimation of Section~\ref{sec:methodology}. The spatial coverage is summarised by the inter-station distances \(d_{ij}\), whose range determines the distances over which the dependence parameters can be identified.
+is the longest distance over which seasonal dependence can be estimated and is the scale against which the simulation scenarios of Section~\ref{sec:simulation} are defined. The inter-station distances span from 12 km to $d_{\max}=326.75$ km.
 
-The analysis is run separately for winter (December--February) and summer (June--August); spring and autumn are not used. December of year \(y\) is assigned to winter \(y+1\), so each winter is one contiguous block, and incomplete boundary seasons are dropped. Coastal and inland stations differ in their gust distributions, and the two seasons differ as well; to keep the comparison about spatial dependence rather than these marginal differences, the margins are standardised separately by station and season before any dependence is estimated. The standardisation is defined in Section~\ref{sec:meth-marginals}.
+Table~\ref{tab:data-summary} summarises the sample.
 
 \begin{table}[htbp]
       \centering
@@ -21,12 +43,15 @@ The analysis is run separately for winter (December--February) and summer (June-
       \label{tab:data-summary}
       \begin{tabular}{ll}
             \hline
-            Variable           & Daily maximum wind gust                                           \\
-            Sample period      & 1 January 1991 -- 1 February 2026                                 \\
-            Number of stations & 33                                                                \\
-            Seasons            & Winter (DJF) and summer (JJA)                                     \\
-            Spatial unit       & KNMI weather station                                              \\
-            Marginal scale     & Unit Fr\'echet (standardised in Section~\ref{sec:meth-marginals}) \\
+            Variable                                        & Daily maximum wind gust                        \\
+            Source                                          & KNMI automatic weather stations                \\
+            Sample period                                   & 1 January 1991 -- 1 February 2026              \\
+            Retained stations (\(N\))                       & 33                                             \\
+            Missingness rule                                & \(>95\%\) non-missing daily values per station \\
+            Seasons                                         & Winter (DJF) and summer (JJA)                  \\
+            Max.\ inter-station distance (\(d_{\max}\), km) & 326.75 kilometer                               \\
             \hline
       \end{tabular}
 \end{table}
+
+The next chapter takes these season-specific gust fields as its input. It first transforms each station--season margin to the unit-Fr\'echet scale (Section~\ref{sec:meth-marginals}), so that the winter--summer comparison reflects spatial dependence rather than differences in the local gust climate, and then models that dependence with a Brown--Resnick max-stable process fitted separately for winter and summer.

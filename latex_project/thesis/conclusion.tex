@@ -1,96 +1,17 @@
 % =====================================================================
-% Conclusion
-% Status: careful placeholder. No empirical claim is written until
-% the pipeline has produced results.
+% Conclusion --- preliminary empirical fill based on the v3 logged KNMI run.
+% Simulation and bootstrap inference are intentionally marked as TBD.
 % =====================================================================
 \section{Conclusion}\label{sec:conclusion}
 
-This thesis has asked whether there is seasonal variation in the
-spatial extremal dependence of extreme wind gusts at KNMI station
-locations in the Netherlands. The empirical strategy has been to
-estimate, separately for winter (DJF) and summer (JJA), the
-pairwise upper-tail dependence coefficient
-\(\chi_{ij}^{(c)}\) and the extremal coefficient
-\(\theta_{ij}^{(c)}\) for every station pair on a balanced subset
-of the KNMI network, and to summarise these along the geographical
-distance \(d_{ij}\) between stations. The seasonal comparison is
-then a comparison of the two dependence--distance curves
-\(\widehat\chi^{(\mathrm{W})}(d)\) and
-\(\widehat\chi^{(\mathrm{S})}(d)\) on the same panel.
+This thesis asked whether the spatial range of extremal dependence in Dutch daily maximum wind gusts differs between winter and summer. To answer it, a season-specific Brown--Resnick max-stable process was fitted to \(N=33\) KNMI stations by pairwise composite likelihood, separately for winter (DJF) and summer (JJA), after standardising each station--season margin to the unit-Fr\'echet scale. The seasonal comparison was framed through the difference in dependence ranges \(\Delta_\rho=\rho_{\mathrm W}-\rho_{\mathrm S}\), with the implied extremal-coefficient curves \(\theta_c(d)\) placing that difference on the dependence-versus-distance scale. Uncertainty is intended to be quantified by a season-year block bootstrap, which preserves the within-storm serial dependence of consecutive daily maxima, and the estimator and the one-sided test are intended to be validated by a Monte Carlo study under the observed station geometry.
 
-% TODO: this section currently states the question and the
-%       methodology only. The numerical findings will be inserted
-%       after the empirical pipeline of Section~\ref{sec:methodology}
-%       has been run on the actual data. Do not pre-write empirical
-%       conclusions.
+The simulation study is still to be determined. In the final version, it should establish the finite-sample behaviour of the pairwise composite-likelihood estimator under a known Brown--Resnick data-generating process. In particular, it should report whether the estimator recovers the seasonal ranges and smoothnesses with acceptable bias and RMSE, whether \(\widehat\Delta_\rho\) is centred near its true value under both the null and alternative designs, and whether the season-year block-bootstrap test has approximately nominal size and useful power. Until those experiments have been run, this thesis does not make a numerical simulation claim.
 
-\subsection{Summary of findings}\label{sec:conclusion-summary}
+For the empirical KNMI application, the preliminary non-bootstrap fit gives \(\widehat\rho_{\mathrm W}=418.76\) km and \(\widehat\rho_{\mathrm S}=76.98\) km, so that \(\widehat\Delta_\rho=341.79\) km. The corresponding smoothness estimates are almost identical, with \(\widehat\alpha_{\mathrm W}=0.594\) and \(\widehat\alpha_{\mathrm S}=0.597\). The point estimates therefore indicate that the seasonal difference is mainly a difference in the spatial range of extremal dependence rather than in the shape of the distance-decay curve. Substantively, this supports the central hypothesis of the thesis: Dutch winter wind-gust extremes appear to have a much wider spatial footprint than summer wind-gust extremes, consistent with the contrast between large-scale winter storm systems and more localised summer convective gusts.
 
-% TODO: insert 1--2 short paragraphs that answer the research
-%       question, using careful language ("evidence suggests"
-%       rather than "proves"). Refer to the dependence--distance
-%       curves and the scalar summaries at the reference
-%       distances. Do not draw climate-change conclusions.
+This empirical conclusion remains preliminary for two reasons. First, the current estimates come from a non-bootstrap run with the fast starting grid, so the final version should verify the point estimates using the full starting grid. Second, the formal one-sided test of \(H_0:\Delta_\rho=0\) has not yet been completed, because the season-year block-bootstrap interval and evidence measure are still to be determined. Therefore, the current conclusion should be read as a strong descriptive point-estimate result, not yet as a final inferential rejection statement.
 
-\subsection{Limitations}\label{sec:conclusion-limitations}
+Several limitations qualify the analysis. The Brown--Resnick model is asymptotically dependent at all finite distances, so it can overstate dependence at the highest levels if the gusts are in fact asymptotically independent; the nonparametric diagnostics are included precisely to detect this, and the conclusion is conditional on their outcome. Winter and summer are treated as approximately independent because they are estimated from disjoint days, though low-frequency interannual climate variation could induce some residual dependence. The margins are standardised by fitting a GEV to each station--season sample of daily maxima, which is a transformation device rather than a claim that daily maxima are exactly GEV-distributed, and an isotropic variogram is assumed throughout. Finally, the bootstrap-performance study is still pending, so the finite-sample calibration of the final test remains to be established.
 
-The thesis has three first-order limitations.
-
-\begin{enumerate}
-    \item The changing KNMI station network means that any
-          temporal comparison (the secondary sample-split analysis
-          in Section~\ref{sec:rob-period}) cannot cleanly separate
-          changes in the dependence structure from changes in
-          spatial coverage. The seasonal comparison is robust to
-          this concern because winter and summer are estimated on
-          the same balanced panel.
-    \item The finite-sample tail estimators of
-          Section~\ref{sec:meth-dependence} report on
-          \(\chi_{ij}^{(c)}(u)\) at finite \(u\), not at the
-          asymptotic limit. \citet{TODO-wadsworth2012} show that
-          finite-level dependence can decay to zero at the very
-          top of the tail; the thesis addresses this only
-          partially by reporting on a grid of \(u\) and by
-          including the \(\bar\chi\) diagnostic.
-    \item The dependence--distance summary assumes isotropy of the
-          dependence. Anisotropy due to prevailing wind direction
-          is a plausible second-order effect that the thesis
-          examines only as a robustness check
-          (Section~\ref{sec:rob-direction}).
-\end{enumerate}
-
-\subsection{Directions for further work}\label{sec:conclusion-future}
-
-Three directions are natural extensions of the work undertaken
-here.
-
-\begin{enumerate}
-    \item Fit a covariate-dependent (season-indexed) max-stable
-          process in the spirit of
-          \citet{TODO-huser-genton2016}, using pairwise
-          composite likelihood. This would replace the
-          ``estimate separately by season'' strategy of the
-          thesis with a single non-stationary model and would let
-          the seasonal contrast be tested directly through a
-          likelihood-ratio statistic.
-    \item Reformulate the analysis at the level of intraday gust
-          curves rather than hourly maxima, using the functional
-          peaks-over-threshold framework of
-          \citet{TODO-fondeville2022} or the spatio-temporal
-          functional construction of \citet{TODO-french2018}.
-          This would allow the spatial dependence of \emph{whole
-          storm footprints} rather than of single hours to be
-          estimated.
-    \item Extend the analysis from pairwise dependence to joint
-          high-dimensional dependence using vine copulas in the
-          construction of \citet{TODO-aas2008}, treating the
-          present pairwise summaries as the building blocks. Vine
-          copulas were excluded as the main method of this thesis
-          and are recorded here only as a future-work direction.
-\end{enumerate}
-
-A more modest extension is the verification simulation described
-in Section~\ref{sec:simulation}: it is optional and not part of
-the main contribution, but it is the cleanest available check
-that the estimator behaves as expected under known dependence
-regimes.
+These limitations point to natural extensions. Anisotropic and space-time Brown--Resnick models, such as the anisotropic space-time specification of Buhl and Kl\"uppelberg (2016), would relax the isotropy and single-snapshot assumptions and let the footprint depend on direction and on storm motion. A single covariate-dependent max-stable model, with season entering as a covariate rather than through separate fits, would test the seasonal contrast within one model and could incorporate further covariates such as storm type or large-scale circulation indices. Where the diagnostics indicate asymptotic independence, sub-asymptotic and asymptotically independent models surveyed by Huser and Wadsworth (2020) would describe the joint tail more faithfully than a max-stable process. Threshold-based margins, a finer seasonal resolution, and larger Monte Carlo and bootstrap budgets are further refinements. Taken together, these would extend the season-by-season, isotropic design adopted here towards a fuller account of how the spatial extent of damaging wind gusts varies across the year in the Netherlands.

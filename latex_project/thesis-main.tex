@@ -9,11 +9,11 @@
 \usepackage[utf8]{inputenc}
 \usepackage{lmodern}
 \usepackage{graphicx}
+% color package required for some drivers (fixes "Undefined control sequence. \set@color ...")
+\usepackage{xcolor}
 \usepackage{siunitx}
 \usepackage{longtable}
 \usepackage{bm}
-\usepackage{algorithm}
-\usepackage{algpseudocode}
 
 %%%%%%%%%%% mathematics %%%%%%%%%%%%%%%%%%
 \usepackage{amsmath,amsfonts,amssymb}
@@ -52,73 +52,82 @@
 %       Either create EORthesis.bib (preferred) or change the path.
 %       Comment out this line if running latexmk fails without it.
 \addbibresource{bib/thesis/references.bib}
-
-%%%%%%%%%%%%%%%% start document %%%%%%%%%%%
+% ======================= FRONT PAGE =======================
 \begin{document}
+\begin{titlepage}
+    \thispagestyle{empty}
 
-%%%%%%%%%%%%%%% front page %%%%%%%%%%%%%%%%%
-\noindent
-\rule{\textwidth}{0.8pt}
-\begin{center}
-    {\huge\bf
-        \noindent
+    \begin{center}
+
+        % University / faculty logo
+        \includegraphics[height=28mm]{template/LogoSBE.png}
+
+        \vspace{1.5cm}
+
+        {\Large Master Thesis, Feedback version}
+
+        \vspace{1.2cm}
+
+        \rule{0.9\linewidth}{0.6pt}\\[0.4cm]
+        {\huge\bfseries
         Seasonal Variation in Spatial Extremal Dependence of Wind Gusts in the Netherlands
-    }
-\end{center}
+        \par}
+        \vspace{0.4cm}
+        \rule{0.9\linewidth}{0.6pt}
 
-\vspace*{-8pt}
-\noindent
-\rule{\textwidth}{0.8pt}
+        \vspace{1.5cm}
 
-\begin{center}
-    {
-        \vspace*{0.5cm}
+        {\Large
+            \begin{tabular}{ll}
+                \textbf{Author:}         & F.S. de Jong               \\
+                \textbf{Student number:} & 2857580                    \\
+                \textbf{Email:}          & f.s.de.jong2@student.vu.nl \\
+            \end{tabular}
+        }
+
+        \vspace{1.8cm}
 
         \begin{tabular}{ll}
-            \toprule
-            \textbf{Supervisor I:}  & dr. Yicong Lin                                          \\
-            \textbf{Supervisor II:} & dr. Wiebke Jaeger (Institute for Environmental Studies) \\
-            \bottomrule
+            \textit{1st supervisor:} & dr. Yicong Lin                      \\
+            \textit{2nd supervisor:} & dr. Wiebke Jaeger                   \\
+                                     & Institute for Environmental Studies \\
         \end{tabular}
 
-        \vspace*{0.5cm}
+        \vfill
 
-        \begin{tabular}{lll}
-            \toprule
-            \textbf{Name} & \textbf{Student Number} & \textbf{Email}             \\
-            \midrule
-            F.S. de Jong  & 2857580                 & f.s.de.jong2@student.vu.nl \\
-            \bottomrule
-        \end{tabular}
+        \textit{Thesis feedback version for\\
+            the Master of Science degree in Econometrics \& Operations Research \\ track: Econometrics \& Data Science}
 
-        \vspace*{0.5cm}
-    }
-\end{center}
+        \vspace{1.2cm}
+
+        Vrije Universiteit Amsterdam\\
+        School of Business and Economics
+
+        \vspace{0.6cm}
+
+        \today
+
+    \end{center}
+
+\end{titlepage}
 
 \newpage
 \input{thesis/introduction.tex}
 \input{thesis/literature.tex}
 
 \newpage
-% \input{thesis/evt_spatial_dependence.tex}
-
+\input{thesis/data.tex}
 \newpage
+
 \input{thesis/methodology.tex}
 \newpage
 \input{thesis/simulation.tex}
-% \newpage
-% \input{thesis/empirical_design.tex}
 
-% \input{thesis/data.tex}
+\newpage
+\input{thesis/results.tex}
 
-% \newpage
-% \input{thesis/results.tex}
-
-% \newpage
-% \input{thesis/robustness.tex}
-
-% \newpage
-% \input{thesis/conclusion.tex}
+\newpage
+\input{thesis/conclusion.tex}
 
 % =====================================================================
 % Bibliography

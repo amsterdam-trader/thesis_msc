@@ -1,0 +1,3 @@
+season,rho,alpha,loglik,converged,message,n_pair_observations,n_objective_evaluations,start_grid,optimizer_maxiter,at_boundary,delta_rho_W_minus_S,delta_alpha_W_minus_S
+W,418.44345217641796,0.5948102466678667,-5745073.882416473,True,CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL,1605472,1344,full,300,False,341.48079160319196,-0.0022787657723835064
+S,76.962660573226,0.5970890124402503,-6422731.188082997,True,CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL,1634743,1311,full,300,False,,
