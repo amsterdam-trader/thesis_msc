@@ -11,47 +11,84 @@
 The empirical analysis uses daily maximum wind gusts recorded by the automatic weather stations of the Royal Netherlands Meteorological Institute (KNMI). The raw dataset contains hourly validated observations. The dataset is currently operational and ongoing. The first recorded observations is from 1 January 1951. There are 23 unique weather parameters reported in the dataset. The station network has changed over the years, where stations were added, decommissioned, or relocated. Also, there are missing observations, because stations may be temporarily out of service or have gaps in their records. For our paper, we have chosen for a set of deterministic stations, using only the wind gust observations. For each station and day the record gives the highest wind gust observed that day, and this daily maximum is the quantity modelled throughout. Figure~\ref{fig:knmi-daily-max-mosaic} shows the data of the daily maximum wind gusts for the 33 stations.
 
 \begin{figure}[p]
-      \centering
-      \includegraphics[width=\textwidth, height=0.9\textheight, keepaspectratio]{figures/knmi_daily_max_mosaic.png}
-      \caption{Daily maximum wind gusts at the 33 KNMI stations.}
-      \label{fig:knmi-daily-max-mosaic}
+    \centering
+    \includegraphics[width=\textwidth, height=0.9\textheight, keepaspectratio]{figures/knmi_daily_max_mosaic.png}
+    \caption{Daily maximum wind gusts at the 33 KNMI stations.}
+    \label{fig:knmi-daily-max-mosaic}
 \end{figure}
 
 Over the sample period, 1 January 1991 to 1 February 2026, we retain the \(N=33\) stations with more than \(95\%\) non-missing daily gust values; this keeps a nearly balanced spatial panel while preserving the geographical spread needed to estimate how extremal dependence changes with distance. Days on which a retained station does not report are left in the panel, and each station and each station pair contribute only on the days they are observed, as set out in Section~\ref{sec:methodology}.
 
 Each retained station \(i\) has a fixed location \(s_i\), given by its longitude and latitude. Figure~\ref{fig:knmi-stations-map} plots
 \begin{figure}[t]
-      \centering
-      \includegraphics[width=0.85\textwidth]{figures/knmi_stations_map.png}
-      \caption{Locations of the retained KNMI stations with the station names in the legend}
-      \label{fig:knmi-stations-map}
+    \centering
+    \includegraphics[width=0.85\textwidth]{figures/knmi_stations_map.png}
+    \caption{Locations of the retained KNMI stations with the station names in the legend}
+    \label{fig:knmi-stations-map}
 \end{figure}
 
 The analysis is restricted to two seasons. Winter is December--January--February (DJF) and summer is June--July--August (JJA); the transitional seasons, spring and autumn, are not used. So that each winter is one contiguous block, the December of calendar year \(y\) is grouped with the January and February of year \(y+1\) and labelled winter \(y+1\). Season-years left incomplete at the ends of the record --- a winter whose December precedes the start of the sample, and any season truncated by the 1 February 2026 cut-off --- are dropped. Writing \(c\in\{\mathrm W,\mathrm S\}\) for the season and \(\mathcal T_c\) for the set of days assigned to season \(c\), winter and summer are treated separately at every stage. Each season yields a number of usable season-years \(n_y\), and a season-year of season \(c\) contains \(m_c\) daily fields; the winter and summer values of \(n_y\) and \(m_c\) are reported in Table~\ref{tab:data-summary} and are the counts used by the simulation of Section~\ref{sec:simulation}.
 
 On each day \(t\), the retained stations yield one spatial field \(X_t=(X_{1,t},\dots,X_{N,t})\) over the network, where \(X_{i,t}\) is the daily maximum gust at station \(i\). Spatial separation enters the analysis only through distance: \(d_{ij}\) denotes the inter-station distance in kilometres between stations \(i\) and \(j\), and the largest separation in the network,
 \[
-      d_{\max}=\max_{i<j} d_{ij},
+    d_{\max}=\max_{i<j} d_{ij},
 \]
 is the longest distance over which seasonal dependence can be estimated and is the scale against which the simulation scenarios of Section~\ref{sec:simulation} are defined. The inter-station distances span from 12 km to $d_{\max}=326.75$ km.
 
 Table~\ref{tab:data-summary} summarises the sample.
 
 \begin{table}[htbp]
-      \centering
-      \caption{Summary of the empirical sample.}
-      \label{tab:data-summary}
-      \begin{tabular}{ll}
-            \hline
-            Variable                                        & Daily maximum wind gust                        \\
-            Source                                          & KNMI automatic weather stations                \\
-            Sample period                                   & 1 January 1991 -- 1 February 2026              \\
-            Retained stations (\(N\))                       & 33                                             \\
-            Missingness rule                                & \(>95\%\) non-missing daily values per station \\
-            Seasons                                         & Winter (DJF) and summer (JJA)                  \\
-            Max.\ inter-station distance (\(d_{\max}\), km) & 326.75 kilometer                               \\
-            \hline
-      \end{tabular}
+    \centering
+    \caption{Summary of the empirical sample.}
+    \label{tab:data-summary}
+    \begin{tabular}{ll}
+        \hline
+        Variable                                        & Daily maximum wind gust                        \\
+        Source                                          & KNMI automatic weather stations                \\
+        Sample period                                   & 1 January 1991 -- 1 February 2026              \\
+        Retained stations (\(N\))                       & 33                                             \\
+        Missingness rule                                & \(>95\%\) non-missing daily values per station \\
+        Seasons                                         & Winter (DJF) and summer (JJA)                  \\
+        Max.\ inter-station distance (\(d_{\max}\), km) & 326.75 kilometer                               \\
+        \hline
+    \end{tabular}
 \end{table}
+
+
+\subsection{Temporal clustering and systematic thinning}
+\label{sec:data-temporal-clustering}
+
+The main empirical analysis in this thesis models spatial extremal dependence in daily wind-gust fields. This requires treating the retained daily fields as approximately independent replicates within each season. In practice, this assumption can be affected by the persistence of storm systems, since severe wind conditions may last for more than one day. Therefore, before estimating the seasonal Brown--Resnick model, I assess the degree of temporal clustering in the daily station-level extremes.
+
+Temporal clustering is diagnosed using the extremal index, a standard measure of clustering in extreme-value theory \citep{Leadbetter1983,SmithWeissman1994}. For station \(i\) and season \(c \in \{\mathrm{winter},\mathrm{summer}\}\), let \(X_{i,c,t}\) denote the daily maximum wind gust and let \(n_{i,c}\) be the number of available observations. A high empirical threshold is selected using
+\[
+    k_{i,c} = \lfloor \tau n_{i,c} \rfloor,
+\]
+where \(\tau\) denotes the threshold fraction. The baseline value is \(\tau = 0.05\), corresponding to the upper 5\% of station-season observations. The values \(\tau = 0.03\) and \(\tau = 0.07\) are used as threshold-sensitivity checks.
+
+To estimate the extremal index, I employ the intervals estimator proposed by \citet{FerroSegers2003}, which is also used by \citet{WangLinSchaumburg2024} in their analysis of temporal clustering in environmental extremes. For a given dependence window \(d\), the estimator counts exceedances that are not followed by another exceedance within the next \(d\) days:
+\[
+    \widehat{\theta}_{\mathrm{EI},i,c}(d)
+    =
+    \frac{1}{k_{i,c}}
+    \sum_t
+    \mathbf{1}
+    \left\{
+    X_{i,c,t} > u_{i,c,k},
+    \,
+    \max_{1 \leq j \leq d} X_{i,c,t+j} \leq u_{i,c,k}
+    \right\},
+\]
+where \(u_{i,c,k}\) is the empirical threshold implied by the \(k_{i,c}\) largest observations. The summation is performed separately within station-season blocks, so winter and summer thresholds are not pooled. Winter is defined as DJF, with December assigned to the following winter season-year. This avoids treating the end of one seasonal block and the beginning of another as consecutive observations.
+
+The extremal index takes values in \((0,1]\). Values close to one indicate that extreme wind-gust events are approximately isolated in time, whereas smaller values indicate stronger clustering of exceedances. In the limiting theory of extremes, the reciprocal \(1/\theta\) can be interpreted as the average cluster size of exceedances \citep{Leadbetter1983}. Thus, values below one are not interpreted as a failure of the spatial model, but as evidence that the daily data contain temporal persistence that should be diagnosed and handled carefully in inference.
+
+As a simple robustness check, I construct a systematically thinned version of the dataset by retaining every second daily observation within each station-season-year block. This procedure is not a formal runs declustering algorithm, since it does not collapse exceedance clusters into cluster maxima. Instead, it is a transparent temporal-thinning exercise designed to reduce the influence of one-day storm persistence. The extremal index is then re-estimated on the thinned sample using the same station-season-specific threshold rule.
+
+This approach is motivated by recent work on environmental extremes, where temporal clustering diagnostics are used to assess the extent to which serial dependence may affect inference based on exceedances \citep{WangLinSchaumburg2024}. The objective here is not to construct a fully declustered sample for the spatial Brown--Resnick model, but rather to evaluate whether short-run persistence materially influences the observed extremal dependence structure.
+
+Figure~\ref{fig:ei-before-after-thinning} compares the estimated extremal indices before and after thinning for all stations, separately for winter and summer. A movement of the estimates toward one after thinning indicates that part of the temporal dependence in the raw daily series is driven by short-run persistence. At the same time, the thinned estimates are expected to be more variable, because the procedure roughly halves the number of observations and hence also reduces the number of exceedances \(k_{i,c}\) used in the estimator.
+
+This diagnostic is used to support the empirical interpretation of the spatial analysis. The Brown--Resnick model remains a model for spatial extremal dependence, while the extremal-index exercise provides evidence on whether the daily station-level extremes exhibit substantial temporal clustering. The main inference therefore relies on season-year block resampling to account for remaining temporal dependence, rather than assuming that individual daily observations are perfectly independent.
 
 The next chapter takes these season-specific gust fields as its input. It first transforms each station--season margin to the unit-Fr\'echet scale (Section~\ref{sec:meth-marginals}), so that the winter--summer comparison reflects spatial dependence rather than differences in the local gust climate, and then models that dependence with a Brown--Resnick max-stable process fitted separately for winter and summer.

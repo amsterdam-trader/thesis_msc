@@ -1,172 +1,222 @@
 % =====================================================================
-% Simulation Study
-% Validates (i) the seasonal Brown--Resnick estimator vartheta_c=(rho_c,alpha_c)
-% by pairwise composite likelihood, and (ii) the one-sided season-year
-% block-bootstrap test of H0: Delta_rho = 0 vs H1: Delta_rho > 0.
-% Two components: estimator-recovery (M_est, no bootstrap) and
-% bootstrap-performance (M_boot reps, B_boot block bootstraps each).
-% Simulated fields are on the unit-Frechet scale, so the estimator is
-% applied directly (no GEV step); the empirical analysis fits GEV
-% margins only because the real margins are unknown.
-% Notation matches methodology.tex; convention
-%   gamma_c(d) = (d/rho_c)^alpha_c; theta_c(d) = 2*Phi(0.5*(d/rho_c)^(alpha_c/2)).
+% Simulation Study (style/density pass: de-signposted, simplified notation)
+%
+% Design unchanged: three-method benchmark on chi(d); DGP D and fitted
+% method M both range over script-M; each dataset is a cell (D,M).
+% Headline metrics on the contrast Delta^chi. No Delta_rho / one-sided
+% empirical test / BR-validation language. No invented results.
+%
+% Style changes in this pass:
+%   - removed ALL \textbf{...} run-in mini-headings; flowing paragraphs;
+%   - dropped the heavy (s) scenario superscript from curve and metric
+%     notation: now chi_{0,D,c}(d), Delta_{0,D}^chi(d),
+%     chi-hat_{M,c,r}^{(D)}(d), Delta-hat_{M,r}^{chi,(D)}(d); null and
+%     alternative are stated once as H_0^sim, H_1^sim and otherwise in
+%     prose;
+%   - Student-t copula DGP reframed as REDUCED-BUDGET (not optional),
+%     since the t copula is one of the three core methods.
+%
+% Notation matches methodology.tex; chi formulas from Sects.
+% sec:meth-br, sec:meth-extt, sec:meth-tcop. Grid D, selected D_0.
+%
+% Labels preserved: sec:simulation, sec:sim-design, tab:sim-settings,
+% sec:sim-dgp, sec:sim-scenarios, tab:sim-scenarios, sec:sim-est,
+% sec:sim-metrics, eq:sim-bias, eq:sim-rmse, eq:sim-ise, eq:sim-mise,
+% eq:sim-or, eq:sim-fp, eq:sim-conv, eq:sim-bound, sec:sim-boot,
+% eq:sim-cov, sec:sim-alg, alg:sim-mc, sec:sim-outputs, sec:sim-interp.
+%
+% Preamble: amsmath, amssymb, algorithm, algpseudocode, natbib.
 % =====================================================================
 \section{Simulation Study}\label{sec:simulation}
 
-The empirical analysis fits a Brown--Resnick process separately for winter and summer by pairwise composite likelihood and reads the seasonal comparison from \(\widehat\Delta_\rho=\widehat\rho_{\mathrm W}-\widehat\rho_{\mathrm S}\). Before applying that procedure to the KNMI gusts, we check it on data for which the answer is known. Daily spatial fields are simulated from Brown--Resnick processes with prescribed parameters \((\rho_c,\alpha_c)\), so the true ranges, smoothnesses and implied extremal-coefficient curves \(\theta_c(d)\) are all known, and the study asks two questions: whether the season-wise estimator of Section~\ref{sec:meth-cl} recovers the parameters and the range contrast, and whether the season-year block-bootstrap test of \(H_0:\Delta_\rho=0\) from Section~\ref{sec:meth-inference} attains its intended size and power. This validates the estimator and the inference procedure \emph{under the assumed model}; it does not, and cannot, establish that observed daily wind gusts follow a Brown--Resnick process, which is a question for the diagnostics of Section~\ref{sec:meth-diagnostics}. The experiment is carried out on the empirical station geometry, so the number of stations and the inter-station distances match the application.
+This chapter evaluates the three estimators under known data-generating processes. The simulation is not a proof that any model is correct for the KNMI data; it measures whether each fitted method recovers the true tail-dependence contrast \(\Delta^{\chi}(d)\) under controlled settings on the observed station geometry. Data are generated from each model class, every method is fitted to every dataset, and recovery is scored on the common curve \(\chi(d)\). Nothing here is a completed result: each quantity is one the study is designed to report, and the target values of \(R\), \(B\), and \(R_{\mathrm{boot}}\) are computational targets whose realised values are reported with the results.
 
-The study has two parts: an estimator-recovery experiment (Section~\ref{sec:sim-est}) and a smaller bootstrap-performance experiment (Section~\ref{sec:sim-boot}). They are separated because the bootstrap re-estimates the pairwise composite likelihood many times within every replication, which is far more costly than a single fit; the recovery experiment can therefore use many replications, while the bootstrap experiment uses fewer.
+\subsection{Design and notation}\label{sec:sim-design}
 
-\subsection{Simulation setup}\label{sec:sim-design}
+All simulations use the observed station set \(\{s_i\}_{i=1}^N\), \(N=33\), and its distance matrix \([d_{ij}]\), so the number of pairs per fit matches the application,
+\begin{equation}
+  |\mathcal P|=\tbinom{N}{2}=\tfrac{33\cdot32}{2}=528,\qquad d_{\max}\approx327\ \text{km},
+\end{equation}
+and the temporal layout mirrors the data, \(n_y\) season-years of \(m_c\) daily fields per season, the season-year being the bootstrap block of Sect.~\ref{sec:meth-inference}. Writing \(\mathcal M=\{\mathrm{BR},\mathrm{ExtT},\mathrm{tCop}\}\), each simulated dataset is generated by a DGP \(D\in\mathcal M\) and analysed by a fitted method \(M\in\mathcal M\), so every dataset occupies a cell
+\begin{equation}
+  (D,M)\in\mathcal M\times\mathcal M,
+\end{equation}
+with the diagonal \(D=M\) measuring correct-specification performance and the off-diagonal \(D\ne M\) measuring misspecification robustness, the generic empirical situation since at most one model can be correct.
 
-The spatial design is the observed network. Let \(s_1,\dots,s_N\) be the \(N\) retained KNMI station locations, \(d_{ij}=\lVert s_i-s_j\rVert\) the inter-station distance in kilometres, and \(d_{\max}=\max_{i<j}d_{ij}\) the largest inter-station distance. The two seasons are indexed by \(c\in\{\mathrm W,\mathrm S\}\). The temporal layout mirrors the data: each season contributes \(n_y\) season-years, and each season-year holds \(m_c\) daily fields, with \(m_c\) reported in the simulation settings, so a season comprises \(n_y m_c\) daily fields in total. A daily field is a single realisation of the spatial process at the \(N\) stations, the analogue of one day's gust field across the network. The season-year is the block that the bootstrap of Section~\ref{sec:meth-inference} resamples, and keeping that unit in the simulation lets the same procedure run unchanged. The network quantities \(N\), \(n_y\) and \(m_c\) are taken from the data (Section~\ref{sec:data}); the Monte Carlo replication counts used in the reported runs are listed in Table~\ref{tab:sim-settings}.
+A DGP \(D\) induces, in closed form from its parameters, a true curve per season and a true contrast,
+\begin{equation}
+  \chi_{0,D,c}(d),
+  \qquad
+  \Delta_{0,D}^{\chi}(d)=\chi_{0,D,\mathrm W}(d)-\chi_{0,D,\mathrm S}(d),
+  \qquad c\in\{\mathrm W,\mathrm S\},
+\end{equation}
+and in replication \(r\) the fitted method \(M\) returns
+\begin{equation}
+  \widehat\chi_{M,c,r}^{(D)}(d),
+  \qquad
+  \widehat\Delta_{M,r}^{\chi,(D)}(d)=\widehat\chi_{M,\mathrm W,r}^{(D)}(d)-\widehat\chi_{M,\mathrm S,r}^{(D)}(d),
+\end{equation}
+evaluated on the grid \(\mathcal D=\{d_1,\dots,d_G\}\) and summarised at \(\mathcal D_0=\{50,100,200,300\}\)~km, identical to Sect.~\ref{sec:meth-chi}. The two scenarios are carried in the parameters of \(D\) rather than in the symbols above, and are stated in Sect.~\ref{sec:sim-scenarios}.
+% TODO (code/design): keep D and D_0 identical to methodology.tex;
+% justify D_0 from the empirical distribution of d_ij.
 
-The simulated daily fields are independent replicates of the spatial process and are generated on the unit-Fr\'echet scale: this is the favourable case of known margins and no within-storm serial dependence. The estimator is therefore applied to the fields directly, and the consequences are taken up in Section~\ref{sec:sim-boot} and Section~\ref{sec:sim-interp}.
+The target is the curve, not the range parameter. Off the diagonal the fitted model has no true parameter, and \(\rho\) is not the same object across \(\mathcal M\), so a parameter error is undefined and incomparable there; the curve \(\chi_{0,D,c}(d)\) exists for every \(D\) and is reproduced by every \(M\), so it is the only target that scores all nine cells. Parameter recovery \((\rho,\alpha,\nu)\) is reported only as a secondary diagnostic on the diagonal (Sect.~\ref{sec:sim-metrics}). Fitting three models, two of them with a three-parameter multi-start optimisation, to every dataset --- and inside every bootstrap resample --- is costly, so following \citet{morris2019} the counts in Table~\ref{tab:sim-settings} are intended targets: the main experiment of point estimation, ordering recovery, and misspecification robustness is run at the full \(R\) for all methods, while bootstrap coverage (Sect.~\ref{sec:sim-boot}) is assessed on a smaller subset, and the more expensive copula DGP is run at a reduced replication count rather than dropped.
+% TODO (code decision): set R, R_boot, B_boot once the per-fit cost of
+% ExtT and tCop is known; keep B_boot consistent with the empirical B
+% of Sect. sec:meth-inference. Values below are INTENDED targets.
 
 \begin{table}[t]
   \centering
-  \caption{Simulation settings. The network quantities are taken from the data (Section~\ref{sec:data}); the Monte Carlo counts are the values used in the reported runs.}
+  \caption{Simulation settings. Network quantities from Sect.~\ref{sec:data}; Monte Carlo counts are intended targets, with realised values reported with the results.}
   \label{tab:sim-settings}
   \begin{tabular}{lll}
     \hline
-    Symbol                & Meaning                                     & Value   \\
+    Symbol                & Meaning                             & Value (intended)                        \\
     \hline
-    \(N\)                 & number of stations                          & 33      \\
-    \(n_y\)               & season-years per season                     & 35      \\
-    \(m_c\)               & daily fields per season-year (season \(c\)) & 90      \\
-    \(d_{\max}\)          & maximum inter-station distance (km)         & 326.95  \\
-    \(M_{\mathrm{est}}\)  & estimator-recovery replications             & \(250\) \\
-    \(M_{\mathrm{boot}}\) & bootstrap-performance replications          & \(50\)  \\
-    \(B_{\mathrm{boot}}\) & bootstrap replications per replication      & \(100\) \\
+    \(N\)                 & stations                            & 33                                      \\
+    \(\binom{N}{2}\)      & station pairs                       & 528                                     \\
+    \(n_y\)               & season-years per season             & 35                                      \\
+    \(m_c\)               & daily fields per season-year        & 90                                      \\
+    \(d_{\max}\)          & maximum distance (km)               & 326.95                                  \\
+    \(R\)                 & Monte Carlo replications per cell   & \(500\)                                 \\
+    \(R_{\mathrm{boot}}\) & replications in the coverage subset & \(100\)                                 \\
+    \(B_{\mathrm{boot}}\) & bootstrap resamples per replication & \(B\) of Sect.~\ref{sec:meth-inference} \\
     \hline
   \end{tabular}
 \end{table}
 
-\subsection{Data-generating process}\label{sec:sim-dgp}
+\subsection{Data-generating processes}\label{sec:sim-dgp}
 
-Fields are simulated from the Brown--Resnick data-generating process \citep{brown1977,kabluchko2009} with unit-Fr\'echet margins and the powered-exponential variogram of Section~\ref{sec:meth-variogram},
-\[
-  \gamma_c(d)=\Bigl(\frac{d}{\rho_c}\Bigr)^{\alpha_c},
-  \qquad \rho_c>0,\ \alpha_c\in(0,2],
-\]
-so the implied extremal coefficient \(\theta_c(d)=2\Phi\!\bigl(\tfrac12 (d/\rho_c)^{\alpha_c/2}\bigr)\) is known at every distance and serves as the target for curve recovery.
+Fields are independent replicates of the spatial process on the native scale; the margins are known, so no GEV step is applied and each fitted method receives the scale it expects (Sect.~\ref{sec:meth-marginals}). The Brown--Resnick DGP \citep{brown1977,kabluchko2009} simulates on unit Fr\'echet from the variogram \(\gamma_c(d)=(d/\rho_c)^{\alpha_c}\) by the exact extremal-functions algorithm \citep{dombry2016}, with induced curve \(\chi_{0,\mathrm{BR},c}(d)=2-2\Phi\{\tfrac12\sqrt{\gamma_c(d)}\}\), which decays to zero at long range. The extremal-\(t\) DGP \citep{opitz2013} simulates on unit Fr\'echet from \(r_c(d)=\exp\{-(d/\rho_c)^{\alpha_c}\}\) with tail \(\nu_c\), again exactly \citep{dombry2016,thibaud2015}, with induced curve \(\chi_{0,\mathrm{ExtT},c}(d)=2-2T_{\nu_c+1}[\{(\nu_c+1)(1-r_c(d))/(1+r_c(d))\}^{1/2}]\) and a positive long-range floor. The spatial Student-\(t\) copula DGP simulates on the uniform scale by drawing from a multivariate \(t\) with correlation matrix \([r_c(d_{ij})]\) and applying the \(t\) probability integral transform, with induced curve as in \eqref{eq:meth-tcop-chi}; because the Student-\(t\) copula is one of the three core methods, this DGP is retained and, if its cost is prohibitive, run at a reduced replication count rather than treated as optional.
+% TODO (code decision): confirm the t-copula simulation algorithm /
+% package and the reduced R used for this DGP.
 
-Two scenarios, both on the empirical geometry, frame the comparison. Under the \emph{null} the seasons share the variogram,
-\[
-  \rho_{\mathrm W}=\rho_{\mathrm S}=0.5\,d_{\max},
+For each DGP the two scenarios are
+\begin{equation}\label{eq:sim-hyp}
+  H_0^{\mathrm{sim}}:\ \Delta_{0,D}^{\chi}(d)=0\ \ \forall d\in\mathcal D,
   \qquad
-  \alpha_{\mathrm W}=\alpha_{\mathrm S}=1,
-\]
-so \(\Delta_\rho=0\). Under the \emph{alternative} the winter range is the larger,
-\[
-  \rho_{\mathrm W}=d_{\max},
-  \qquad
-  \rho_{\mathrm S}=0.25\,d_{\max},
-  \qquad
-  \alpha_{\mathrm W}=\alpha_{\mathrm S}=1,
-\]
-so \(\Delta_\rho=0.75\,d_{\max}\) and \(\theta_{\mathrm W}(d)<\theta_{\mathrm S}(d)\) for \(d>0\): winter extremes are more strongly dependent and stay so over longer distances. The data-generating smoothness is \(\alpha=1\) in both seasons and both scenarios, so the alternative isolates a difference in range. In estimation, \(\rho\) and \(\alpha\) are left free in each season, exactly as in the application (Section~\ref{sec:meth-comparison}); fixing \(\alpha=1\) in the data-generating process while estimating it freely checks whether the range contrast is recovered when both dependence parameters are unknown. The parameter values are design choices scaled by \(d_{\max}\), not empirical estimates.
+  H_1^{\mathrm{sim}}:\ \Delta_{0,D}^{\chi}(d)>0\ \ \text{for relevant } d\in\mathcal D.
+\end{equation}
+% \label{sec:sim-scenarios} kept below for cross-references.
+These are planted simulation scenarios, not a one-sided test of the empirical data; the empirical comparison is read from intervals (Sect.~\ref{sec:meth-comparison}), not from a test. \label{sec:sim-scenarios}Under \(H_0^{\mathrm{sim}}\) the two seasons share one curve and a well-behaved method returns a contrast scattered around zero; under \(H_1^{\mathrm{sim}}\) winter dependence is stronger and decays more slowly and the method should recover a positive contrast over the relevant range. Scenario parameters are design choices scaled by \(d_{\max}\) and chosen on the \(\chi(d)\) scale --- a given change in \(\rho\) produces different curve separations across the three DGPs, so the parameters are set by pinning \(\chi_{0,D,\mathrm W}\) and \(\chi_{0,D,\mathrm S}\) at a reference distance such as \(100\)~km and solving per DGP, so that all three plant a comparable contrast. Provisional values are in Table~\ref{tab:sim-scenarios}.
+% TODO (design): finalise Table tab:sim-scenarios by fixing chi_0,W and
+% chi_0,S at d = 100 km and back-solving rho, alpha, nu per DGP; fix
+% nu_W, nu_S for the ExtT/tCop DGPs.
 
-\subsection{Estimator-recovery experiment}\label{sec:sim-est}
+\begin{table}[t]
+  \centering
+  \caption{Provisional DGP parameters by scenario; design choices scaled by \(d_{\max}\), chosen so the planted contrast is comparable across DGPs on the \(\chi(d)\) scale. Final values fixed before the runs and reported with the results. ``---'' denotes an absent parameter.}
+  \label{tab:sim-scenarios}
+  {\small
+    \begin{tabular}{llcccc}
+      \hline
+      \(D\) & scenario               & \(\rho_{\mathrm W},\rho_{\mathrm S}\) & \(\alpha_{\mathrm W},\alpha_{\mathrm S}\) & \(\nu_{\mathrm W},\nu_{\mathrm S}\) & \(\Delta_{0,D}^{\chi}(d)\), \(d\in\mathcal D_0\) \\
+      \hline
+      BR    & \(H_0^{\mathrm{sim}}\) & \(\rho_0,\rho_0\)                     & \(\alpha_0,\alpha_0\)                     & ---                                 & \(\equiv0\)                                      \\
+      BR    & \(H_1^{\mathrm{sim}}\) & \(\rho_{\mathrm W},\rho_{\mathrm S}\) & \(\alpha_0,\alpha_0\)                     & ---                                 & \(>0\)                                           \\
+      ExtT  & \(H_0^{\mathrm{sim}}\) & \(\rho_0,\rho_0\)                     & \(\alpha_0,\alpha_0\)                     & \(\nu_0,\nu_0\)                     & \(\equiv0\)                                      \\
+      ExtT  & \(H_1^{\mathrm{sim}}\) & \(\rho_{\mathrm W},\rho_{\mathrm S}\) & \(\alpha_0,\alpha_0\)                     & \(\nu_0,\nu_0\)                     & \(>0\)                                           \\
+      tCop  & \(H_0^{\mathrm{sim}}\) & \(\rho_0,\rho_0\)                     & \(\alpha_0,\alpha_0\)                     & \(\nu_0,\nu_0\)                     & \(\equiv0\)                                      \\
+      tCop  & \(H_1^{\mathrm{sim}}\) & \(\rho_{\mathrm W},\rho_{\mathrm S}\) & \(\alpha_0,\alpha_0\)                     & \(\nu_0,\nu_0\)                     & \(>0\)                                           \\
+      \hline
+    \end{tabular}}
+\end{table}
 
-This is the primary finite-sample check of the estimator and carries no bootstrap. It uses \(M_{\mathrm{est}}\) Monte Carlo replications under each scenario. In replication \(r\) and for each season \(c\):
-\begin{enumerate}
-  \item simulate \(n_y m_c\) daily Brown--Resnick fields at \(\{s_i\}_{i=1}^{N}\) with variogram \(\gamma_c\), on the unit-Fr\'echet scale;
-  \item estimate \(\widehat\vartheta_c=(\widehat\rho_c,\widehat\alpha_c)\) by maximising the pairwise composite likelihood \(\ell_c\) over \(\Theta\) with the multi-start L-BFGS-B scheme of Section~\ref{sec:meth-cl}, applied directly to the simulated fields.
-\end{enumerate}
-Because the simulated fields are already on the unit-Fr\'echet scale, no marginal transform is applied: the simulation isolates dependence estimation on known margins. The empirical analysis fits station--season GEV margins (Section~\ref{sec:meth-marginals}) only because the real margins there are unknown, a step that is unnecessary on simulated data. The seasonal contrast is \(\widehat\Delta_\rho=\widehat\rho_{\mathrm W}-\widehat\rho_{\mathrm S}\). Each replication records the estimates, the fitted curves \(\widehat\theta_c(\cdot)\), whether the retained optimisation converged, and whether the estimate lies on the boundary of \(\Theta\). Across the \(M_{\mathrm{est}}\) replications we summarise the bias and RMSE of \(\rho_c\), \(\alpha_c\) and \(\Delta_\rho\); the convergence rate and the boundary-hit rate, the proportions of replications in which the optimiser converged and in which a retained estimate sits at an edge of \(\Theta\), which flag cases where a season's range is weakly identified by the network; and the recovery of the extremal-coefficient curves through the curve error of Section~\ref{sec:sim-metrics}.
+\subsection{Fitted estimators}\label{sec:sim-est}
 
-\subsection{Bootstrap-performance experiment}\label{sec:sim-boot}
+In every cell all three methods are fitted to each simulated dataset by the matched pairwise objectives of Sect.~\ref{sec:meth-cl} --- pairwise composite likelihood for \(\mathrm{BR}\) and \(\mathrm{ExtT}\) on \(\widehat Z\), pairwise copula likelihood for \(\mathrm{tCop}\) on \(\widehat U\) --- using the same multi-start L-BFGS-B optimiser, parameter boxes \(\Theta_M\), and per-coordinate convergence and boundary recording. Each replication \(r\) yields, for each \(M\),
+\begin{equation}
+  \widehat\vartheta_{M,c,r}^{(D)},\qquad
+  \widehat\chi_{M,c,r}^{(D)}(d)=\chi_M\!\bigl(d;\widehat\vartheta_{M,c,r}^{(D)}\bigr),\qquad
+  \widehat\Delta_{M,r}^{\chi,(D)}(d)=\widehat\chi_{M,\mathrm W,r}^{(D)}(d)-\widehat\chi_{M,\mathrm S,r}^{(D)}(d),
+\end{equation}
+stored on \(\mathcal D\) with convergence status, boundary flags, computation time, and, on the diagonal only, the parameter estimates. This experiment carries no bootstrap and runs at the full \(R\); it is the primary comparison.
 
-This experiment evaluates the inference procedure and embeds the season-year block bootstrap, so within every replication it re-estimates the pairwise composite likelihood \(B_{\mathrm{boot}}\) times. It is correspondingly more expensive per replication than the recovery experiment and is run with fewer Monte Carlo replications, \(M_{\mathrm{boot}}<M_{\mathrm{est}}\). In replication \(r\) and under each scenario, winter and summer fields are simulated and \(\widehat\vartheta_{\mathrm W}\), \(\widehat\vartheta_{\mathrm S}\) and \(\widehat\Delta_\rho\) are estimated exactly as in Section~\ref{sec:sim-est}. The season-year block bootstrap of Section~\ref{sec:meth-inference} is then applied: in each of \(B_{\mathrm{boot}}\) bootstrap replications the \(n_y\) season-years are resampled with replacement within each season, the composite-likelihood estimator is recomputed on the resampled unit-Fr\'echet fields, and \(\widehat\Delta_\rho^{*}=\widehat\rho_{\mathrm W}^{*}-\widehat\rho_{\mathrm S}^{*}\) is stored. From the \(B_{\mathrm{boot}}\) bootstrap values we form \(95\%\) percentile intervals for \(\rho_{\mathrm W}\), \(\rho_{\mathrm S}\), \(\alpha_{\mathrm W}\), \(\alpha_{\mathrm S}\) and \(\Delta_\rho\), and apply the one-sided interval test of \(H_0:\Delta_\rho=0\), which rejects when the \(5\%\) percentile of \(\{\widehat\Delta_\rho^{*}\}\) is positive. Across the \(M_{\mathrm{boot}}\) replications we report interval coverage for each of the five parameters, the rejection rate under the null design (size) and the rejection rate under the alternative design (power).
+\subsection{Performance metrics}\label{sec:sim-metrics}
 
-Because the simulated daily fields are independent across days, the block bootstrap is exercised without genuine within-block dependence, so the coverage and size reported here are a best case. On the data, consecutive daily maxima within a storm remain dependent, and the season-year blocking is precisely what is meant to restore validity in that setting; independent-field simulation cannot test that aspect, only confirm that the procedure is well calibrated when no serial dependence is present.
+All headline metrics are on the contrast and are computed under each scenario separately; for a cell \((D,M)\) with replicates \(\widehat\Delta_{M,r}^{\chi,(D)}(d)\), \(r=1,\dots,R\), and true contrast \(\Delta_{0,D}^{\chi}(d)\), the bias and root-mean-squared error at \(d\in\mathcal D_0\) are
+\begin{align}
+  \operatorname{Bias}_{D,M}(d)
+   & =\frac1R\sum_{r=1}^R\Bigl[\widehat\Delta_{M,r}^{\chi,(D)}(d)-\Delta_{0,D}^{\chi}(d)\Bigr],
+  \label{eq:sim-bias}                                                                                                   \\
+  \operatorname{RMSE}_{D,M}(d)
+   & =\Biggl\{\frac1R\sum_{r=1}^R\Bigl[\widehat\Delta_{M,r}^{\chi,(D)}(d)-\Delta_{0,D}^{\chi}(d)\Bigr]^2\Biggr\}^{1/2},
+  \label{eq:sim-rmse}
+\end{align}
+and the integrated and mean integrated squared error over the grid are
+\begin{align}
+  \operatorname{ISE}_{D,M,r}
+   & =\frac1G\sum_{g=1}^G\Bigl[\widehat\Delta_{M,r}^{\chi,(D)}(d_g)-\Delta_{0,D}^{\chi}(d_g)\Bigr]^2,
+  \label{eq:sim-ise}                                                                                  \\
+  \operatorname{MISE}_{D,M}
+   & =\frac1R\sum_{r=1}^R\operatorname{ISE}_{D,M,r}.
+  \label{eq:sim-mise}
+\end{align}
+The seasonal question is directional, so under \(H_1^{\mathrm{sim}}\) the ordering-recovery rate and under \(H_0^{\mathrm{sim}}\) the spurious-ordering rate are
+\begin{align}
+  \operatorname{OR}_{D,M}(d)
+   & =\frac1R\sum_{r=1}^R\mathbf 1\bigl\{\widehat\Delta_{M,r}^{\chi,(D)}(d)>0\bigr\}
+  \quad(\text{under } H_1^{\mathrm{sim}}),
+  \label{eq:sim-or}                                                                                        \\
+  \operatorname{FP}_{D,M}(d;\varepsilon)
+   & =\frac1R\sum_{r=1}^R\mathbf 1\bigl\{\lvert\widehat\Delta_{M,r}^{\chi,(D)}(d)\rvert>\varepsilon\bigr\}
+  \quad(\text{under } H_0^{\mathrm{sim}}).
+  \label{eq:sim-fp}
+\end{align}
+The tolerance form \eqref{eq:sim-fp} is the planned default; where the bootstrap subset of Sect.~\ref{sec:sim-boot} is run, the interval-exclusion rate --- the share of replications whose \(95\%\) interval for \(\Delta_M^{\chi}(d)\) excludes zero --- is reported in its place, giving the false-positive rate under \(H_0^{\mathrm{sim}}\) and power under \(H_1^{\mathrm{sim}}\) without a tolerance.
+% TODO (design): set epsilon (e.g. tie to the null bootstrap interval
+% half-width, or a fixed chi increment such as 0.05); fix across
+% methods and report it.
+The operational diagnostics are the convergence rate and the boundary-hit rate,
+\begin{align}
+  \operatorname{Conv}_{D,M}
+   & =\frac1R\sum_{r=1}^R\mathbf 1\{\text{converged}\},
+  \label{eq:sim-conv}                                                                       \\
+  \operatorname{Bound}_{D,M}
+   & =\frac1R\sum_{r=1}^R\mathbf 1\bigl\{\widehat\vartheta_{M,r}\in\partial\Theta_M\bigr\},
+  \label{eq:sim-bound}
+\end{align}
+with \(\operatorname{Bound}\) reported per coordinate (\(\rho,\alpha,\nu\); a \(\nu\) at its upper edge flags a weakly identified tail), alongside the mean computation time per fit. A method that recovers the contrast only with frequent non-convergence or boundary pile-up is less useful than one slightly less accurate but dependable. Where the fitted model matches the DGP a true \(\vartheta\) exists, and the bias and RMSE \eqref{eq:sim-bias}--\eqref{eq:sim-rmse} are also applied to \(\rho_c,\alpha_c\), and \(\nu_c\) as a secondary diagnostic of identifiability, never as the cross-method object; the same definitions may be applied to the curve levels \(\chi_{M,c}(d)\) against \(\chi_{0,D,c}(d)\), with the contrast remaining the headline.
 
-\subsection{Evaluation metrics}\label{sec:sim-metrics}
+\subsection{Bootstrap coverage on a subset}\label{sec:sim-boot}
 
-Let \(\psi\) denote a target parameter with true value \(\psi_0\) under the active scenario and Monte Carlo estimates \(\widehat\psi^{(r)}\). The estimator summaries use the \(M_{\mathrm{est}}\) recovery replications. For \(\psi\in\{\rho_{\mathrm W},\rho_{\mathrm S},\alpha_{\mathrm W},\alpha_{\mathrm S},\Delta_\rho\}\),
-\[
-  \operatorname{Bias}(\psi)=\frac{1}{M_{\mathrm{est}}}\sum_{r=1}^{M_{\mathrm{est}}}\widehat\psi^{(r)}-\psi_0,
-  \qquad
-  \operatorname{RMSE}(\psi)=\Bigl\{\frac{1}{M_{\mathrm{est}}}\sum_{r=1}^{M_{\mathrm{est}}}\bigl(\widehat\psi^{(r)}-\psi_0\bigr)^2\Bigr\}^{1/2}.
-\]
-The inference summaries use the \(M_{\mathrm{boot}}\) bootstrap replications. With \(\bigl[\widehat\psi^{(r)}_{L},\widehat\psi^{(r)}_{U}\bigr]\) the \(95\%\) bootstrap percentile interval in replication \(r\), coverage is
-\[
-  \operatorname{Cov}(\psi)=\frac{1}{M_{\mathrm{boot}}}\sum_{r=1}^{M_{\mathrm{boot}}}
-  \mathbf 1\bigl\{\psi_0\in[\widehat\psi^{(r)}_{L},\widehat\psi^{(r)}_{U}]\bigr\}.
-\]
-The test is one-sided on \(\Delta_\rho\). Writing \(\widehat q^{*(r)}_{0.05}\) for the \(5\%\) percentile of the bootstrap distribution of \(\widehat\Delta_\rho^{*}\) in replication \(r\), the rejection rate is
-\[
-  \mathrm{RR}=\frac{1}{M_{\mathrm{boot}}}\sum_{r=1}^{M_{\mathrm{boot}}}
-  \mathbf 1\bigl\{\widehat q^{*(r)}_{0.05}>0\bigr\},
-\]
-its value under the null design is the size and under the alternative design the power. Curve recovery is measured on a grid \(\mathcal D\) of evaluation distances spanning the network by the mean squared extremal-coefficient error,
-\[
-  \operatorname{CurveErr}(c)=\frac{1}{M_{\mathrm{est}}}\sum_{r=1}^{M_{\mathrm{est}}}
-  \frac{1}{|\mathcal D|}\sum_{d\in\mathcal D}\bigl\{\widehat\theta_c^{(r)}(d)-\theta_c(d)\bigr\}^2,
-\]
-with \(\theta_c(d)\) the true curve under the scenario; the grid \(\mathcal D\) is reported with the results.
-\subsection{Simulation algorithms}\label{sec:sim-alg}
+Coverage of the season-year block bootstrap of Sect.~\ref{sec:meth-inference} is more expensive, since it refits all methods inside every resample, and is assessed on a smaller subset of cells if feasible. In a subset replication \(r\), fields are simulated and fitted, \(B_{\mathrm{boot}}\) season-year resamples produce pointwise \(95\%\) percentile intervals \(CI_{M,r}^{0.95}(d)\) for \(\Delta_M^{\chi}(d)\), and the empirical coverage is
+\begin{equation}\label{eq:sim-cov}
+  \operatorname{Coverage}_{D,M}(d)
+  =\frac1{R_{\mathrm{boot}}}\sum_{r=1}^{R_{\mathrm{boot}}}
+  \mathbf 1\bigl\{\Delta_{0,D}^{\chi}(d)\in CI_{M,r}^{0.95}(d)\bigr\},
+\end{equation}
+with target \(0.95\). Because the simulated fields are independent across days, the bootstrap is exercised without within-block serial dependence, so \eqref{eq:sim-cov} is a best case: it confirms calibration absent serial dependence, whereas on the data the season-year block is the device meant to cope with the within-storm dependence the simulation does not contain (Sect.~\ref{sec:sim-interp}).
 
-The simulation study is split into two experiments. Algorithm~\ref{alg:sim-estimator} summarises the estimator-recovery experiment, which checks whether the pairwise composite-likelihood estimator recovers the known Brown--Resnick parameters and the seasonal range contrast under the null and alternative scenarios. Algorithm~\ref{alg:sim-bootstrap} summarises the bootstrap-performance experiment, which evaluates the percentile intervals and the one-sided test for \(\Delta_\rho>0\).
+\subsection{Monte Carlo algorithm}\label{sec:sim-alg}
 
 \begin{algorithm}[t]
-  \caption{Estimator-recovery simulation}
-  \label{alg:sim-estimator}
+  \caption{Three-method Monte Carlo benchmark (one DGP at a time)}
+  \label{alg:sim-mc}
   \begin{algorithmic}[1]
-    \State For the null and the alternative.
-    \State Fix the station network, season-year structure, and true winter and summer Brown--Resnick parameters.
-
-    \For{\(r=1,\dots,M_{\mathrm{est}}\)}
-    \State Simulate winter and summer Brown--Resnick fields on the unit-Fr\'echet scale.
-    \State Estimate \((\rho_{\mathrm W},\alpha_{\mathrm W})\) and \((\rho_{\mathrm S},\alpha_{\mathrm S})\) by pairwise composite likelihood.
-    \State Compute the seasonal range contrast
-    \[
-      \widehat\Delta_\rho
-      =
-      \widehat\rho_{\mathrm W}
-      -
-      \widehat\rho_{\mathrm S}.
-    \]
-    \State Store the parameter estimates, convergence information, boundary flags, and fitted extremal-coefficient curves.
+    \For{each DGP \(D\in\{\mathrm{BR},\mathrm{ExtT},\mathrm{tCop}\}\)}
+    \For{each scenario \(s\in\{H_0^{\mathrm{sim}},H_1^{\mathrm{sim}}\}\)}
+    \State fix the DGP parameters; record \(\chi_{0,D,c}(\cdot)\) and \(\Delta_{0,D}^{\chi}(\cdot)\) on \(\mathcal D\);
+    \For{\(r=1,\dots,R\) (reduced \(R\) for the tCop DGP if required)}
+    \State 1. simulate winter and summer fields on \(\{s_i\}_{i=1}^N\) from \(D\) (native scale);
+    \State 2. fit every method \(M\in\{\mathrm{BR},\mathrm{ExtT},\mathrm{tCop}\}\) (Sect.~\ref{sec:meth-cl});
+    \State 3. compute the fitted curves \(\widehat\chi_{M,c,r}^{(D)}(d_g)\) on \(\mathcal D\);
+    \State 4. compute the differences \(\widehat\Delta_{M,r}^{\chi,(D)}(d_g)=\widehat\chi_{M,\mathrm W,r}^{(D)}(d_g)-\widehat\chi_{M,\mathrm S,r}^{(D)}(d_g)\);
+    \State 5. store parameter estimates (diagonal), convergence flags, boundary flags, and computation time;
     \EndFor
-
-    \State Summarise bias, RMSE, convergence rates, boundary-hit rates, and extremal-coefficient curve error.
+    \State aggregate \eqref{eq:sim-bias}--\eqref{eq:sim-bound} over \(r\) for every \(M\);
+    \EndFor
+    \EndFor
+    \State on the chosen subset, run the block bootstrap and aggregate the coverage \eqref{eq:sim-cov}.
   \end{algorithmic}
 \end{algorithm}
 
-The estimator-recovery experiment is the primary check of finite-sample behaviour. It does not include the bootstrap, so it can be run with a larger number of Monte Carlo replications.
+\subsection{Planned tables and figures}\label{sec:sim-outputs}
 
-\begin{algorithm}[t]
-  \caption{Bootstrap-performance simulation}
-  \label{alg:sim-bootstrap}
-  \begin{algorithmic}[1]
-    \State For the null and the alternative.
-    \State Fix the station network, season-year structure, and true winter and summer Brown--Resnick parameters.
+The outputs are organised around \(\chi(d)\) and \(\Delta^{\chi}(d)\), never \(\rho\): the filled Table~\ref{tab:sim-scenarios} with the induced contrast on \(\mathcal D_0\); \(\operatorname{Bias}_{D,M}(d)\), \(\operatorname{RMSE}_{D,M}(d)\), and \(\operatorname{MISE}_{D,M}\) over the \((D,M)\) grid; \(\operatorname{OR}_{D,M}(d)\) and \(\operatorname{FP}_{D,M}(d;\varepsilon)\), with interval-exclusion rates where available; \(\operatorname{Conv}_{D,M}\), \(\operatorname{Bound}_{D,M}\) per coordinate, and timing; figures overlaying \(\chi_{0,D,c}(d)\) with the fitted \(\widehat\chi_{M,c}^{(D)}(d)\) (mean and a Monte Carlo band) for representative cells; boxplots of \(\widehat\Delta_M^{\chi,(D)}(d)\) at \(\mathcal D_0\) with \(\Delta_{0,D}^{\chi}\) marked; and, where run, \(\operatorname{Coverage}_{D,M}(d)\) on \(\mathcal D_0\). No entries are filled until the experiments are run.
 
-    \For{\(r=1,\dots,M_{\mathrm{boot}}\)}
-    \State Simulate winter and summer Brown--Resnick fields on the unit-Fr\'echet scale.
-    \State Estimate \((\rho_{\mathrm W},\alpha_{\mathrm W})\), \((\rho_{\mathrm S},\alpha_{\mathrm S})\), and \(\widehat\Delta_\rho\).
+\subsection{Scope and limitations}\label{sec:sim-interp}
 
-    \For{\(b=1,\dots,B_{\mathrm{boot}}\)}
-    \State Resample season-years with replacement within each season.
-    \State Re-estimate the winter and summer parameters and recompute \(\widehat\Delta_\rho^{*}\).
-    \EndFor
+The benchmark supports three readings. On the diagonal, a method is supported if it shows small bias and RMSE for the contrast on \(\mathcal D_0\), small \(\operatorname{MISE}\), ordering recovery near one under \(H_1^{\mathrm{sim}}\), a controlled spurious-ordering rate under \(H_0^{\mathrm{sim}}\), and dependable numerics. Off the diagonal, the experiment shows how far a fitted contrast departs from the true contrast under a wrong model, and in particular whether the contrast --- where a shared bias in both seasonal curves partly cancels --- is more robust than the levels. Reading the three methods side by side on data with a known \(\Delta_{0,D}^{\chi}\) calibrates the agreement rule of Sect.~\ref{sec:meth-comparison}: how often the methods agree on a genuinely positive contrast, and how often they spuriously agree at the null.
 
-    \State Construct percentile intervals for \(\rho_{\mathrm W}\), \(\rho_{\mathrm S}\), \(\alpha_{\mathrm W}\), \(\alpha_{\mathrm S}\), and \(\Delta_\rho\).
-    \State Reject \(H_0:\Delta_\rho=0\) against \(H_1:\Delta_\rho>0\) if the \(5\%\) percentile of \(\{\widehat\Delta_\rho^{*}\}\) is positive.
-    \State Store interval coverage indicators and the test decision.
-    \EndFor
-
-    \State Report empirical coverage, rejection rate under the null, and power under the alternative.
-  \end{algorithmic}
-\end{algorithm}
-
-The bootstrap-performance experiment is more computationally expensive because every Monte Carlo replication contains \(B_{\mathrm{boot}}\) additional re-estimations. For this reason it is run with fewer Monte Carlo replications than the estimator-recovery experiment.
-
-
-\subsection{Interpretation of the simulation}\label{sec:sim-interp}
-
-The estimator is supported if the recovery experiment shows small bias and RMSE for \(\rho_c\), \(\alpha_c\) and \(\Delta_\rho\) at the empirical sample size, with \(\widehat\Delta_\rho\) centred near \(0\) under the null and near \(0.75\,d_{\max}\) under the alternative, a high convergence rate and few boundary hits, and a small curve error, so that the fitted \(\widehat\theta_c(d)\) tracks the true \(\theta_c(d)\) across \(\mathcal D\). The inference procedure is supported if the bootstrap experiment gives interval coverage close to \(95\%\) for all five parameters, a rejection rate near \(5\%\) under the null, and a substantially higher rejection rate under the alternative, that is, power to detect a wider winter footprint while controlling false positives when the seasons agree.
-
-Two limits bound the reading. The range \(\rho\) is generally estimated less precisely than the smoothness \(\alpha\), and precision in \(\rho\) deteriorates when \(d_{\max}\) is small relative to \(\rho\), because the extremal coefficient is then close to its short-distance values across all pairs and carries little information about how dependence decays; the boundary-hit rate makes this visible. More broadly, the study evaluates the spatial dependence estimator and the bootstrap test under independent replicated unit-Fr\'echet fields, so it speaks to recovery of the seasonal range contrast and to calibration when the margins are known and the daily fields are independent. It does not assess the effect of serial dependence within multi-day storms, where consecutive daily maxima are dependent; on the data that dependence is the reason for the season-year block bootstrap, and independent-field simulation cannot verify how well the blocking accounts for it. Within this scope, the results indicate whether, under the assumed Brown--Resnick model and the observed station geometry, the estimator recovers a seasonal range difference that is present and the test controls its size when none is.
+Two limits bound every reading. The range-type parameters are estimated less precisely than the shape, and for the \(t\)-based methods \((\nu,\rho)\) are weakly jointly identified when the data are uninformative about the floor, which the per-coordinate boundary rates make visible and which is a further reason to compare on \(\chi(d)\). And the study uses independent replicated fields with known margins, so it speaks to recovery of the seasonal contrast and to coverage absent serial dependence; it does not assess within-storm serial dependence or marginal estimation, both present in the application and the reason for, respectively, the season-year block bootstrap and the in-bootstrap margin re-estimation of Sect.~\ref{sec:meth-inference}. Within this scope, the simulation is designed to establish whether the three procedures recover a seasonal tail-dependence difference that is present, refrain from manufacturing one that is absent, and agree to the degree the empirical comparison relies on; it does not establish that any DGP is the true mechanism of the KNMI wind-gust fields.

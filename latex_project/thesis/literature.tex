@@ -1,44 +1,213 @@
-\section{Literature Review}\label{sec:literature}
+% =====================================================================
+% Background and related literature (style/flow pass)
+%
+% Restructured from 13 short subsections into a smoother 6-section
+% background chapter that DEEPENS the methodological setup rather than
+% repeating the introduction. Design unchanged; three methods symmetric;
+% chi(d) the common comparison object. No invented results.
+%
+% Style changes in this pass:
+%   - removed run-in mini-headings; flowing prose;
+%   - lighter citation density (paragraph-level, not per-sentence);
+%   - nonparametric estimators / Heffernan--Tawn / vines / F-madogram
+%     appear only briefly as approaches not pursued;
+%   - varied phrasing for chi(d).
+%
+% Labels: sec:literature kept (referenced by the introduction). The old
+% sublabels are preserved as ALIASES on the nearest retained section so
+% any cross-reference still resolves:
+%   sec:lit-evt (+ sec:lit-wind),
+%   sec:lit-dependence (+ sec:lit-diagnostics),
+%   sec:lit-maxstable (+ sec:lit-br, sec:lit-extt),
+%   sec:lit-copula,
+%   sec:lit-cl (+ sec:lit-inference, sec:lit-temporal),
+%   sec:lit-simulation (+ sec:lit-seasonal).
+% Citation keys: subset of the existing .bib (no new keys).
+% =====================================================================
+\section{Background and related literature}\label{sec:literature}
 
-This review outlines the theoretical and inferential tools needed to estimate and compare season-specific extremal dependence in spatial extremes. It begins with extreme-value theory, which provides asymptotic models for rare events in the tails of distributions, before introducing max-stable processes as natural models for spatial extremes. Particular attention is given to the Brown--Resnick process, its variogram parametrisation, pairwise composite likelihood inference, and the resulting estimators of extremal dependence.
+This chapter gathers the statistical ideas the analysis rests on, in the order the analysis uses them, going a little further than the introduction where the extra detail will be needed later. The thread is the one already sketched: standardise each station's margins, measure dependence in the joint tail through the curve \(\chi(d)\), model that dependence with three parametric methods, estimate them by pairwise likelihood, quantify uncertainty by a block bootstrap that respects the temporal structure of storms, and check the whole procedure by simulation before applying it.
 
-\subsection{Extreme-value theory and spatial extremes}\label{sec:lit-evt}
+\subsection{Univariate extremes and a common marginal scale}\label{sec:lit-evt}\label{sec:lit-wind}
 
-Extreme-value theory provides limiting models for the tail behaviour of distributions, rather than for their central bulk. For scalar maxima, the Fisher--Tippett--Gnedenko theorem \citep{fisher1928,gnedenko1943} states that any non-degenerate limit of affinely normalised sample maxima must follow a generalised extreme value (GEV) distribution. A related peaks-over-threshold formulation is provided by the Pickands--Balkema--de Haan theorem \citep{pickands1975,balkema1974}, which motivates the use of the generalised Pareto distribution for threshold exceedances. These results justify modelling marginal extremes using GEV or generalised Pareto distributions and motivate transforming each station's marginal distribution to a common extreme-value scale before modelling dependence. This separation allows spatial extremal dependence to be studied independently of marginal differences between stations.
-
-The marginal limit alone is not sufficient to describe how extremes at different sites occur together. For maxima observed over space, the limiting objects are max-stable processes, which arise as pointwise maxima of independent replications of a random field and extend the GEV limit from a scalar to a field \citep{dehaan2006}. Extremal dependence is therefore indexed by pairs of locations and, under stationarity and isotropy, can be summarised as a function of their separation distance. \citet{davison2012} review the area and argue that a model fitting marginal extremes well may still misrepresent joint extremes. This is the reason our paper models the dependence directly rather than inferring it from marginal fits. Ordinary covariance is not the relevant summary, because it is dominated by the bulk (the 'ordinary' windy days) and need not describe the joint tail.
-
-\subsection{Max-stable process models}\label{sec:lit-maxstable}
-
-Several stationary max-stable families are proposed in the literature. \citet{smith1990} introduced a max-stable model with a deterministic storm profile, and \citet{schlather2002} proposed a more flexible construction based on a stationary latent process. Both are limited as models of how dependence decays. The model Smith et al. proposed, implies overly smooth, near-deterministic extremal surfaces, and the Schlather model cannot approach independence at long range. The Brown--Resnick process \citep{brown1977,kabluchko2009} avoids both limitations. Its extremal dependence is determined by the variogram of an underlying Gaussian process with stationary increments, ranges from complete dependence at zero distance to independence at long range, and is determined by a small number of parameters. \citet{davison2012} use it as the leading stationary model for spatial extremes, which is why it is the model estimated in our paper.
-
-\subsection{The Brown--Resnick process and its variogram}\label{sec:lit-br}
-
-\citet{kabluchko2009} characterise stationary Brown--Resnick fields through negative-definite functions, equivalently through the variogram of the underlying process. With an isotropic powered-exponential variogram
+The first task is marginal: any statement about extreme gusts needs a model for the upper tail of each station's distribution, where data are sparse and an ordinary fit is unreliable. Extreme-value theory supplies the limiting families. For block maxima, the Fisher--Tippett--Gnedenko theorem singles out the generalised extreme value (GEV) distribution as the only possible non-degenerate limit. For station \(i\) and season \(c\), write this marginal model as \(G_{ic}(x;\mu_{ic},\sigma_{ic},\xi_{ic})\), with location \(\mu_{ic}\in\mathbb R\), scale \(\sigma_{ic}>0\), and shape \(\xi_{ic}\in\mathbb R\). In its usual parametrisation,
 \[
-    \gamma(d)=\Bigl(\frac{d}{\rho}\Bigr)^{\alpha},
-    \qquad \rho>0,\ \alpha\in(0,2],
+    G_{ic}(x)
+    =
+    \exp\left\{
+    -\left[
+        1+\xi_{ic}\frac{x-\mu_{ic}}{\sigma_{ic}}
+        \right]^{-1/\xi_{ic}}
+    \right\},
 \]
-the range \(\rho\) sets how slowly extremal dependence decays with distance. A larger \(\rho\) is a larger spatial footprint of extremes, and \(\alpha\) sets the smoothness of that decay. Isotropy means dependence depends on distance alone (whereas anisotropy means it depends on both distance and the direction). Within this variogram family, and for comparable values of \(\alpha\), a larger \(\rho\) corresponds to a slower decay of extremal dependence with distance. In practice, the fitted extremal-coefficient curve provides the clearest comparison across seasons. For our paper, this is the statistical objective to interpret, a seasonal difference in spatial footprint becomes a difference in \(\rho\), so winter storms with broad footprints and summer storms events with narrow ones correspond to \(\rho_{\mathrm W}>\rho_{\mathrm S}\). \citet{davison2013} delimit the scope of such models, because Brown--Resnick fields are asymptotically dependent at all finite distances, whereas environmental extremes can be asymptotically independent, so the model may overstate dependence at the highest levels. This is why our paper reports nonparametric tail diagnostics alongside the fit.
+on the set where \(1+\xi_{ic}(x-\mu_{ic})/\sigma_{ic}>0\), with the Gumbel case obtained by continuity when \(\xi_{ic}=0\). The shape parameter determines whether the upper tail is bounded \((\xi_{ic}<0)\), Gumbel-type \((\xi_{ic}=0)\), or heavy-tailed \((\xi_{ic}>0)\) \citep{fisher1928,gnedenko1943}. The equivalent peaks-over-threshold view, in which exceedances above a high threshold are approximately generalised Pareto, follows from the Pickands--Balkema--de Haan theorem \citep{pickands1975,balkema1974}.
 
-\subsection{Pairwise composite likelihood}\label{sec:lit-cl}
+In this thesis the GEV is used less as a literal asymptotic claim about one-day maxima than as a flexible device for putting every station--season series on a common scale. For an observed daily maximum gust \(X_{it}^{(c)}\), the fitted marginal distribution \(\widehat G_{ic}\) gives the probability integral transform and unit Fr\'echet transformation
+\begin{equation}\label{eq:pit-unit-frechet}
+    \begin{aligned}
+        U_{it}^{(c)}
+         & =
+        \widehat G_{ic}\left(X_{it}^{(c)}\right),
+        \\
+        Z_{it}^{(c)}
+         & =
+        \left\{-\log U_{it}^{(c)}\right\}^{-1}.
+    \end{aligned}
+\end{equation}
+Under a correctly specified margin, \(U_{it}^{(c)}\in(0,1)\), while \(Z_{it}^{(c)}\) has unit Fr\'echet margins. The latter is the scale on which the spatial dependence models below are written. The point of doing this first is that the seasonal question is about dependence, not about local wind climate: coastal stations are windier than inland ones and winter is windier than summer, and without a common marginal scale those differences would leak into any comparison of co-occurrence. Because the same standardisation is applied ahead of all three methods, none of them gains an advantage from it, and the adequacy of the \(66\) marginal fits becomes a matter of diagnostic checking rather than of assumption. This applied method of first standardising margins, then studying the spatial structure of the extremes, is the one in which recent work on the spatial footprints of European windstorms sits \citep{sharkey2020,pacey2021,gliksman2023european}.
 
-Full-likelihood inference for max-stable processes is generally infeasible: the joint density of the field at \(N\) sites is a sum over all partitions of the sites, which grows exponentially in \(N\) \citep{padoan2010}. \citet{padoan2010} replace the full likelihood by a pairwise composite likelihood,
+
+\subsection{From correlation to tail dependence}\label{sec:lit-dependence}
+
+With standardised margins \(U_i\) and \(U_j\) of two stations \(i\neq j\), dependence is a question about the copula alone, by Sklar's theorem \citep{sklar1959}. The copula is the joint distribution of the uniformised margins, we can write the bivariate copula as
+\(
+C_{ij}(u,v)
+=
+\Pr(U_i\leq u, U_j\leq v)
+\)
+Ordinary correlation is the wrong summary here: it is dominated by the bulk of the data, and two bivariate distributions can share a correlation while placing very different mass in the joint tail \citep{embrechts2002}. The summary that does capture the joint upper tail is the upper tail-dependence coefficient
+\(
+\chi_{ij}
+=
+\lim_{u\to1}
+\Pr(U_i>u\mid U_j>u),
+\)
+introduced by \citet{sibuya1960} and brought into the extremes literature by \citet{coles1999}. Positive \(\chi_{ij}\) is called asymptotic dependence, while \(\chi_{ij}=0\) corresponds to asymptotic independence. In the spatial setting, the coefficient is indexed by inter-station distance \(d_{ij}\), giving the tail-dependence curve \(\chi(d)\) that this thesis compares between winter and summer.
+
+For max-stable dependence structures, \(\chi\) has a convenient companion. Bivariate margins of max-stable processes are extreme-value copulas characterised by an extremal coefficient \(\theta_{ij}\in[1,2]\) \citep{schlather2003,gudendorf2010}. On unit Fr\'echet margins, this coefficient is defined through
 \[
-    \ell(\vartheta)=\sum_{i<j}\sum_{t}\log f_{ij}\bigl(z_{i,t},z_{j,t};\vartheta\bigr),
+    \Pr(Z_i\leq z, Z_j\leq z)
+    =
+    \exp\left\{-\frac{\theta_{ij}}{z}\right\},
+    \qquad z>0.
 \]
-where \(f_{ij}\) is the bivariate density implied by the model and \(\vartheta=(\rho,\alpha)\). Maximising \(\ell\) gives a consistent and asymptotically normal estimator. This is the pseudo-likelihood, replacing an intractable joint objective by a tractable sum of low-dimensional ones. \citet{huser2013} study composite likelihood specifically for the Brown--Resnick process, including the bivariate density and the option of censoring contributions below a high threshold so that the fit targets the joint tail. Our paper uses the pairwise estimator proposed in \citet{padoan2010} with the Brown--Resnick bivariate density, estimated separately by season.
-Simulation provides a controlled setting in which the finite-sample behaviour of the pairwise composite-likelihood estimator can be assessed. Since the true dependence parameters are known under a simulated Brown--Resnick data-generating process, simulation makes it possible to check whether the estimation procedure can recover season-specific differences in extremal dependence before it is applied to empirical wind data. This does not validate the Brown--Resnick model as a description of the observed process, but it does validate the estimator and comparison procedure under the assumptions for which they are designed. Exact simulation algorithms for max-stable processes, such as those developed by \citet{dombry2016}, therefore provide the tools needed to verify whether the pairwise composite likelihood estimator can recover known parameter differences in a controlled data-generating process.
+The boundary cases are intuitive: \(\theta_{ij}=1\) corresponds to complete extremal dependence and \(\theta_{ij}=2\) to extremal independence. For max-stable models, the upper tail-dependence coefficient and extremal coefficient are linked by
+\[
+    \chi_{ij}
+    =
+    2-\theta_{ij}.
+\]
+Thus, a model that naturally reports \(\theta(d)\) is immediately placed on the common \(\chi(d)\) scale used for the seasonal comparison.
 
 
-\subsection{Inference for composite-likelihood estimators}\label{sec:lit-inference}
+One limitation from this literature shapes the scope of the thesis. \citet{ledford1996} showed that a pair can be asymptotically independent yet show substantial dependence at every finite level; max-stable models and the finite-degree Student-\(t\) copula cannot represent that regime, since both force \(\chi>0\) wherever there is any dependence at all. All three methods compared here are therefore asymptotically dependent models, and the comparison is understood to be \emph{within} that class; the broader, dependence-class-flexible models that relax it \citep{huserwadsworth2022} are noted later as the natural extension.
+Finally, simple model-free summaries are used only as descriptive diagnostics and visual checks. These include the empirical tail coefficient at a fixed high level \(u_0<1\), \(\widehat\chi_{ij}(u_0)=\sum_t \mathbf 1\{U_{it}>u_0,U_{jt}>u_0\}/\sum_t \mathbf 1\{U_{jt}>u_0\}\), the copula-diagonal estimate of the extremal coefficient, based on \(C_{ij}(u,u)=u^{\theta_{ij}}\) and hence \(\widehat\theta_{ij}(u_0)=\log \widehat C_{ij}(u_0,u_0)/\log u_0\), and the \(F\)-madogram \(\nu_{F,ij}=\frac12\mathbb E|U_i-U_j|\), estimated by \(\widehat\nu_{F,ij}=(2T)^{-1}\sum_t |U_{it}-U_{jt}|\) \citep{cooley2006}. For max-stable dependence, the \(F\)-madogram can be mapped to the extremal coefficient by \(\theta_{ij}=(1+2\nu_{F,ij})/(1-2\nu_{F,ij})\), and then to the tail-dependence scale through \(\chi_{ij}=2-\theta_{ij}\). In this thesis these quantities are not treated as estimators of the limiting curve itself, because they are noisy at the high levels that matter, heavily cross-correlated across station pairs, and do not extrapolate to the limit that defines \(\chi(d)\). Estimating the curve at the limit is the job of the parametric models.
 
-Because \(\ell\) is composite, ordinary likelihood standard errors are not valid. The Godambe information is \(G = H J^{-1}H\), where \(H\) is the sensitivity matrix and \(J\) is the variability matrix of the composite score. The corresponding asymptotic covariance matrix is \(G^{-1}=H^{-1}JH^{-1}\). This requires estimating \(J\) and assumes independent replicates. For the empirical data, the replicates are daily maxima, which remain dependent within a multi-day storm. This is problematic because daily maxima are not necessarily independent temporal replicates: multi-day storms can induce serial dependence even after the spatial field has been standardised. To mitigate this issue, we use the block bootstrap to obtain uncertainty estimates and for the winter--summer comparison. Resampling whole season-years preserves both the within-storm serial dependence and the cross-station dependence among pairs sharing a station. The Godambe form is used as a theoretical reference and as a validation under the independence assumption.
 
-\subsection{Nonparametric extremal-dependence diagnostics}\label{sec:lit-diagnostics}
+\subsection{Spatial extremes and max-stable processes}\label{sec:lit-maxstable}\label{sec:lit-br}\label{sec:lit-extt}
 
-To validate, compare and check the fit of the nonparametric pairwise summaries, we estimate three related quantities. First, the extremal coefficient \(\theta(s_i,s_j)\in[1,2]\) measures the effective number of independent sites in a pair; the \(F\)-madogram of \citet{cooley2006} estimates it from transformed margins without a parametric model. The finite-level tail-dependence coefficient \(\chi_u(s_i,s_j)\) measures the conditional probability that one site exceeds a high marginal quantile given that the other does. These are standard descriptive tools for extremal dependence; here they are diagnostics, used to check whether the fitted Brown--Resnick curve is consistent with the pairwise estimates across distance and whether dependence weakens at the highest levels in a way the model cannot represent. \citet{davison2013} and \citet{huser2020} survey the asymptotic-independence alternatives that these diagnostics would point to if the fit failed.
+Two of the three methods come from the max-stable class, the spatial counterpart of the GEV limit: a suitably normalised pointwise maximum of independent random fields, if it converges, must be max-stable \citep{dehaan1984,dehaan2006}. Write \(s_i\) and \(s_j\) for two station locations, \(h_{ij}=s_i-s_j\) for their spatial lag, and \(d_{ij}=\|h_{ij}\|\) for their distance. On unit Fr\'echet margins, a bivariate max-stable distribution can be written as
+\[
+    \Pr\{Z(s_i)\leq z_i, Z(s_j)\leq z_j\}
+    =
+    \exp\{-V_{ij}(z_i,z_j)\},
+    \qquad z_i,z_j>0,
+\]
+where \(V_{ij}\) is the bivariate exponent function. The pairwise extremal coefficient is obtained by setting \(z_i=z_j=z\), so that
+\[
+    \Pr\{Z(s_i)\leq z, Z(s_j)\leq z\}
+    =
+    \exp\left\{-\frac{\theta_{ij}}{z}\right\},
+    \qquad
+    \chi_{ij}=2-\theta_{ij}.
+\]
+Under stationarity and isotropy, \(\theta_{ij}\) and \(\chi_{ij}\) depend on the pair only through \(d_{ij}\), giving a single tail-dependence curve \(\chi(d)\) per season. The spectral representation of max-stable processes is both the source of concrete models and the basis of the exact simulation used in the benchmark \citep{dombry2016}. The class is also where the choice of family is known to matter: \citet{davison2012} review the options and document that a model can fit margins well yet misrepresent joint extremes, and specific families have visible defects. The model of \citet{smith1990} imposes rigid storm shapes, and the extremal Gaussian model of \citet{schlather2002} cannot approach independence at long range. Using two different max-stable families, rather than one, is what lets the thesis separate conclusions that are robust within the class from those that depend on the assumed shape of decay.
 
-\subsection{Seasonal and non-stationary extremal dependence}\label{sec:lit-seasonal}
+The first family is the Brown--Resnick process \citep{brown1977,kabluchko2009}. Its dependence is determined by the semivariogram \(\gamma(h)\) of an underlying Gaussian process. With the convention \(a_{ij}=\sqrt{2\gamma(h_{ij})}\), its bivariate exponent function is the H\"usler--Reiss form
+\[
+    V_{ij}^{\mathrm{BR}}(z_i,z_j)
+    =
+    \frac{1}{z_i}
+    \Phi\left(
+    \frac{a_{ij}}{2}
+    +
+    \frac{1}{a_{ij}}\log\frac{z_j}{z_i}
+    \right)
+    +
+    \frac{1}{z_j}
+    \Phi\left(
+    \frac{a_{ij}}{2}
+    +
+    \frac{1}{a_{ij}}\log\frac{z_i}{z_j}
+    \right),
+\]
+where \(\Phi\) is the standard normal distribution function \citep{husler1989}. Setting \(z_i=z_j=z\) gives
+\[
+    \theta_{\mathrm{BR}}(d)
+    =
+    2\Phi\left\{
+    \sqrt{\frac{\gamma(d)}{2}}
+    \right\},
+    \qquad
+    \chi_{\mathrm{BR}}(d)
+    =
+    2
+    -
+    2\Phi\left\{
+    \sqrt{\frac{\gamma(d)}{2}}
+    \right\}.
+\]
+In the isotropic power-variogram specification, for example, \(\gamma(d)=(d/\rho)^{\alpha}\), where \(\rho>0\) controls the distance scale and \(0<\alpha\leq2\) controls the smoothness or rate of decay. If \(\gamma(d)\) is unbounded, then \(\chi_{\mathrm{BR}}(d)\to0\) as \(d\to\infty\), so the model can approach extremal independence at long range. It is also a proven tool for exactly this kind of data: \citet{oesting2017} apply it to extreme wind gusts over a station network. Its range parameter is a model-specific distance scale, not a literal storm radius and not the same object as the similarly named parameters in the other models.
 
-Allowing dependence to differ between winter and summer is a restricted form of non-stationary extremal dependence, with season as a binary covariate. Rather than fit a single covariate-dependent max-stable process, our paper estimates one Brown--Resnick model per season and compares their parameters. This is a simple device, but it addresses a concrete concern: a single model fitted to all daily maxima would mix large-scale winter storms with summer storms, blurring exactly the contrast of interest. Anisotropic and space-time Brown--Resnick extensions exist --- \citet{buhl2016} estimate an anisotropic space-time version --- and are noted as directions the isotropic, season-by-season design here does not pursue. In what follows, \citet{padoan2010} and \citet{huser2013} supply the estimator, \citet{kabluchko2009} the model, \citet{dombry2016} the exact simulation used to validate the estimator, and \citet{cooley2006} and \citet{coles1999} the diagnostics.
+The second family is the extremal-\(t\) process \citep{opitz2013}, which arises as the max-stable limit of Student-\(t\) random fields and shares its bivariate dependence with the \(t\) extreme-value copula \citep{demarta2005}. Let \(r(d)\) denote the correlation function of the underlying spatial process and let \(\nu>0\) be the degrees-of-freedom parameter. For two stations at distance \(d_{ij}\), write \(r_{ij}=r(d_{ij})\). The bivariate exponent function can be written as
+\[
+    V_{ij}^{t}(z_i,z_j)
+    =
+    \frac{1}{z_i}
+    T_{\nu+1}\left[
+        \frac{(z_j/z_i)^{1/\nu}-r_{ij}}
+        {\{(1-r_{ij}^{2})/(\nu+1)\}^{1/2}}
+        \right]
+    +
+    \frac{1}{z_j}
+    T_{\nu+1}\left[
+        \frac{(z_i/z_j)^{1/\nu}-r_{ij}}
+        {\{(1-r_{ij}^{2})/(\nu+1)\}^{1/2}}
+        \right],
+\]
+where \(T_{\nu+1}\) is the distribution function of a univariate Student-\(t\) variable with \(\nu+1\) degrees of freedom. Hence,
+\[
+    \theta_{t}(d)
+    =
+    2T_{\nu+1}\left[
+        \left\{
+        \frac{(\nu+1)(1-r(d))}
+        {1+r(d)}
+        \right\}^{1/2}
+        \right],
+    \qquad
+    \chi_t(d)
+    =
+    2-\theta_t(d).
+\]
+The degrees-of-freedom parameter \(\nu\) gives the extremal-\(t\) model an additional way to control the strength of tail dependence. Unlike Brown--Resnick with an unbounded variogram, if \(r(d)\to0\) as \(d\to\infty\) and \(\nu\) is finite, the extremal-\(t\) model retains a positive limiting level of tail dependence,
+\(
+\chi_t(\infty)
+=
+2
+-
+2T_{\nu+1}\left\{(\nu+1)^{1/2}\right\}.
+\)
+The contrast between the two max-stable families is therefore informative in both directions: Brown--Resnick allows the tail-dependence curve to decay to zero, whereas extremal-\(t\) permits persistent long-range extremal dependence. The relationship between extremal-\(t\) and Brown--Resnick is itself well understood, with the latter arising as a limiting case of the former under appropriate scaling \citep{nikoloulopoulos2009}.
+
+
+
+\subsection{Copulas and tail dependence}\label{sec:lit-copula}
+
+The third method comes from the copula literature, and its role is to test whether the seasonal conclusion survives outside the max-stable class. Copulas entered econometrics as a way of modelling dependence separately from the margins: for two standardised variables \(U_i,U_j\in(0,1)\), their joint distribution is written as \(C_{ij}(u,v)=\Pr(U_i\leq u,U_j\leq v)\) \citep{sklar1959}. In financial econometrics, this separation became useful for modelling dependence between asset returns independently of their marginal behaviour \citep{embrechts2002,patton2006}, and the development is reviewed by \citet{patton2012}, with textbook treatments in \citet{joe2014} and \citet{mcneil2015}.
+
+The relevant contrast is between two elliptical copulas. The Gaussian copula can be written as \(C^{\mathrm G}_{r}(u,v)=\Phi_{r}\{\Phi^{-1}(u),\Phi^{-1}(v)\}\), where \(r\in(-1,1)\) is the correlation parameter, \(\Phi\) is the standard normal distribution function, and \(\Phi_r\) is the bivariate normal distribution function with correlation \(r\). Its upper tail-dependence coefficient satisfies \(\chi_{\mathrm G}(r)=0\) for every \(r<1\), so it generates no asymptotic joint extremes. By contrast, the Student-\(t\) copula \(C^{t}_{\nu,r}(u,v)=T_{\nu,r}\{T_{\nu}^{-1}(u),T_{\nu}^{-1}(v)\}\), with degrees of freedom \(\nu>0\) and correlation \(r\), has strictly positive upper tail dependence. In closed form, \(\chi_t(r,\nu)=2T_{\nu+1}\left(-\sqrt{(\nu+1)(1-r)/(1+r)}\right)\) \citep{demarta2005}. Replacing the scalar correlation \(r\) by a spatial correlation function \(r(d)\) therefore turns this coefficient into the distance-indexed curve \(\chi_t(d)=\chi_t\{r(d),\nu\}\), directly comparable with the max-stable curves.
+
+Two features of this benchmark govern how its results are read. First, with the same \(r(d)\) and \(\nu\), its tail-dependence curve coincides in form with the extremal-\(t\) curve, unsurprisingly given that the extremal-\(t\) process is the max-stable attractor of \(t\) fields \citep{nikoloulopoulos2009}. Therefore, the comparison between the two is really a comparison of modelling level and of what the likelihood is fitted to, not of tail formulas. Second, the positive tail dependence persists even as the correlation vanishes: if \(r(d)\to0\), then \(\chi_t(d)\to 2T_{\nu+1}\{-(\nu+1)^{1/2}\}>0\) for finite \(\nu\). Thus, a fitted curve sitting above zero at the longest distances may reflect the parametric form rather than any physical dependence between distant storms; the curve is read as a benchmark for the seasonal contrast, not as a claim about long-range co-occurrence. Estimation of copula parameters on transformed data is standard \citep{genest1995}; in this thesis it is done by a pairwise objective, for the reasons taken up next.
+
+\subsection{Estimation and uncertainty for dependent data}\label{sec:lit-cl}\label{sec:lit-inference}\label{sec:lit-temporal}
+
+Having three models does not yet give three estimators. For the max-stable pair the obstacle is computational: the joint density at many sites involves a sum over all partitions of those sites, which is astronomically large at \(33\) stations \citep{padoan2010}. The mitigation is composite likelihood \citep{lindsay1988,varin2011}, which replaces the intractable joint density by a product of valid low-dimensional pieces; the pairwise version, summing bivariate log-densities over station pairs, is the workhorse of spatial extremes \citep{padoan2010,huser2013}. Because each piece is a genuine density, the estimating equations are unbiased and the estimators are consistent and asymptotically normal, but with a sandwich (Godambe) covariance (TODO: insert the godambe sandwich covariance math) rather than the usual inverse information, since the second Bartlett identity fails for a composite objective. The Student-\(t\) copula admits a full likelihood, so using a pairwise objective for it too is a deliberate choice: it keeps the estimation strategy identical across the three methods, at a quantifiable cost in efficiency, so that differences in their fitted curves can be attributed to the models rather than to the estimators.
+
+The data add a second complication that we must take into account if we perform inference. Daily gust maxima form a time series, and storms persist for several days, so extreme days arrive in clusters; the classical theory describes this through the extremal index \citep{leadbetter1983,coles2001}, estimated without run-length tuning by the intervals method of \citet{ferro2003}. Clustering does not bias the pairwise estimators under stationarity and mixing \citep{huserdavison2014}, but it does mean that variance formulas built for independent days understate uncertainty, and it dictates how any resampling must be done. The thesis therefore quantifies uncertainty by a block bootstrap, as proposed by \citep{kuensch1989,lahiri2003}, in which the resampling unit is a whole season-year: entire daily fields are kept intact, so the same-day spatial dependence that is the estimand is untouched, and contiguous storm days stay together. Intervals are read off as bootstrap percentiles \citep{davisonhinkley1997}, and because several parameters live in constrained spaces, configurations where estimates pile up at a boundary are monitored and treated as weak identification rather than fed into inference \citep{andrews2001}. The data are not declustered before estimation, since removing days would discard whole spatial fields that carry the cross-station information of interest.
+
+\subsection{Simulation}\label{sec:lit-simulation}\label{sec:lit-seasonal}
+
+On the real data the true dependence is unknown, so bias, optimiser artefacts, and the effects of misspecification cannot be separated from genuine seasonal signal by inspection. The mitigation is a controlled Monte Carlo study. Because this thesis compares three procedures rather than validating one, the study generates data from each model class in turn and fits all three methods to each, so that every method is seen both under its own assumptions and under misspecification, and it is scored on the common curve \(\chi(d)\) rather than on internal parameters, which have no true value once a model is misspecified.
+
+Several alternative frameworks were considered and set aside, for reasons worth recording briefly. The conditional extremes model of \citet{heffernan2004} is the natural tool when asymptotic independence is the main concern, but it answers a conditional question rather than delivering the unconditional curve the comparison is built on. Vine copulas \citep{aas2009} are very flexible but carry no spatial structure and their tail behaviour is an artefact of the chosen pair-copula families, so they sit awkwardly against a distance-indexed object. The most substantive omission is the class of asymptotically independent and dependence-class-flexible spatial models \citep{huseropitzthibaud2017,huserwadsworth2019,huserwadsworth2022}: all three methods used here impose asymptotic dependence, and extending the comparison to that wider class is the clearest direction for future work, as are richer covariate-dependent or space--time structures \citep{buhl2016} beyond the simple two-season contrast adopted here. Each ingredient retained above answers a specific shortcoming of a simpler approach, and together they let the seasonal question be addressed with assumptions that are stated and checkable, and with an explicit sense of how much the answer depends on the model.

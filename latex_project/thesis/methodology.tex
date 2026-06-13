@@ -1,152 +1,341 @@
 % =====================================================================
-% Methodology
-% Primary method: season-specific Brown--Resnick by pairwise composite
-% likelihood; chi_u / F-madogram / empirical extremal coefficients are
-% diagnostics only (Section sec:meth-diagnostics).
-% Margins: station-season GEV -> unit Frechet; the uniform-scale field
-%   U = G(X) is used by the diagnostics.
-% Convention (identical in simulation.tex and the code):
-%   gamma_c(d) = (d/rho_c)^alpha_c is the variogram (variance of
-%   increments); a_c(d) = sqrt(gamma_c(d)); theta_c(d) = 2*Phi(a_c(d)/2).
-% Data notation (X_{i,t}, s_i, d_{ij}, X_t, seasons, T_c) is introduced
-% in data.tex (Section sec:data) and only recalled here.
+% Methodology (style/density pass: de-signposted, equation-led)
+%
+% Design unchanged. Three methods M in {BR, ExtT, tCop}, symmetric;
+% common comparison object chi_{M,c}(d); seasonal contrast Delta_M^chi(d).
+% No invented results (planned work uses "will"/"is designed to").
+%
+% Style changes in this pass:
+%   - removed ALL \textbf{...} / \paragraph{} run-in mini-headings;
+%     content woven into flowing paragraphs separated by blank lines;
+%   - notation and equations carry the argument; short connective prose
+%     between equation blocks, no per-sentence over-explanation;
+%   - "canonical comparison object" replaced by "common comparison
+%     object" / "tail-dependence curve" / "chi(d)".
+%
+% Notation: M in script-M = {BR, ExtT, tCop}; c in {W,S};
+%   X_{itc}, U_{itc}=F_{ic}(X_{itc}), Z_{itc}=-1/log U_{itc};
+%   P = {(i,j): 1<=i<j<=N}, |P|=528; d_{ij}=||s_i-s_j||;
+%   T_c^{ij}=T_{i,c} cap T_{j,c}. Method subscript suppressed within a
+%   model's block (rho_c := rho_{M,c}, etc.).
+%
+% Conventions (identical in simulation.tex and code):
+%   BR:        gamma_c=(d/rho_c)^alpha_c; a_c=sqrt(gamma_c);
+%              theta_BR,c=2*Phi(a_c/2); chi_BR,c=2-theta_BR,c.
+%   ExtT/tCop: r_c=exp{-(d/rho_c)^alpha_c}; T_nu=Student-t cdf;
+%              theta_ExtT,c=2*T_{nu+1}(sqrt{(nu+1)(1-r)/(1+r)});
+%              chi_ExtT,c=2-theta_ExtT,c; chi_tCop,c same functional form.
+%
+% Labels preserved (referenced internally and/or from other chapters):
+% sec:methodology, sec:meth-overview, sec:meth-notation,
+% sec:meth-marginals, eq:meth-standardisation, sec:meth-marg-diag,
+% sec:meth-temporal, sec:meth-chi, eq:meth-chi-def, eq:meth-delta-def,
+% eq:meth-chi-theta, sec:meth-diagnostics, sec:meth-models,
+% eq:meth-argmax, sec:meth-br, sec:meth-variogram, eq:meth-br-chi,
+% sec:meth-extt, eq:meth-extt-theta, sec:meth-tcop, eq:meth-tcop-chi,
+% tab:meth-models, tab:meth-assumptions (alias), sec:meth-cl,
+% eq:meth-cl-ms, eq:meth-cl-tcop, eq:meth-output, sec:meth-comparison,
+% sec:meth-inference, alg:meth-bootstrap, sec:meth-simulation,
+% sec:meth-summary.
+%
+% Preamble: amsmath, amssymb, algorithm, algpseudocode, natbib.
 % =====================================================================
 \section{Methodology}\label{sec:methodology}
 
-This chapter sets out how the winter--summer difference in spatial extremal dependence is estimated and tested. The order is as follows. The daily gust fields are first put on a common marginal scale, separately by station and season, so that what is compared afterwards is spatial dependence and not the local wind climate (Section~\ref{sec:meth-marginals}). Each season's standardised fields are then modelled as a Brown--Resnick max-stable process whose dependence is fixed by a two-parameter variogram (Sections~\ref{sec:meth-br}--\ref{sec:meth-variogram}). The variogram parameters are estimated by pairwise composite likelihood (Section~\ref{sec:meth-cl}); the two seasonal fits are contrasted through their dependence ranges and the implied extremal-coefficient curves (Section~\ref{sec:meth-comparison}); and the contrast is tested with a season-year block bootstrap (Section~\ref{sec:meth-inference}). Three nonparametric pairwise summaries are kept as checks on the fitted model (Section~\ref{sec:meth-diagnostics}). The Brown--Resnick process is used as a parametric approximation to the dependence of daily gust maxima within a season; the maxima themselves are not assumed to be exactly max-stable, and whether the approximation holds is examined by the diagnostics rather than assumed.
+The previous chapters motivate a comparison of the spatial extent of wind-gust extremes between winter and summer. This chapter defines the parametric objects used for that comparison. The three fitted models differ in their stochastic assumptions, but each is translated to the same distance-indexed upper tail-dependence curve \(\chi(d)\), and the seasonal question is answered on that scale. The exposition follows one order throughout --- model specification, then estimation, then bootstrap, then simulation evaluation --- and the three methods are treated symmetrically, so that any difference in their conclusions reflects their assumptions rather than the procedure around them.
 
-Throughout, \(X_{i,t}\) is the daily maximum wind gust at station \(i=1,\dots,N\) on day \(t\), at location \(s_i\in\mathbb R^2\), with \(d_{ij}=\lVert s_i-s_j\rVert\) the great-circle distance between stations \(i\) and \(j\) in kilometres. The station set, sample period, missingness rule, seasonal split, and the daily field \(X_t=(X_{1,t},\dots,X_{N,t})\) are those of Section~\ref{sec:data}; the season index is \(c\in\{\mathrm W,\mathrm S\}\) and \(\mathcal T_c\) is the set of days in season \(c\). Each station enters only on the days it reports and each pair only on the days both its stations report, so write
-\[
-      \mathcal T_{i,c}=\bigl\{t\in\mathcal T_c:\ X_{i,t}\text{ observed}\bigr\},
-      \qquad
-      \mathcal T_c^{ij}=\mathcal T_{i,c}\cap\mathcal T_{j,c},
-\]
-with \(n_i^{(c)}=\lvert\mathcal T_{i,c}\rvert\) and \(n_{ij}^{(c)}=\lvert\mathcal T_c^{ij}\rvert\). The marginal fit of Section~\ref{sec:meth-marginals} uses \(\mathcal T_{i,c}\) and the pairwise likelihood contributions of Section~\ref{sec:meth-cl} use \(\mathcal T_c^{ij}\).
+\subsection{Overview}\label{sec:meth-overview}
+
+The pipeline, with the section fixing each step, is: marginal standardisation \(X_{itc}\mapsto(\widehat U_{itc},\widehat Z_{itc})\) per station--season (Sect.~\ref{sec:meth-marginals}), checked in Sect.~\ref{sec:meth-marg-diag}; temporal-clustering diagnostics (Sect.~\ref{sec:meth-temporal}); the curve \(\chi_{M,c}(d)\), contrast \(\Delta_M^{\chi}(d)\), and grid \(\mathcal D\) (Sect.~\ref{sec:meth-chi}); model-free pairwise diagnostics, retained as checks only (Sect.~\ref{sec:meth-diagnostics}); the three models with closed-form \(\chi_{M,c}(d)\) (Sect.~\ref{sec:meth-models}); pairwise composite and copula estimation by season (Sect.~\ref{sec:meth-cl}); the seasonal comparison and the agreement rule (Sect.~\ref{sec:meth-comparison}); the season-year block bootstrap (Sect.~\ref{sec:meth-inference}); and the Monte Carlo benchmark (Sect.~\ref{sec:meth-simulation}, design in Sect.~\ref{sec:simulation}). Margins precede dependence, time precedes space, and the curve is fixed before the models, so that the models are three answers to one question.
+
+\subsection{Notation and sampling frame}\label{sec:meth-notation}
+
+Indices run over methods, seasons, stations, and station pairs,
+\begin{equation}
+  M\in\mathcal M=\{\mathrm{BR},\mathrm{ExtT},\mathrm{tCop}\},
+  \qquad c\in\{\mathrm W,\mathrm S\},
+  \qquad i=1,\dots,N,\quad N=33,
+\end{equation}
+\begin{equation}
+  \mathcal P=\{(i,j):1\le i<j\le N\},\quad |\mathcal P|=\tbinom{N}{2}=528,
+  \qquad
+  d_{ij}=\lVert s_i-s_j\rVert,\quad
+  \mathcal T^{ij}_c=\mathcal T_{i,c}\cap\mathcal T_{j,c},
+\end{equation}
+where \(s_i\in\mathbb R^2\) are the station locations, \(\mathcal T_{i,c}\) the days station \(i\) is observed in season \(c\), \(n^{(c)}_{ij}=|\mathcal T^{ij}_c|\), and \(d_{\max}=\max_{i<j}d_{ij}\approx327\)~km (Sect.~\ref{sec:data}). Each season is the union of \(n_y\) season-year blocks \(\mathcal B_{c,y}\), with winters contiguous over December--February; these blocks are the resampling units of Sect.~\ref{sec:meth-inference}. The three-index symbol \(X_{itc}\) denotes the daily maximum gust and coincides with the \(X^{(c)}_{i,t}\) of Sect.~\ref{sec:data}. Every estimator below is computed once for each season.
 
 \subsection{Marginal standardisation}\label{sec:meth-marginals}
 
-The Brown--Resnick model is specified on unit-Fr\'echet margins, \(\Pr(Z\le z)=\exp(-1/z)\) for \(z>0\). Coastal and inland stations have different gust distributions, and a given station's distribution differs between winter and summer; left untransformed, those marginal differences would enter the seasonal dependence comparison. Each station--season margin is therefore modelled by its own generalised extreme value (GEV) distribution and mapped to unit Fr\'echet. For station \(i\) in season \(c\), the daily maxima \(\{X_{i,t}:t\in\mathcal T_{i,c}\}\) are fitted by
-\[
-      G_i^{(c)}(x)=\exp\!\Bigl\{-\bigl[1+\xi_i^{(c)}\,\tfrac{x-\mu_i^{(c)}}{\sigma_i^{(c)}}\bigr]_{+}^{-1/\xi_i^{(c)}}\Bigr\},
-      \qquad [\,y\,]_{+}=\max(y,0),
-\]
-with location \(\mu_i^{(c)}\), scale \(\sigma_i^{(c)}>0\) and shape \(\xi_i^{(c)}\) estimated by maximum likelihood; the Gumbel case \(\xi_i^{(c)}=0\) is taken as the \(\xi\to0\) limit when the shape is not separated from zero. The fitted margin gives the probability-integral transform and the unit-Fr\'echet field
-\[
-      \widehat U_{i,t}^{(c)}=\widehat G_i^{(c)}(X_{i,t}),
-      \qquad
-      \widehat Z_{i,t}^{(c)}=-\bigl\{\log\widehat U_{i,t}^{(c)}\bigr\}^{-1}
-      =-\bigl\{\log\widehat G_i^{(c)}(X_{i,t})\bigr\}^{-1}.
-\]
-Dependence estimation treats the standardised fields \(\widehat Z_t^{(c)}\) as the data; the uniform-scale fields \(\widehat U_t^{(c)}\) are the input to the diagnostics of Section~\ref{sec:meth-diagnostics}.
+For each station and season a GEV distribution \(\widehat F_{ic}\) is fitted to \(\{X_{itc}:t\in\mathcal T_{i,c}\}\) by maximum likelihood, giving \(2N=66\) fits, and the data are mapped to a common scale,
+\begin{equation}\label{eq:meth-standardisation}
+  \widehat U_{itc}=\widehat F_{ic}(X_{itc}),
+  \qquad
+  \widehat Z_{itc}=-\frac{1}{\log \widehat U_{itc}},
+\end{equation}
+so that \(\widehat U_{itc}\) is approximately standard uniform and \(\widehat Z_{itc}\) approximately unit Fr\'echet. A rank scale \(\widetilde U_{itc}=\{n^{(c)}_i+1\}^{-1}\sum_{t'}\mathbf 1\{X_{it'c}\le X_{itc}\}\) is kept in parallel as a model-free standardisation. The two max-stable models are written on the unit-Fr\'echet scale and the copula on the uniform scale,
+\begin{equation}
+  \mathrm{BR},\,\mathrm{ExtT}\ \text{use}\ \widehat Z_{itc},
+  \qquad
+  \mathrm{tCop}\ \text{uses}\ \widehat U_{itc},
+\end{equation}
+with \(\widehat Z_{itc}\) a fixed monotone transform of \(\widehat U_{itc}\) and the diagnostics of Sects.~\ref{sec:meth-temporal} and~\ref{sec:meth-diagnostics} using \(\widetilde U_{itc}\).
 
-\subsection{Brown--Resnick model}\label{sec:meth-br}
+By Sklar's theorem the transform \eqref{eq:meth-standardisation} removes the station--season margin and leaves the copula, so a residual winter--summer difference is a difference in dependence rather than in local wind climate, and because all three methods use the same standardised data, none gains an advantage from preprocessing. The GEV here is a standardisation device for the upper tail, not a claim that daily maxima are exact block maxima; its adequacy is a matter of fit. A poor marginal fit at station \(i\) propagates identically into every method through \(\widehat U_{itc}\) and \(\widehat Z_{itc}\), and marginal estimation uncertainty is carried into the final intervals by re-estimating the margins inside the bootstrap (Sect.~\ref{sec:meth-inference}).
 
-For each season let \(Z^{(c)}=\{Z^{(c)}(s):s\in\mathbb R^2\}\) be a stationary max-stable process with unit-Fr\'echet margins, taken to be a Brown--Resnick process \citep{brown1977,kabluchko2009}. Its extremal dependence is fixed by the variogram of an underlying intrinsically stationary Gaussian process \(W^{(c)}\) with \(W^{(c)}(0)=0\),
-\[
-      \gamma_c(h)=\operatorname{Var}\!\bigl\{W^{(c)}(s+h)-W^{(c)}(s)\bigr\},
-\]
-and under intrinsic stationarity \(\gamma_c\) alone governs how fast extremal dependence decays with separation. Estimation uses only the bivariate distributions implied by \(\gamma_c\) (Section~\ref{sec:meth-variogram}), not the spectral construction of the process. The Brown--Resnick family therefore gives a low-dimensional summary of season-specific spatial gust dependence, reducing the winter--summer comparison to differences in the fitted range, smoothness, and implied extremal-coefficient curves.
+\subsection{Marginal diagnostics}\label{sec:meth-marg-diag}
 
-\subsection{Variogram and extremal coefficient}\label{sec:meth-variogram}
+Each of the \(66\) fits is judged graphically, since serial dependence within storms (Sect.~\ref{sec:meth-temporal}) invalidates independence-based goodness-of-fit \(p\)-values. The checks are GEV quantile--quantile plots, with the upper tail decisive; the uniformity of \(\widehat U_{itc}\); and \(\widehat U_{itc}\) against \(\widetilde U_{itc}\) above the \(0.9\) level, which localises the upper-tail misfit that matters for the dependence analysis. The results chapter reports a representative selection and the worst cases by the screening statistic \(\max_x|\widehat F_{ic}(x)-\widetilde F_{ic}(x)|\). Because a poor fit at station \(i\) tilts all \(N-1\) pairwise contributions containing \(i\) in every method, the dependence results are read conditional on these checks, with the rank scale as the immune fallback.
 
-We use an isotropic powered-exponential variogram,
-\[
-      \gamma_c(d)=\Bigl(\frac{d}{\rho_c}\Bigr)^{\alpha_c},
-      \qquad \rho_c>0,\quad \alpha_c\in(0,2],
-\]
-so dependence enters only through the distance \(d\). The pair \(\vartheta_c=(\rho_c,\alpha_c)\) is the parameter of interest: \(\rho_c\) sets the distance scale of the decay and \(\alpha_c\) its smoothness. The two act jointly and are read together with the curve below (Section~\ref{sec:meth-comparison}).
+\subsection{Temporal clustering}\label{sec:meth-temporal}
 
-For two sites at distance \(d\), the bivariate distribution on the unit-Fr\'echet scale is of H\"usler--Reiss type,
-\[
-      \Pr\!\bigl\{Z^{(c)}(s_i)\le z_i,\,Z^{(c)}(s_j)\le z_j\bigr\}=\exp\!\bigl\{-V_d(z_i,z_j;\vartheta_c)\bigr\},
-\]
-\[
-      V_d(z_i,z_j;\vartheta_c)=\frac{1}{z_i}\,\Phi\!\Bigl(\frac{a_c(d)}{2}+\frac{1}{a_c(d)}\log\frac{z_j}{z_i}\Bigr)
-      +\frac{1}{z_j}\,\Phi\!\Bigl(\frac{a_c(d)}{2}+\frac{1}{a_c(d)}\log\frac{z_i}{z_j}\Bigr),
-\]
-where \(\Phi\) is the standard normal distribution function and
-\[
-      a_c(d)=\sqrt{\gamma_c(d)}=\Bigl(\frac{d}{\rho_c}\Bigr)^{\alpha_c/2}.
-\]
-The extremal coefficient is \(\theta_c(d)=V_d(1,1;\vartheta_c)\), that is
-\[
-      \theta_c(d)=2\,\Phi\!\Bigl(\tfrac12 a_c(d)\Bigr)
-      =2\,\Phi\!\Bigl(\tfrac12 (d/\rho_c)^{\alpha_c/2}\Bigr)\in[1,2].
-\]
-It increases monotonically in \(d\), from \(\theta_c(0)=1\) under complete dependence towards the independence value \(2\) as \(d\to\infty\); a larger \(\theta_c(d)\) means weaker dependence at distance \(d\). The parameter \(\rho_c\) is a distance scale, measured in kilometres: at \(d=\rho_c\) the variogram equals one, so \(a_c(\rho_c)=1\) and \(\theta_c(\rho_c)=2\Phi(1/2)\approx1.38\). It is therefore the distance at which the season's extremal coefficient reaches that reference level, while the exponent \(\alpha_c\) sets how steeply the curve approaches it.
+All estimators treat days as replicates of the spatial field, but storms persist over consecutive days, so the replicates cluster. For station \((i,c)\) and level \(u\), with consecutiveness defined within a season-year block,
+\begin{equation}
+  \widehat p^{(c)}_{u,i}
+  =\frac{\#\{t:\ \widetilde U_{itc}>u,\ \widetilde U_{i,t+1,c}>u\}}
+  {\#\{t:\ \widetilde U_{itc}>u\}},
+  \qquad u\in\{0.90,0.95,0.975\},
+\end{equation}
+with independence benchmark \(1-u\); the all-lag summary is the extremal index \(\theta_{\mathrm T}\in(0,1]\) of \citet{ferro2003} (temporal, not to be confused with the spatial \(\theta_{M,c}(d)\)). The data are not declustered, since deleting days would remove whole \(N\)-station fields and the pairwise objectives remain valid for dependent replicates under stationarity and mixing \citep{huserdavison2014}; the consequence of clustering for uncertainty is instead handled by resampling whole season-years (Sect.~\ref{sec:meth-inference}). The diagnostic quantifies serial dependence across the level grid but does not remove it.
 
-\paragraph{Convention.} Here \(\gamma_c\) is the variogram in the sense of the variance of increments. Some references state the same model through the semivariogram \(\tilde\gamma_c=\gamma_c/2\), for which \(\theta_c(d)=2\Phi\!\bigl(\sqrt{\tilde\gamma_c(d)/2}\bigr)\); the two expressions coincide. The convention \(a_c(d)=\sqrt{\gamma_c(d)}\), \(\theta_c(d)=2\Phi(a_c(d)/2)\) is the one used in the simulation of Section~\ref{sec:simulation} and in the implementation.
+\subsection{The common comparison object \texorpdfstring{$\chi(d)$}{chi(d)}}\label{sec:meth-chi}
 
-\subsection{Pairwise composite likelihood}\label{sec:meth-cl}
+For a fitted model \(M\), season \(c\), and uniform-scale pair \((U_i,U_j)\) at distance \(d\),
+\begin{align}
+  \chi_{M,c}(d)
+   & =\lim_{u\to1}\Pr_M\!\bigl(U_i>u\mid U_j>u;\ d_{ij}=d\bigr),
+  \label{eq:meth-chi-def}                                        \\[2pt]
+  \Delta_M^{\chi}(d)
+   & =\chi_{M,\mathrm W}(d)-\chi_{M,\mathrm S}(d).
+  \label{eq:meth-delta-def}
+\end{align}
+For the two max-stable models the bivariate copula is an extreme-value copula with \(C(u,u)=u^{\theta_{M,c}(d)}\), so the curve follows from the extremal coefficient,
+\begin{equation}\label{eq:meth-chi-theta}
+  \chi_{M,c}(d)=2-\theta_{M,c}(d),\qquad M\in\{\mathrm{BR},\mathrm{ExtT}\}
+\end{equation}
+(Appendices~\ref{app:exponent}--\ref{app:tail-dependence}); for the \(t\) copula the limit \eqref{eq:meth-chi-def} is evaluated directly (Sect.~\ref{sec:meth-tcop}). Curves are read on a fixed grid and summarised at selected distances,
+\begin{equation}
+  \mathcal D=\{d_1,\dots,d_G\}\subset[0,d_{\max}],
+  \qquad
+  \mathcal D_0=\{50,100,200,300\}\ \text{km}\subset\mathcal D .
+\end{equation}
+% TODO (code/design): fix the grid step (intended 5 km, d in [12,327])
+% and confirm/justify D_0 from the empirical distribution of d_ij; keep
+% D and D_0 identical in methodology, simulation, and code.
 
-The full likelihood of a max-stable field is intractable beyond a few sites, because its joint density sums over every partition of the locations \citep{padoan2010}. We therefore estimate \(\vartheta_c\) by pairwise composite likelihood, replacing the joint density with a product of bivariate densities. The bivariate density at distance \(d\) follows from \(V_d\) by differentiation,
-\[
-      f_d(z_i,z_j;\vartheta_c)=\Bigl\{\partial_{z_i}V_d\,\partial_{z_j}V_d-\partial^2_{z_i z_j}V_d\Bigr\}\exp\!\bigl\{-V_d(z_i,z_j;\vartheta_c)\bigr\},
-\]
-with the closed form for the H\"usler--Reiss exponent given by \citet{padoan2010} and, for the Brown--Resnick case, by \citet{huser2013}. Every station pair contributes, with no distance truncation, so the pairwise composite log-likelihood for season \(c\) is
-\[
-      \ell_c(\vartheta_c)=\sum_{i<j}\ \sum_{t\in\mathcal T_c^{ij}}
-      \log f_{d_{ij}}\!\bigl(\widehat Z_{i,t}^{(c)},\widehat Z_{j,t}^{(c)};\vartheta_c\bigr),
-\]
-summed over all \(N(N-1)/2\) pairs. All station pairs are retained because the network contains only \(N=33\) stations, giving \(N(N-1)/2=528\) pairs, which is computationally manageable. Short-distance pairs identify strong local extremal dependence, while long-distance pairs inform how quickly the fitted dependence curve approaches weak dependence. No distance truncation or pair weighting is therefore imposed. The estimator is
-\[
-      \widehat\vartheta_c=(\widehat\rho_c,\widehat\alpha_c)=\arg\max_{\vartheta_c\in\Theta}\ \ell_c(\vartheta_c),
-      \qquad \Theta=[\,1,\ 3d_{\max}\,]\times[\,0.05,\ 2\,],
-\]
-where \(d_{\max}=\max_{i<j} d_{ij}\) is the largest inter-station distance in the network (Section~\ref{sec:data}). The range is bounded below by \(1\) km, a small positive floor below the closest pair of stations, and above by \(3d_{\max}\), comfortably beyond the largest distance the network resolves, so that near-complete dependence across the network remains attainable; the smoothness is confined to \((0,2]\) with a numerical floor of \(0.05\). The log-likelihood is maximised by bounded quasi-Newton optimisation (L-BFGS-B). To guard against local optima, \(\ell_c\) is maximised from a grid of starting values,
-\[
-      \rho^{(0)}\in\{0.1,\,0.25,\,0.5,\,1,\,2\}\,d_{\max},
-      \qquad
-      \alpha^{(0)}\in\{0.5,\,1,\,1.5,\,2\},
-\]
-and the converged solution with the largest composite log-likelihood is retained. Each day contributes one term per pair. Consecutive daily maxima within a multi-day storm are not independent; under stationarity and standard mixing this serial dependence affects mainly the sampling variability of \(\widehat\vartheta_c\), and hence inference, which is handled by the bootstrap of Section~\ref{sec:meth-inference}.
+The quantity \(\chi_{M,c}(d)\) is the model's probability of a co-occurring extreme at distance \(d\), and \(\Delta_M^{\chi}(d)>0\) means model \(M\) implies a stronger, wider winter footprint at \(d\). It is the scale on which the models are compared because it is a functional of the copula alone \citep{sibuya1960,coles1999} and is therefore defined for every \(M\), whereas the internal parameters are not comparable across models --- the symbol \(\rho\) does not even denote the same object in all three (Sect.~\ref{sec:meth-br}). The curve is a limit while the data are finite-level, and all three models are asymptotically dependent, so none can represent dependence that vanishes only in the limit \citep{ledford1996}; conclusions are accordingly stated as comparisons of fitted curves over the observed distances and checked against the finite-level diagnostics below.
 
-\subsection{Seasonal comparison and hypotheses}\label{sec:meth-comparison}
+\subsection{Descriptive pairwise diagnostics}\label{sec:meth-diagnostics}
 
-The model is fitted separately in the two seasons, with both range and smoothness free in each, giving \(\widehat\vartheta_{\mathrm W}=(\widehat\rho_{\mathrm W},\widehat\alpha_{\mathrm W})\) and \(\widehat\vartheta_{\mathrm S}=(\widehat\rho_{\mathrm S},\widehat\alpha_{\mathrm S})\). The comparison of primary interest is the difference in dependence ranges,
-\[
-      \widehat\Delta_\rho=\widehat\rho_{\mathrm W}-\widehat\rho_{\mathrm S}.
-\]
-Since \(\rho_c\) is the distance at which season \(c\) reaches the reference extremal coefficient \(2\Phi(1/2)\) (Section~\ref{sec:meth-variogram}), \(\Delta_\rho>0\) says winter holds that level of dependence out to a greater distance --- a larger spatial footprint for winter extremes, as one would expect of synoptic-scale windstorms relative to summer convective gusts. Because \(\rho_c\) is a distance scale and not the whole curve, it is read alongside \(\widehat\alpha_c\) and the fitted curves \(\widehat\theta_{\mathrm W}(d)\), \(\widehat\theta_{\mathrm S}(d)\), which put the difference on the dependence-versus-distance scale and are directly comparable to the diagnostics of Section~\ref{sec:meth-diagnostics}. When \(\widehat\alpha_{\mathrm W}\neq\widehat\alpha_{\mathrm S}\) the two curves differ in shape, not only at the anchor \(\rho_c\), so the curve comparison --- not \(\Delta_\rho\) alone --- is the full statement. The smoothness difference \(\widehat\alpha_{\mathrm W}-\widehat\alpha_{\mathrm S}\) is reported secondarily.
+The following pairwise summaries are diagnostics and visual checks, not estimators of \(\chi(d)\) and not among the three methods: they are finite-level, level-dependent, and cross-correlated over the \(528\) pairs, so no formal inference attaches. From the rank scale, for \((i,j)\in\mathcal P\),
+\begin{equation}
+  \widehat\chi^{(c)}_{ij}(u)
+  =\frac{2\,\#\{t\in\mathcal T^{ij}_c:\widetilde U_{itc}>u,\widetilde U_{jtc}>u\}}
+  {\#\{t:\widetilde U_{itc}>u\}+\#\{t:\widetilde U_{jtc}>u\}},
+  \qquad
+  \widehat\theta^{(c)}_{ij}(u)=\frac{\log\widehat C^{(c)}_{ij}(u,u)}{\log u},
+\end{equation}
+the finite-level version of \eqref{eq:meth-chi-def} and the copula-diagonal extremal coefficient \citep{coles1999,schlather2003}; the \(F\)-madogram \citep{cooley2006} is recorded but not used. Plotted against distance per season and level, these give a model-free first look at whether the winter cloud sits above the summer one and, overlaid with the fitted finite-level curves, a check on the parametric fits. Two patterns are watched for: \(\widehat\chi^{(c)}_{ij}(u)\) falling towards \(1-u\) faster than any fitted curve allows, the signature of asymptotic independence that none of the models represents \citep{ledford1996,huserwadsworth2022}; and dependence on orientation or coast--inland membership rather than distance, which would question the isotropy all three models assume.
 
-The comparison is framed as the one-sided test
-\[
-      H_0:\ \Delta_\rho=0
-      \qquad\text{against}\qquad
-      H_1:\ \Delta_\rho>0,
-\]
-equivalently \(\rho_{\mathrm W}=\rho_{\mathrm S}\) against \(\rho_{\mathrm W}>\rho_{\mathrm S}\). Winter (DJF) and summer (JJA) are estimated from disjoint days separated by the excluded spring and autumn, and are treated as approximately independent: at the daily, storm-driven timescale of the dependence estimates the seasons share little information. Low-frequency interannual climate variation could still induce some residual dependence between a given year's winter and summer, so the independence is approximate rather than exact. The seasons are resampled separately in Section~\ref{sec:meth-inference} under this approximation.
+\subsection{The three parametric models}\label{sec:meth-models}
 
-\subsection{Inference}\label{sec:meth-inference}
+Each method has a season-specific parameter vector and is estimated by maximising a pairwise objective,
+\begin{equation}
+  \vartheta_{\mathrm{BR},c}=(\rho_{\mathrm{BR},c},\alpha_{\mathrm{BR},c}),\quad
+  \vartheta_{\mathrm{ExtT},c}=(\rho_{\mathrm{ExtT},c},\alpha_{\mathrm{ExtT},c},\nu_{\mathrm{ExtT},c}),\quad
+  \vartheta_{\mathrm{tCop},c}=(\rho_{\mathrm{tCop},c},\alpha_{\mathrm{tCop},c},\nu_{\mathrm{tCop},c}),
+\end{equation}
+\begin{equation}\label{eq:meth-argmax}
+  \widehat\vartheta_{M,c}=\arg\max_{\vartheta_{M,c}\in\Theta_M}\ \ell_{M,c}(\vartheta_{M,c}),
+  \qquad M\in\mathcal M,\ c\in\{\mathrm W,\mathrm S\}.
+\end{equation}
+Within each model's block the method subscript is suppressed, \(\rho_c:=\rho_{M,c}\) and so on. The set spans two axes: Brown--Resnick and extremal-\(t\) are both max-stable but impose different decay shapes, while the Student-\(t\) copula sits outside the max-stable class; all three assume isotropy and within-season stationarity. Each model below gives its dependence function, its curve \(\chi_{M,c}(d)\), its pairwise density, and its main limitation; estimation \eqref{eq:meth-argmax} is detailed in Sect.~\ref{sec:meth-cl}.
 
-Uncertainty is quantified by a season-year block bootstrap. The resampling unit is one season-year --- one winter, or one summer; within each season the season-years are drawn with replacement, separately for winter and summer under the approximate independence of Section~\ref{sec:meth-comparison}. For each replication \(b\) the GEV marginal transform of Section~\ref{sec:meth-marginals} and the estimator of Section~\ref{sec:meth-cl} are recomputed on the resampled season-years, giving \(\widehat\vartheta_{\mathrm W}^{*(b)}\), \(\widehat\vartheta_{\mathrm S}^{*(b)}\) and \(\widehat\Delta_\rho^{*(b)}=\widehat\rho_{\mathrm W}^{*(b)}-\widehat\rho_{\mathrm S}^{*(b)}\). Resampling whole season-years, rather than individual days, preserves the within-storm serial dependence of consecutive daily maxima and the cross-station dependence among pairs that share a station, both of which a day-level resample would destroy. We draw \(B=1000\) bootstrap replications, and from them form \(95\%\) percentile intervals for \(\rho_c\), \(\alpha_c\) and \(\Delta_\rho\) together with pointwise \(95\%\) bands for the extremal-coefficient curve \(\theta_c(d)\).
+\subsubsection{Brown--Resnick}\label{sec:meth-br}\label{sec:meth-variogram}
 
-The hypothesis \(H_0:\Delta_\rho=0\) against \(H_1:\Delta_\rho>0\) is assessed by a one-sided bootstrap interval test. Let \(\widehat q^{*}_{0.05}\) be the \(5\%\) percentile of the bootstrap distribution \(\{\widehat\Delta_\rho^{*(b)}\}_{b=1}^{B}\). The test rejects \(H_0\) at the \(5\%\) level when
-\[
-      \widehat q^{*}_{0.05}>0,
-\]
-that is, when the lower endpoint of the one-sided \(95\%\) bootstrap interval for \(\Delta_\rho\) lies above zero. The accompanying bootstrap evidence measure is
-\[
-      \widehat p=\frac{1+\sum_{b=1}^{B}\mathbf 1\{\widehat\Delta_\rho^{*(b)}\le 0\}}{B+1},
-\]
-the bootstrap frequency with which the seasonal range difference is non-positive, so that a small \(\widehat p\) is evidence for a wider winter footprint. Only \(\Delta_\rho\) is tested; the pairwise quantities of Section~\ref{sec:meth-diagnostics} are descriptive and are not subjected to a formal test. Because the number of season-years in the \(1991\)--\(2026\) record is limited (Section~\ref{sec:data}), the intervals are correspondingly wide, and the simulation of Section~\ref{sec:simulation} quantifies the precision attainable at this sample size and network geometry.
+With the powered-exponential variogram of the underlying Gaussian process \citep{brown1977,kabluchko2009} and \(a_c(d)=\sqrt{\gamma_c(d)}\),
+\begin{equation}\label{eq:meth-br-chi}
+  \gamma_c(d)=\Bigl(\frac{d}{\rho_c}\Bigr)^{\alpha_c},
+  \qquad
+  \theta_{\mathrm{BR},c}(d)=2\Phi\!\Bigl(\tfrac12\sqrt{\gamma_c(d)}\Bigr),
+  \qquad
+  \chi_{\mathrm{BR},c}(d)=2-\theta_{\mathrm{BR},c}(d),
+\end{equation}
+where \(\rho_c>0\), \(\alpha_c\in(0,2]\), \(\chi_{\mathrm{BR},c}(0)=1\), and \(\chi_{\mathrm{BR},c}(d)\to0\) as \(d\to\infty\) (Appendix~\ref{app:br-theta}). The bivariate law is of H\"usler--Reiss type \citep{husler1989}, \(\exp\{-V^{\mathrm{BR}}_d(z_i,z_j;\vartheta_{\mathrm{BR},c})\}\) with
+\begin{equation}
+  V^{\mathrm{BR}}_d(z_i,z_j)
+  =\frac{1}{z_i}\Phi\!\Bigl(\tfrac{a_c(d)}{2}+\tfrac{1}{a_c(d)}\log\tfrac{z_j}{z_i}\Bigr)
+  +\frac{1}{z_j}\Phi\!\Bigl(\tfrac{a_c(d)}{2}+\tfrac{1}{a_c(d)}\log\tfrac{z_i}{z_j}\Bigr),
+\end{equation}
+and the bivariate density \(f_{\mathrm{BR},ij}=(\partial_{z_i}V\,\partial_{z_j}V-\partial^2_{z_iz_j}V)\,e^{-V}\) entering the likelihood \citep{padoan2010,huser2013}. The scale \(\rho_c\) is a variogram distance scale --- at \(d=\rho_c\) the curve sits at \(\chi_{\mathrm{BR},c}\approx0.62\) --- not a storm radius, and not comparable with the parameters named \(\rho\) in the other two models. The model imposes max-stability, hence asymptotic dependence at every finite distance, and a two-parameter shape; where it is misspecified the fit is the best pairwise H\"usler--Reiss approximation.
 
-As a theoretical cross-check, composite-likelihood theory treats the daily fields \(\{\widehat Z_t^{(c)}:t\in\mathcal T_c\}\) as independent replicates of the spatial process. Under that working assumption it gives the Godambe (sandwich) information \(G(\vartheta_c)=H(\vartheta_c)\,J(\vartheta_c)^{-1}H(\vartheta_c)\), with \(H\) the expected negative Hessian of \(\ell_c\) and \(J\) the variance of its score, so that \(\widehat\vartheta_c\) is asymptotically normal with covariance \(G(\vartheta_c)^{-1}\) \citep{padoan2010}. Ordinary likelihood standard errors do not apply, since \(\ell_c\) is composite and not a genuine log-likelihood. Because multi-day storms make consecutive daily maxima serially dependent, the independence behind \(J\) fails on these data, so the sandwich form is reported only as a reference and the season-year block bootstrap is the basis for the intervals and the test.
+\subsubsection{Extremal-\texorpdfstring{$t$}{t}}\label{sec:meth-extt}
 
-\subsection{Nonparametric models}\label{sec:meth-diagnostics}
+With the isotropic correlation function and \(T_\nu\) the Student-\(t\) cdf \citep{opitz2013,demarta2005},
+\begin{equation}\label{eq:meth-extt-theta}
+  r_c(d)=\exp\!\Bigl[-\Bigl(\tfrac{d}{\rho_c}\Bigr)^{\alpha_c}\Bigr],
+  \qquad
+  \theta_{\mathrm{ExtT},c}(d)=2\,T_{\nu_c+1}\!\Biggl[\Bigl\{\tfrac{(\nu_c+1)(1-r_c(d))}{1+r_c(d)}\Bigr\}^{1/2}\Biggr],
+  \qquad
+  \chi_{\mathrm{ExtT},c}(d)=2-\theta_{\mathrm{ExtT},c}(d),
+\end{equation}
+with \(\rho_c>0\), \(\alpha_c\in(0,2]\), \(\nu_c>0\). As \(d\to\infty\), \(r_c(d)\to0\) and \(\chi_{\mathrm{ExtT},c}(d)\to2-2T_{\nu_c+1}(\sqrt{\nu_c+1})>0\), a positive long-range floor set by \(\nu_c\). The bivariate law is \(\exp\{-V^{\mathrm{ExtT}}_d\}\) with
+\begin{equation}
+  V^{\mathrm{ExtT}}_d(z_i,z_j)
+  =\frac{1}{z_i}T_{\nu_c+1}\!\Bigl[\bigl\{(z_j/z_i)^{1/\nu_c}-r_c\bigr\}\bigl(\tfrac{\nu_c+1}{1-r_c^2}\bigr)^{1/2}\Bigr]
+  +\frac{1}{z_j}T_{\nu_c+1}\!\Bigl[\bigl\{(z_i/z_j)^{1/\nu_c}-r_c\bigr\}\bigl(\tfrac{\nu_c+1}{1-r_c^2}\bigr)^{1/2}\Bigr],
+\end{equation}
+\(r_c=r_c(d)\), and density \(f_{\mathrm{ExtT},ij}\) by the same differentiation \citep{opitz2013}. The parameter \(\nu_c\) decouples the overall strength of tail dependence from the rate of decay, so the model can fit curves Brown--Resnick cannot. The positive floor means a fitted long-range \(\chi_{\mathrm{ExtT},c}\) partly reflects the parametric form, and \((\nu_c,\rho_c)\) can be weakly jointly identified, which is why boundary configurations are monitored (Sect.~\ref{sec:meth-cl}) and the comparison is made on \(\chi(d)\) rather than on parameters.
 
-The fitted model is checked against three nonparametric pairwise summaries computed from the uniform-scale fields \(\widehat U_t^{(c)}\) of Section~\ref{sec:meth-marginals}; none of them is the estimand. The first is the finite-level tail-dependence coefficient at level \(u=0.95\),
-\[
-      \widehat\chi_{u,ij}^{(c)}=\frac{\#\{t\in\mathcal T_c^{ij}:\widehat U_{i,t}^{(c)}>u,\ \widehat U_{j,t}^{(c)}>u\}}
-      {\#\{t\in\mathcal T_c^{ij}:\widehat U_{i,t}^{(c)}>u\}},
-      \qquad u=0.95,
-\]
-the empirical probability that station \(j\) is extreme given that station \(i\) is, symmetrised over the two conditioning directions \citep{coles1999}. The second is the \(F\)-madogram and its extremal coefficient \citep{cooley2006},
-\[
-      \widehat\nu_{F,ij}^{(c)}=\frac{1}{2n_{ij}^{(c)}}\sum_{t\in\mathcal T_c^{ij}}\bigl|\widehat U_{i,t}^{(c)}-\widehat U_{j,t}^{(c)}\bigr|,
-      \qquad
-      \widehat\theta_{ij}^{(c)}=\frac{1+2\,\widehat\nu_{F,ij}^{(c)}}{1-2\,\widehat\nu_{F,ij}^{(c)}}\in[1,2].
-\]
-Under the Brown--Resnick model the implied extremal coefficient is \(\theta_c(d)\) and the implied tail-dependence coefficient at \(u=0.95\) is \(\chi_{0.95}^{\mathrm{BR}}(d)=(1-2u+u^{\theta_c(d)})/(1-u)\) with \(u=0.95\). The check is whether the fitted \(\widehat\theta_c(\cdot)\) and the implied \(\chi_{0.95}^{\mathrm{BR}}(\cdot)\) track the pairwise clouds \((d_{ij},\widehat\theta_{ij}^{(c)})\) and \((d_{ij},\widehat\chi_{0.95,ij}^{(c)})\) across distance. A systematic gap --- for instance, the pairwise tail-dependence coefficient drifting towards zero while the fitted curve stays bounded away from it --- would indicate that the asymptotic dependence built into the Brown--Resnick model overstates the joint tail of these gusts \citep{davison2013}. Pairwise estimates and fitted curve are plotted together, so any such gap is visible rather than averaged away. These summaries use scalar distance, consistent with the isotropy assumed by the model.
+\subsubsection{Spatial Student-\texorpdfstring{$t$}{t} copula}\label{sec:meth-tcop}
 
-The finite-sample behaviour of \(\widehat\vartheta_c\) and of the test of \(H_0\) is studied in Section~\ref{sec:simulation}, where data are generated from a known Brown--Resnick process. That exercise shows whether the estimator and the test recover a spatial difference that is genuinely present; it does not, and cannot, confirm that the observed gusts follow a Brown--Resnick model --- that question belongs to the diagnostics above.
+On the uniform scale, with the same correlation function,
+\begin{equation}
+  C_{\mathrm t}\bigl(u_i,u_j;r_c(d),\nu_c\bigr)
+  =T_{2,\nu_c}\!\bigl(T^{-1}_{\nu_c}(u_i),T^{-1}_{\nu_c}(u_j);r_c(d)\bigr),
+\end{equation}
+\begin{equation}\label{eq:meth-tcop-chi}
+  \chi_{\mathrm{tCop},c}(d)
+  =2\,T_{\nu_c+1}\!\Biggl[-\Bigl\{\tfrac{(\nu_c+1)(1-r_c(d))}{1+r_c(d)}\Bigr\}^{1/2}\Biggr]
+  =2-2\,T_{\nu_c+1}\!\Biggl[\Bigl\{\tfrac{(\nu_c+1)(1-r_c(d))}{1+r_c(d)}\Bigr\}^{1/2}\Biggr],
+\end{equation}
+by symmetry of \(T\), with pairwise density \(c_{\mathrm t}(u_i,u_j;r,\nu)=f_{2,\nu}(T^{-1}_\nu(u_i),T^{-1}_\nu(u_j);r)/\{f_\nu(T^{-1}_\nu(u_i))f_\nu(T^{-1}_\nu(u_j))\}\).
+
+Comparing \eqref{eq:meth-tcop-chi} with \eqref{eq:meth-extt-theta}, the extremal-\(t\) and Student-\(t\) copula share the same bivariate \(\chi(d)\) expression in \((\rho_c,\alpha_c,\nu_c)\), since the extremal-\(t\) process is the max-stable attractor of \(t\) fields \citep{opitz2013,nikoloulopoulos2009}. They differ in model class and likelihood: the extremal-\(t\) is max-stable and fitted to the extreme-value structure on \(\widehat Z\), identifying its parameters from the tail, whereas the copula is fitted to the whole dependence structure on \(\widehat U\), identifying the same-named parameters from the body and extrapolating into the tail. Their fitted curves can therefore differ, and the size of that difference measures how much the conclusion depends on what the likelihood is fitted to. For finite \(\nu_c\), \(\chi_{\mathrm{tCop},c}(d)\to2T_{\nu_c+1}(-\sqrt{\nu_c+1})>0\) as \(r_c(d)\to0\): the copula carries positive tail dependence even at zero correlation, so a fitted long-range \(\chi_{\mathrm{tCop},c}\) is a parametric benchmark rather than evidence of physical dependence between distant storms, and the contrast \(\Delta_{\mathrm{tCop}}^{\chi}(d)\), where the floor partly cancels, is read in preference to either level. The copula is tail-symmetric; only its upper tail is used here.
+
+Table~\ref{tab:meth-models} collects the three models on the attributes the comparison turns on.
+
+\begin{table}[t]
+  \centering
+  \caption{The three parametric methods. \(\Phi\) is the standard normal cdf, \(T_\nu\) the Student-\(t\) cdf, \(a_c=\sqrt{\gamma_c}\), \(r_c=r_c(d)\). All are fitted by season; cross-model comparison is on \(\chi_{M,c}(d)\), never on \(\rho\).}
+  \label{tab:meth-models}\label{tab:meth-assumptions}
+  \footnotesize
+  \setlength{\tabcolsep}{4pt}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{@{}l c c p{0.30\textwidth} l p{0.205\textwidth}@{}}
+    \hline
+    Method                                                                             & Scale & \(\vartheta_{M,c}\) & \(\chi_{M,c}(d)\) & Likelihood & Main assumption / limitation \\
+    \hline
+    BR                                                                                 &
+    \(\widehat Z\)                                                                     &
+    \((\rho_c,\alpha_c)\)                                                              &
+    \(2-2\Phi(a_c/2)\), \ \(\gamma_c=(d/\rho_c)^{\alpha_c}\); \ \(\to0\) at long range &
+    pairwise CL                                                                        &
+    max-stable; two-parameter shape; \(\rho_c\) not a storm radius                                                                                                                   \\
+    ExtT                                                                               &
+    \(\widehat Z\)                                                                     &
+    \((\rho_c,\alpha_c,\nu_c)\)                                                        &
+    \(2-2T_{\nu_c+1}[\{(\nu_c+1)(1-r_c)/(1+r_c)\}^{1/2}]\); \ floor \(>0\)             &
+    pairwise CL                                                                        &
+    max-stable; positive long-range floor; \((\rho_c,\nu_c)\) weakly identified                                                                                                      \\
+    tCop                                                                               &
+    \(\widehat U\)                                                                     &
+    \((\rho_c,\alpha_c,\nu_c)\)                                                        &
+    same functional form as ExtT                                                       &
+    pairwise copula                                                                    &
+    \emph{not} max-stable; \(\chi>0\) at \(r_c\to0\); benchmark only                                                                                                                 \\
+    \hline
+  \end{tabular}
+\end{table}
+
+\subsection{Estimation}\label{sec:meth-cl}
+
+Full \(N\)-variate max-stable likelihoods are intractable, the joint density involving a sum over all partitions of the sites \citep{padoan2010}, so all three methods use pairwise objectives over \(\mathcal P\) and the common days, separately by season. For the two max-stable models,
+\begin{equation}\label{eq:meth-cl-ms}
+  \ell_{M,c}(\vartheta_{M,c})
+  =\sum_{(i,j)\in\mathcal P}\ \sum_{t\in\mathcal T^{ij}_c}
+  \log f_{M,ij}\!\bigl(\widehat z_{itc},\widehat z_{jtc};\vartheta_{M,c}\bigr),
+  \qquad M\in\{\mathrm{BR},\mathrm{ExtT}\},
+\end{equation}
+and for the copula, on the uniform scale,
+\begin{equation}\label{eq:meth-cl-tcop}
+  \ell_{\mathrm{tCop},c}(\vartheta_{\mathrm{tCop},c})
+  =\sum_{(i,j)\in\mathcal P}\ \sum_{t\in\mathcal T^{ij}_c}
+  \log c_{\mathrm t}\!\bigl(\widehat u_{itc},\widehat u_{jtc};r_c(d_{ij}),\nu_c\bigr),
+\end{equation}
+where the shared parameter \(\nu_c\) couples all pairs in the two \(t\)-based models. The maximisers \eqref{eq:meth-argmax} give six empirical fits, and each fitted model is turned into its curve and contrast by plug-in,
+\begin{equation}\label{eq:meth-output}
+  \widehat\chi_{M,c}(d)=\chi_M(d;\widehat\vartheta_{M,c}),
+  \qquad
+  \widehat\Delta_M^{\chi}(d)=\widehat\chi_{M,\mathrm W}(d)-\widehat\chi_{M,\mathrm S}(d).
+\end{equation}
+
+All \(528\) pairs enter with unit weight, a distance truncation being available as a robustness check; the pairwise structure is shared by all three methods so that differences in fitted curves are due to model assumptions rather than to estimator construction, and the use of a pairwise objective for the copula --- where a full likelihood is feasible --- is a deliberate matching choice, at a quantifiable efficiency cost, with a full-likelihood fit kept as a sensitivity check. The constraints are enforced over boxes,
+\begin{equation}
+  \Theta_{\mathrm{BR}}=[1,3d_{\max}]\times[0.05,2],
+  \qquad
+  \Theta_{\mathrm{ExtT}}=\Theta_{\mathrm{tCop}}=[1,3d_{\max}]\times[0.05,2]\times[1,50],
+\end{equation}
+% TODO (code decision): confirm nu bounds [1,50] and the start grids;
+% a reduced grid may be needed inside the bootstrap (state it if used,
+% and reuse it in the simulation).
+maximised by L-BFGS-B from a multi-start grid \(\rho^{(0)}\in\{0.1,0.25,0.5,1,2\}d_{\max}\), \(\alpha^{(0)}\in\{0.5,1,1.5,2\}\), \(\nu^{(0)}\in\{2,5,10,25\}\) where applicable, retaining the best converged optimum. Convergence status and per-coordinate boundary flags \(\{\widehat\vartheta_{M,c}\in\partial\Theta_M\}\) are stored for every fit --- empirical, bootstrap, and simulation --- since estimates piling up at an edge read as weak identification \citep{andrews2001}.
+
+Each pairwise term is a genuine bivariate density, so the composite score is unbiased and \(\widehat\vartheta_{M,c}\) is consistent and asymptotically normal with the Godambe variance \(G^{-1}=H^{-1}JH^{-1}\) \citep{varin2011,padoan2010}; the inverse Hessian is not valid because \(H\ne J\). Serial clustering biases the naive estimate of \(J\) downward, so all reported uncertainty comes from the season-year bootstrap of Sect.~\ref{sec:meth-inference}, with the Godambe form kept only as a reference. Under misspecification, the generic case since at most one model can be correct, \(\widehat\vartheta_{M,c}\) targets the pseudo-true minimiser of the composite divergence and \(\widehat\chi_{M,c}(d)\) is a model-based summary; how far such a summary can sit from a known truth is what Sect.~\ref{sec:simulation} measures.
+
+\subsection{Seasonal comparison}\label{sec:meth-comparison}
+
+On the grid \(\mathcal D=\{d_1,\dots,d_G\}\), the seasonal contrast for each method is
+\begin{equation}
+  \widehat\Delta_M^{\chi}(d_g)=\widehat\chi_{M,\mathrm W}(d_g)-\widehat\chi_{M,\mathrm S}(d_g),
+  \qquad g=1,\dots,G,
+\end{equation}
+reported with bootstrap bands and summarised at \(\mathcal D_0=\{50,100,200,300\}\)~km. The parameters \(\rho_c\), \(\alpha_c\), and \(\nu_c\) are reported within each model as model-specific quantities, but the comparison across models is made on \(\chi(d)\); no raw \(\rho\) is used as a cross-model summary. Two scalar summaries, defined only as functionals of the curves, accompany the figures,
+\begin{equation}
+  \mathrm{ISD}_M=\frac1G\sum_{g=1}^G\bigl\{\widehat\Delta_M^{\chi}(d_g)\bigr\}^2,
+  \qquad
+  d^{\mathrm{eff}}_{M,c}=\inf\{d:\chi_{M,c}(d)\le\chi_{M,c}(\infty)+\tfrac12(1-\chi_{M,c}(\infty))\},
+\end{equation}
+where \(\chi_{\mathrm{BR},c}(\infty)=0\) and \(\chi_{\mathrm{ExtT},c}(\infty)=\chi_{\mathrm{tCop},c}(\infty)=2T_{\nu_c+1}(-\sqrt{\nu_c+1})\); \(\mathrm{ISD}_M\) is reported with the share of \(\mathcal D\) on which \(\widehat\Delta_M^{\chi}>0\), and \(d^{\mathrm{eff}}\) is taken relative to each model's own floor so that it is comparable across models.
+% TODO (design): confirm the half-decay constant 1/2; report d_eff only
+% when it falls inside [d_min, d_max].
+
+The conclusion is read from the three difference curves jointly. If all three give \(\widehat\Delta_M^{\chi}(d)>0\) with bands clear of zero over \(\mathcal D_0\), the evidence for stronger, more slowly decaying winter dependence is robust to the assumptions separating the methods; if only one does, the finding is model-sensitive; and if they disagree in direction, the disagreement itself localises the assumption --- chiefly whether max-stability is imposed --- on which the conclusion depends. Winter and summer are estimated from disjoint days separated by the excluded transitional seasons and are treated as approximately independent, with residual interannual coupling noted as a limitation.
+
+\subsection{Bootstrap uncertainty}\label{sec:meth-inference}
+
+The pairwise objectives are not genuine likelihoods, storm days cluster in time, and the margins are estimated, so uncertainty is taken from a block bootstrap rather than from a closed-form variance. Resampling individual days would break storm persistence, and resampling individual station--days would in addition break the same-day spatial dependence that is the estimand; the valid unit is the season-year block \(\mathcal B_{c,y}\), a set of whole \(N\)-station days, contiguous within a season and approximately independent across years. The procedure is the following. For \(b=1,\dots,B\):
+\begin{enumerate}\setlength{\itemsep}{1pt}
+  \item resample \(n_y\) complete season-years with replacement, separately within winter and within summer, giving \(\mathcal Y^{*(b)}_c=(Y^{*(b)}_{c,1},\dots,Y^{*(b)}_{c,n_y})\);
+  \item re-estimate the GEV margins on the resample and transform to \(\widehat U^{*(b)}_{\cdot\cdot c}\), \(\widehat Z^{*(b)}_{\cdot\cdot c}\) (fixed-margin variant: reuse the full-data margins);
+  \item refit each method, \(\widehat\vartheta^{*(b)}_{M,c}=\arg\max_{\vartheta\in\Theta_M}\ell^{*(b)}_{M,c}(\vartheta)\), recording convergence and boundary flags;
+  \item evaluate \(\widehat\chi^{*(b)}_{M,c}(d_g)=\chi_M(d_g;\widehat\vartheta^{*(b)}_{M,c})\) on \(\mathcal D\);
+  \item form \(\widehat\Delta^{\chi,*(b)}_M(d_g)=\widehat\chi^{*(b)}_{M,\mathrm W}(d_g)-\widehat\chi^{*(b)}_{M,\mathrm S}(d_g)\).
+\end{enumerate}
+Pointwise \(95\%\) intervals are the bootstrap percentiles,
+\begin{equation}
+  CI^{0.95}_M(d_g)=\Bigl[\,q_{0.025}\{\widehat\Delta^{\chi,*}_M(d_g)\},\ q_{0.975}\{\widehat\Delta^{\chi,*}_M(d_g)\}\,\Bigr],
+\end{equation}
+with the analogous intervals for \(\chi_{M,c}(d_g)\). Algorithm~\ref{alg:meth-bootstrap} states the procedure; all three methods are recomputed on identical resamples, so cross-method differences are bootstrapped jointly.
+
+\begin{algorithm}[t]
+  \caption{Season-year block bootstrap (three methods, joint resamples)}
+  \label{alg:meth-bootstrap}
+  \begin{algorithmic}[1]
+    \State \textbf{input:} blocks \(\mathcal B_{c,1},\dots,\mathcal B_{c,n_y}\) for \(c\in\{\mathrm W,\mathrm S\}\); replications \(B\); grid \(\mathcal D\).
+    \For{\(b=1,\dots,B\)}
+    \For{\(c\in\{\mathrm W,\mathrm S\}\)}
+    \State draw \(\mathcal Y^{*(b)}_c\): \(n_y\) season-years with replacement; concatenate intact (days in order, original missingness);
+    \State (re-)estimate GEV margins on \(\mathcal Y^{*(b)}_c\); transform to \(\widehat U^{*(b)}_{\cdot\cdot c},\widehat Z^{*(b)}_{\cdot\cdot c}\) \emph{(or reuse full-data margins)};
+    \For{\(M\in\{\mathrm{BR},\mathrm{ExtT},\mathrm{tCop}\}\)}
+    \State \(\widehat\vartheta^{*(b)}_{M,c}\leftarrow\) maximise \(\ell^{*(b)}_{M,c}\) (multi-start, Sect.~\ref{sec:meth-cl}); store flags; evaluate \(\widehat\chi^{*(b)}_{M,c}(\cdot)\) on \(\mathcal D\);
+    \EndFor
+    \EndFor
+    \State \(\widehat\Delta^{\chi,*(b)}_M(\cdot)\leftarrow\widehat\chi^{*(b)}_{M,\mathrm W}(\cdot)-\widehat\chi^{*(b)}_{M,\mathrm S}(\cdot)\) for each \(M\);
+    \EndFor
+    \State \textbf{output:} \(CI^{0.95}_M(d_g)\) for \(\Delta_M^{\chi}(d_g)\) and for \(\chi_{M,c}(d_g)\), pointwise over \(\mathcal D\).
+  \end{algorithmic}
+\end{algorithm}
+
+The intended scheme re-estimates the margins inside the bootstrap, propagating marginal uncertainty into the intervals, with a fixed-margin variant as the fallback.
+% TODO (code decision): confirm margins re-estimated (intended) vs.
+% fixed; mirror the choice in the simulation. Set B (intended 1000;
+% e.g. 400 if costly) and report the realised B with the results.
+The primary object is the bootstrap distribution of the difference curve \(\Delta_M^{\chi}(d)\), summarised by the bands \(CI^{0.95}_M\); the directional summary \(\#\{b:\widehat\Delta^{\chi,*(b)}_M(d)>0\}/B\) is reported but is not treated as a \(p\)-value, since no calibration or multiplicity argument is made. At \(n_y\approx35\) blocks the intervals are necessarily coarse, a property the simulation quantifies.
+
+\subsection{Monte Carlo benchmark}\label{sec:meth-simulation}
+
+Because the empirical truth is unknown, the three procedures are benchmarked on data simulated from known data-generating processes on the observed station geometry, under a null in which the two seasons share one curve (\(\Delta_0^{\chi}\equiv0\)) and an alternative in which winter dependence is stronger and decays more slowly (\(\Delta_0^{\chi}>0\)). Every method is fitted to every process, so performance is measured under correct specification and under misspecification, and always on \(\chi(d)\), for which a true value \(\chi_0(d)\) exists in every cell. The design, metrics, and algorithm are in Sect.~\ref{sec:simulation}, and the empirical results of Sect.~\ref{sec:results} are read in their light; because the simulated fields are independent across days, any reported interval coverage is a best case (Sect.~\ref{sec:sim-interp}).
+
+\subsection{Assumptions, in one place}\label{sec:meth-summary}
+
+Table~\ref{tab:meth-models} lists, per model, the scale, parameter vector, curve \(\chi_{M,c}(d)\), likelihood, and main assumption and limitation. The assumptions shared across models are within-season marginal stationarity and GEV upper-tail adequacy (Sect.~\ref{sec:meth-marg-diag}); short-range serial dependence under stationarity and mixing (Sect.~\ref{sec:meth-temporal}); isotropy and within-season spatial stationarity (Sect.~\ref{sec:meth-diagnostics}); and approximate winter--summer independence (Sect.~\ref{sec:meth-comparison}). The design holds everything constant except the dependence assumptions: one standardisation, one curve \(\chi_{M,c}(d)\), matched pairwise estimation, one shared block bootstrap, and one shared benchmark. Section~\ref{sec:simulation} specifies the benchmark, Sect.~\ref{sec:data} the inputs, and Sect.~\ref{sec:results} applies the pipeline in this order.
